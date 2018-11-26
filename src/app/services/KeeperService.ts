@@ -1,14 +1,14 @@
 declare const Waves: any;
 
-export class KeeperService {
+class KeeperService {
   
-  private publicStatePromise: Promise<IState>|null = null;
+  private publicStatePromise: Promise<IPublicState>|null = null;
   
   public signAndPublishData(transaction: {type: number, data: any}) {
     return Waves.signAndPublishTransaction(transaction);
   }
   
-  public async getState() {
+  public async getState(): Promise<IPublicState|null> {
     if (!await this.isAvailable()) {
       return null;
     }
@@ -20,15 +20,17 @@ export class KeeperService {
     try {
       this.publicStatePromise = Waves.publicState();
       const state = await this.publicStatePromise;
-      return !!(state && state.account == null);
+      console.log(state);
+      return !(state && state.account == null);
     } catch (e) {
       return false;
     }
   }
-  
 }
 
-interface IState {
+export const UserService = new KeeperService();
+
+export interface IPublicState {
   account: {
     address: string;
     name: string;

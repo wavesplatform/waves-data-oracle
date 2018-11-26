@@ -30,6 +30,7 @@ export class App extends React.Component<App.Props> {
   render() {
     return (
       <div>
+        ASSETS TABLE
       </div>
     );
   }

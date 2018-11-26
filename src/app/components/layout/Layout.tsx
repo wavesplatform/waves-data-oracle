@@ -7,6 +7,8 @@ export default class LayoutComponent extends React.PureComponent {
   public readonly state = { collapsed: true };
   public props: IProps = {};
   
+  protected collapseHandler = () => this.setState({ collapsed: !this.state.collapsed });
+  
   public render(): React.ReactNode {
     return (
       <Layout hasSider={true} style={{ minHeight: '100vh' }}>
@@ -14,7 +16,9 @@ export default class LayoutComponent extends React.PureComponent {
           theme={this.props.theme}
           trigger={true}
           collapsible={true}
-          collapsed={this.props.menuCollapsed}>
+          collapsed={!(!this.state.collapsed && !this.props.menuCollapsed)}
+          onCollapse={this.collapseHandler}
+          reverseArrow={true}>
           {this.props.menu}
         </Sider>
         <Layout>

@@ -61,6 +61,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        include:[/node_modules/],
         use: [
           isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
           {

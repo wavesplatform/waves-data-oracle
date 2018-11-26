@@ -13,6 +13,9 @@ export const UserReducer = handleActions<RootState.UserState, UserModel>(
       }
       return state;
     },
+    [UserActions.Type.SET_USER_ERROR]: (state, action) => {
+      return { ...state, ...action.payload };
+    },
     [UserActions.Type.LOGOUT_USER]: () => {
       return { ...initialState };
     },

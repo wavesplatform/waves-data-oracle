@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Redirect } from 'react-router';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import { UserActions } from 'app/actions';
@@ -17,7 +17,7 @@ export namespace Login {
 }
 
 @connect(
-  (state: RootState, ownProps): Pick<Login.Props, 'user'> => {
+  (state: RootState): Pick<Login.Props, 'user'> => {
     return { user: state.user };
   },
   (dispatch: Dispatch): Pick<Login.Props, 'actions'> => ({
@@ -26,19 +26,23 @@ export namespace Login {
 )
 export class Login extends React.Component<Login.Props> {
   
-  static defaultProps: Partial<Login.Props> = {
-  };
-  
+  private loginHandler = () => this.onLogin();
   
   render() {
     
+    if (!!this.props.user.publicKey) {
+      return <Redirect to={'/assets'}/>
+    }
+    
     const props = {
       menu: <LoginMenu/>,
-      content: <Content/>,
+      content: <Content onLogin={this.loginHandler}/>,
+      options: <div>Options</div>,
       showMenu: true,
       showOptions: true,
       menuCollapsed: false,
       optionsCollapsed: true,
+      theme: 'light' as 'light'
     };
     
     return (
@@ -47,6 +51,11 @@ export class Login extends React.Component<Login.Props> {
       </div>
     );
   }
+  
+  onLogin() {
+    this.props.actions.login();
+  }
+  
 }
 
 const LoginMenu = () => {
@@ -56,7 +65,7 @@ const LoginMenu = () => {
       theme="dark"
     >
       <Menu.Item key="1">
-        <Icon type="login" />
+        <Icon type="login"/>
         <span>Login</span>
       </Menu.Item>
     </Menu>
