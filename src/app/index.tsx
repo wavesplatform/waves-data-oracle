@@ -8,18 +8,18 @@ import { hot } from 'react-hot-loader';
 import { RootState } from 'app/reducers';
 
 interface IProps {
-  user?: RootState.UserState
+  app?: RootState.AppState
 }
 
 const stateToProps = (state: RootState): IProps => {
-  return { user: state.user };
+  return { app: state.app };
 };
 
-const AppComponent: React.StatelessComponent<IProps> = ({ user }: IProps) => {
-  const userModel = { ...user as RootState.UserState };
+const AppComponent: React.StatelessComponent<IProps> = (props) => {
+  const { isAuthenticated } = props.app as RootState.AppState;
   return <Switch>
     <Route path="/login" component={Login}/>
-    <PrivateRoute path="/assets" component={OracleApp} isAuthenticated={!!(userModel.publicKey)}/>
+    <PrivateRoute path="/assets" component={OracleApp} isAuthenticated={isAuthenticated}/>
     <Redirect to='/login'/>
   </Switch>
 };

@@ -1,30 +1,21 @@
-declare const Waves: any;
+declare const Waves: IWavesKeeperOptions;
 
 class KeeperService {
-  
-  private publicStatePromise: Promise<IPublicState>|null = null;
   
   public signAndPublishData(transaction: {type: number, data: any}) {
     return Waves.signAndPublishTransaction(transaction);
   }
   
-  public async getState(): Promise<IPublicState|null> {
-    if (!await this.isAvailable()) {
-      return null;
-    }
-  
-    return await this.publicStatePromise;
+  public getState(): Promise<IPublicState> {
+     return this._getState();
   }
   
-  public async isAvailable(): Promise<boolean> {
-    try {
-      this.publicStatePromise = Waves.publicState();
-      const state = await this.publicStatePromise;
-      console.log(state);
-      return !(state && state.account == null);
-    } catch (e) {
-      return false;
+  protected async _getState() {
+    if (!Waves || !Waves.publicState) {
+      throw { code: 0, message: 'Keeper not available' };
     }
+    
+    return await Waves.publicState();
   }
 }
 
@@ -40,4 +31,15 @@ export interface IPublicState {
   }|null;
   initialized: boolean;
   locked: boolean;
+}
+
+interface IWavesKeeperOptions {
+  publicState: () => Promise<IPublicState>;
+  on: (ev: 'update', cb: (state: IPublicState) => void) => void;
+  signAndPublishTransaction: (transaction: ITransaction) => Promise<string>;
+}
+
+interface ITransaction {
+  type: number;
+  data: any; //TODO transaction interface
 }
