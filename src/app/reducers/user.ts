@@ -3,7 +3,15 @@ import { RootState } from './state';
 import { UserActions } from 'app/actions/user';
 import { UserModel } from 'app/models';
 
-const initialState: RootState.UserState = { address: '', network: '', publicKey: '', error: '' };
+const initialState: RootState.UserState = {
+    address: '',
+    name: '',
+    network: '',
+    publicKey: '',
+    error: '',
+    matcher: '',
+    server: ''
+};
 
 export const UserReducer = handleActions<RootState.UserState, UserModel>(
   {
@@ -12,9 +20,6 @@ export const UserReducer = handleActions<RootState.UserState, UserModel>(
         return { ...state, ...action.payload };
       }
       return state;
-    },
-    [UserActions.Type.SET_USER_ERROR]: (state, action) => {
-      return { ...state, ...action.payload };
     },
     [UserActions.Type.LOGOUT_USER]: () => {
       return { ...initialState };

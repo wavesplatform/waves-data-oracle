@@ -1,12 +1,10 @@
-import Timeout = NodeJS.Timeout;
-
 declare const Waves: IWavesKeeperOptions;
 
 class KeeperService {
     
-    protected hasWavesPromise: Promise<IWavesKeeperOptions>|null = null;
-    protected hasWavesResolve: (waves: IWavesKeeperOptions) => void|null;
-    protected _t: Timeout;
+    protected hasWavesPromise: Promise<IWavesKeeperOptions> | null = null;
+    protected hasWavesResolve: ((waves: IWavesKeeperOptions) => void) | null = null;
+    protected _t: any;
     
     public async getWavesApi() {
         return Waves;
@@ -41,7 +39,9 @@ class KeeperService {
             return;
         }
         
-        this.hasWavesResolve(Waves);
+        if (this.hasWavesResolve) {
+            this.hasWavesResolve(Waves);
+        }
     }
     
     protected async _getState() {
@@ -65,6 +65,10 @@ export interface IPublicState {
     } | null;
     initialized: boolean;
     locked: boolean;
+    network: {
+        matcher: string;
+        server: string;
+    };
 }
 
 interface IWavesKeeperOptions {

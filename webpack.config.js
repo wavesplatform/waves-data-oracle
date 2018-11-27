@@ -106,6 +106,8 @@ module.exports = {
     })
   ],
   devServer: {
+    open: 'Chrome',
+    disableHostCheck: true,
     contentBase: sourcePath,
     hot: true,
     inline: true,
@@ -113,7 +115,7 @@ module.exports = {
       disableDotRule: true
     },
     stats: 'minimal',
-    clientLogLevel: 'warning'
+    clientLogLevel: 'warning',
   },
   // https://webpack.js.org/configuration/devtool/
   devtool: isProduction ? 'hidden-source-map' : 'cheap-module-eval-source-map',

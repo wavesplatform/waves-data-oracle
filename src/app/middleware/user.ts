@@ -6,7 +6,7 @@ import { middlewareFabric } from './utils';
 export const login: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(UserActions.Type.LOGIN_USER)((store) => {
   userService.getState()
     .then(( publicState: IPublicState ) => {
-      const { account, initialized, locked } = publicState;
+      const { account, initialized, locked, network } = publicState;
       
       switch (true) {
         case !initialized:
@@ -17,12 +17,12 @@ export const login: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(User
           throw { code: 3, message: 'Add account to keeper' };
       }
       
-      store.dispatch(UserActions.setUser(account));
+      store.dispatch(UserActions.setUser({ ...account, ...network }));
+      store.dispatch(AppActions.setKeeperError(null));
       store.dispatch(AppActions.setAuthenticated(true));
     })
     .catch((error) => {
       store.dispatch(AppActions.setAuthenticated(false));
       store.dispatch(AppActions.setKeeperError(error));
-      store.dispatch(UserActions.logout());
     });
 });

@@ -1,0 +1,25 @@
+{
+  "errors": {
+    "0": {
+      "message": "Keeper not available",
+      "actionText": "Install Keeper and restart page.",
+      "help": "https://wavesplatform.com/keeper"
+    },
+    "1": {
+      "message": "Keeper not init",
+      "actionText": "Init keeper and add account.",
+      "help": "https://wavesplatform.com/keeper"
+    },
+    "2": {
+      "message": "Keeper is locked",
+      "actionText": "Unlock keeper and try again.",
+      "help": "https://wavesplatform.com/keeper"
+    },
+    "3": {
+      "message": "No active account in keeper",
+      "actionText": "Add account to keeper.",
+      "help": "https://wavesplatform.com/keeper"
+    }
+  }
+
+}
