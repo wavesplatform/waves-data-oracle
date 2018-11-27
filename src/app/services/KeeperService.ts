@@ -19,7 +19,7 @@ class KeeperService {
   }
 }
 
-export const UserService = new KeeperService();
+export const userService = new KeeperService();
 
 export interface IPublicState {
   account: {

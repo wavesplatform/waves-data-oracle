@@ -1,10 +1,10 @@
 import { Middleware, MiddlewareAPI, AnyAction } from 'redux';
 import { UserActions, AppActions } from '../actions';
-import { UserService, IPublicState } from '../services/KeeperService';
+import { userService, IPublicState } from '../services/KeeperService';
 import { middlewareFabric } from './utils';
 
 export const login: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(UserActions.Type.LOGIN_USER)((store) => {
-  UserService.getState()
+  userService.getState()
     .then(( publicState: IPublicState ) => {
       const { account, initialized, locked } = publicState;
       
