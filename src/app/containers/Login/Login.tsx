@@ -13,12 +13,13 @@ export namespace Login {
   export interface Props extends RouteComponentProps<void> {
     actions: UserActions;
     user: RootState.UserState;
+    app: RootState.AppState;
   }
 }
 
 @connect(
-  (state: RootState): Pick<Login.Props, 'user'> => {
-    return { user: state.user };
+  (state: RootState): Pick<Login.Props, 'app'&'user'> => {
+    return { app: state.app, user: state.user };
   },
   (dispatch: Dispatch): Pick<Login.Props, 'actions'> => ({
     actions: bindActionCreators(omit(UserActions, 'Type'), dispatch)
@@ -30,7 +31,7 @@ export class Login extends React.Component<Login.Props> {
   
   render() {
     
-    if (!!this.props.user.publicKey) {
+    if (this.props.app.isAuthenticated) {
       return <Redirect to={'/assets'}/>
     }
     

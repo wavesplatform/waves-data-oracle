@@ -1,6 +1,7 @@
 export const middlewareFabric = <S, A extends IAction>(actionType: any) => (cb: IMiddleCB<S, A>) => (store: S) => (next: INext<A>) => (action: A) => {
   if (action.type === actionType) {
-    cb(store, next, action);
+    return cb(store, next, action);
+  } else {
     next(action);
   }
 };
