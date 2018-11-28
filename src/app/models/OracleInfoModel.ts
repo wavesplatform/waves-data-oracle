@@ -9,4 +9,7 @@ export enum ORACLE_STATUS {
 
 export interface OracleInfoModel extends  IOracleInfo {
     status: ORACLE_STATUS;
+    oracleErrors: { [P in keyof IOracleInfo]?: Error }|null;
 }
+
+
