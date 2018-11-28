@@ -57,13 +57,10 @@ export interface IAssetInfo {
     description: IHash<string>;
 }
 
-export interface IError {
-    key: string;
-    error: Error;
-}
-
 export interface IServiceResponse<T> {
     status: STATUSES;
     data: T,
-    errors: Array<IError>;
+    errors: {
+        [key in keyof T]: Error
+    };
 }
