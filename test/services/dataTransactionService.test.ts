@@ -27,7 +27,7 @@ const EMPTY_ORACLE = {
     description: null
 };
 
-const comparator = get => (a, b) => {
+const comparator = <T, R>(get: (i: T) => R) => (a: T, b: T) => {
     const _a = get(a), _b = get(b);
     return _a > _b ? 1 : _a === _b ? 0 : -1;
 };

@@ -6,6 +6,7 @@ import {
     PATTERNS
 } from '../../src/app/services/dataTransactionService';
 import { replaceAssetID } from '../../src/app/services/dataTransactionService/utils';
+import { IHash } from '../../src/interfaces';
 
 
 function replaceDescriptionLang(key: string, lang: string): string {
@@ -38,10 +39,10 @@ export const generateAsset = (asset: IAssetInfo) => [
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
         value: asset.ticker
     },
-    ...Object.keys(asset.description).map(lang => ({
+    ...Object.keys(asset.description || {}).map(lang => ({
         key: replaceDescriptionLang(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, asset.id), lang),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: asset.description[lang]
+        value: (asset.description as IHash<string>)[lang]
     }))
 ];
 

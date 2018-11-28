@@ -54,17 +54,17 @@ export function setOracleInfo({ info }: ISetOracleInfoParams) {
 
 export function getOracleInfoDataFields(info: IOracleInfo): Array<TField> {
     return [
-        { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name },
-        { key: ORACLE_RESERVED_FIELDS.MAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail },
-        { key: ORACLE_RESERVED_FIELDS.LOGO, type: DATA_TRANSACTION_FIELD_TYPE.BINARY, value: info.logo },
-        { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site },
+        { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name || '' },
+        { key: ORACLE_RESERVED_FIELDS.MAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail || '' },
+        { key: ORACLE_RESERVED_FIELDS.LOGO, type: DATA_TRANSACTION_FIELD_TYPE.BINARY, value: info.logo || '' },
+        { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site || '' },
         {
             key: ORACLE_RESERVED_FIELDS.LANG_LIST,
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: Object.keys(info.description || { [DEFAULT_LANG]: true }).join(',')
         },
         ...Object.keys(info.description || {}).map(lang => ({
-            key: getOracleDescriptionKey(lang), type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.description[lang]
+            key: getOracleDescriptionKey(lang), type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: (info.description as IHash<string>)[lang] || ''
         })) as Array<TField>
     ];
 }
@@ -79,27 +79,27 @@ export function getAssetFields(asset: IAssetInfo): Array<TField> {
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.ticker
+            value: asset.ticker || ''
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-            value: asset.logo
+            value: asset.logo || ''
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.email
+            value: asset.email || ''
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.site
+            value: asset.site || ''
         },
         ...Object.keys(asset.description || {}).map(lang => ({
             key: getDescriptionField(asset.id, lang),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.description[lang]
+            value: (asset.description as IHash<string>)[lang]
         })) as Array<TField>
     ];
 }
