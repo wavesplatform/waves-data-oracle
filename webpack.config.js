@@ -107,6 +107,8 @@ module.exports = {
         })
     ],
     devServer: {
+        open: 'Chrome',
+        disableHostCheck: true,
         contentBase: sourcePath,
         hot: true,
         inline: true,
