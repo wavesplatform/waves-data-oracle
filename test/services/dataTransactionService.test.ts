@@ -1,7 +1,14 @@
-import { getAssets, getOracleInfo, STATUSES } from '../../src/app/services/dataTransactionService';
+import {
+    getAssetFields,
+    getAssets,
+    getOracleInfo,
+    getOracleInfoDataFields,
+    STATUSES
+} from '../../src/app/services/dataTransactionService';
 import * as request from 'superagent';
 import config from './superagent-mock-config';
 import { isEmpty } from '../../src/app/services/dataTransactionService/utils';
+import { ASSET, ORACLE } from './serviceData';
 
 
 const superagentMock = require('superagent-mock')(request, config);
@@ -12,16 +19,6 @@ const wrapResponse = (data: any, errors: object = Object.create(null)) => {
     return { status, data, errors };
 };
 
-const ORACLE_INFO = {
-    name: 'Test Oracle Name',
-    site: 'https://test.oracle.com',
-    mail: 'test@oracle.com',
-    logo: 'logo',
-    description: {
-        en: 'Some oracle en description'
-    }
-};
-
 const EMPTY_ORACLE = {
     name: null,
     site: null,
@@ -30,10 +27,14 @@ const EMPTY_ORACLE = {
     description: null
 };
 
+const comparator = get => (a, b) => {
+    const _a = get(a), _b = get(b);
+    return _a > _b ? 1 : _a === _b ? 0 : -1;
+};
+
 describe('Data transactions service test', () => {
 
     afterAll(() => {
-        console.log('all done')
         superagentMock.unset();
     });
 
@@ -51,34 +52,38 @@ describe('Data transactions service test', () => {
 
         it('Check oracle without lang list', done => {
             getOracleInfo('oracle-info-no-lang').then(data => {
-                expect(data).toEqual(wrapResponse(ORACLE_INFO));
+                expect(data).toEqual(wrapResponse(ORACLE.DATA));
                 done();
             });
         });
 
         it('Check oracle with empty lang list', done => {
             getOracleInfo('oracle-info-empty-lang').then(data => {
-                expect(data).toEqual(wrapResponse(ORACLE_INFO));
+                expect(data).toEqual(wrapResponse(ORACLE.DATA));
                 done();
             });
         });
 
         it('Check oracle with en description', done => {
             getOracleInfo('oracle-info-description-en').then(data => {
-                expect(data).toEqual(wrapResponse(ORACLE_INFO));
+                expect(data).toEqual(wrapResponse(ORACLE.DATA));
                 done();
             });
         });
 
-        it('Wrong field type', () => {
-            return getOracleInfo('oracle-info-binary-name').then(data => {
+        it('Wrong field type', done => {
+            getOracleInfo('oracle-info-binary-name').then(data => {
                 expect(data).toEqual(wrapResponse({
-                    ...ORACLE_INFO,
+                    ...ORACLE.DATA,
                     name: null
                 }, {
                     name: new Error('Wrong field type! Key "oracle_name" is not a "string"!')
                 }));
+                done();
             });
+        });
+        it('Check convert info to data transaction fields', () => {
+            expect(getOracleInfoDataFields(ORACLE.DATA).sort(comparator(i => i.key))).toEqual(ORACLE.FIELDS.sort(comparator(i => i.key)));
         });
     });
 
@@ -141,6 +146,9 @@ describe('Data transactions service test', () => {
                 ]);
                 done();
             });
+        });
+        it('Check convert asset to data transaction fields', () => {
+            expect(getAssetFields(ASSET.DATA).sort(comparator(i => i.key))).toEqual(ASSET.FIELDS.sort(comparator(i => i.key)));
         });
     });
 });

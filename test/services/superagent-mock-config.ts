@@ -1,37 +1,10 @@
-// ./superagent-mock-config.js file
 import {
+    DATA_TRANSACTION_FIELD_TYPE,
+    IAssetInfo,
     ORACLE_ASSET_FIELD_PATTERN,
     ORACLE_RESERVED_FIELDS
-} from '../../src/app/services/dataTransactionService/utils';
-import { DATA_TRANSACTION_FIELD_TYPE, IAssetInfo } from '../../src/app/services/dataTransactionService';
-
-const oracleRequiredFields = [
-    {
-        key: ORACLE_RESERVED_FIELDS.NAME,
-        type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: 'Test Oracle Name'
-    },
-    {
-        key: ORACLE_RESERVED_FIELDS.MAIL,
-        type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: 'test@oracle.com'
-    },
-    {
-        key: ORACLE_RESERVED_FIELDS.SITE,
-        type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: 'https://test.oracle.com'
-    },
-    {
-        key: ORACLE_RESERVED_FIELDS.LOGO,
-        type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-        value: 'logo'
-    },
-    {
-        key: `${ORACLE_RESERVED_FIELDS.DESCRIPTION}_en`,
-        type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: 'Some oracle en description'
-    }
-];
+} from '../../src/app/services/dataTransactionService';
+import { ORACLE } from './serviceData';
 
 const PATTERNS = {
     ASSET_ID: '<ASSET_ID>',
@@ -110,7 +83,7 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => oracleRequiredFields
+        get: () => ORACLE.FIELDS
     },
     {
         /**
@@ -127,7 +100,7 @@ export default [
          * @param data  mixed Data returns by `fixtures` attribute
          */
         get: () => [
-            ...oracleRequiredFields,
+            ...ORACLE.FIELDS,
             {
                 key: ORACLE_RESERVED_FIELDS.LANG_LIST,
                 type: DATA_TRANSACTION_FIELD_TYPE.STRING,
@@ -150,7 +123,7 @@ export default [
          * @param data  mixed Data returns by `fixtures` attribute
          */
         get: () => [
-            ...oracleRequiredFields,
+            ...ORACLE.FIELDS,
             {
                 key: ORACLE_RESERVED_FIELDS.LANG_LIST,
                 type: DATA_TRANSACTION_FIELD_TYPE.STRING,
@@ -173,7 +146,7 @@ export default [
          * @param data  mixed Data returns by `fixtures` attribute
          */
         get: () => [
-            ...oracleRequiredFields.filter(item => item.key !== ORACLE_RESERVED_FIELDS.NAME),
+            ...ORACLE.FIELDS.filter(item => item.key !== ORACLE_RESERVED_FIELDS.NAME),
             {
                 key: ORACLE_RESERVED_FIELDS.NAME,
                 type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
@@ -196,7 +169,7 @@ export default [
          * @param data  mixed Data returns by `fixtures` attribute
          */
         get: () => [
-            ...oracleRequiredFields,
+            ...ORACLE.FIELDS,
             ...generateAsset({
                 id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
                 email: 'test-asset@oracle.com',
@@ -225,7 +198,7 @@ export default [
          * @param data  mixed Data returns by `fixtures` attribute
          */
         get: () => [
-            ...oracleRequiredFields,
+            ...ORACLE.FIELDS,
             ...generateAsset({
                 id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
                 email: 'test-asset@oracle.com',

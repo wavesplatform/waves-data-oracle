@@ -1,31 +1,15 @@
 import { IHash } from '../../../../interfaces';
-import { STATUSES, IServiceResponse, IAssetInfo } from '../';
+import {
+    STATUSES,
+    IServiceResponse,
+    IAssetInfo,
+    TField,
+    ORACLE_RESERVED_FIELDS,
+    ORACLE_ASSET_FIELD_PATTERN, PATTERNS
+} from '../';
 import * as request from 'superagent';
 import { DATA_TRANSACTION_FIELD_TYPE, DEFAULT_LANG } from '../constants';
 
-
-const PATTERNS = {
-    ASSET_ID: '<ASSET_ID>',
-    LANG: '<LANG>'
-};
-
-export const enum ORACLE_RESERVED_FIELDS {
-    NAME = 'oracle_name',
-    SITE = 'oracle_site',
-    LOGO = 'oracle_logo',
-    MAIL = 'oracle_mail',
-    DESCRIPTION = 'oracle_description',
-    LANG_LIST = 'oracle_lang_list'
-}
-
-export const enum ORACLE_ASSET_FIELD_PATTERN {
-    STATUS = 'status_id_<ASSET_ID>',
-    LOGO = 'logo_<ASSET_ID>',
-    DESCRIPTION = 'description_<LANG>_<ASSET_ID>',
-    SITE = 'site_<ASSET_ID>',
-    TICKER = 'tiker_<ASSET_ID>',
-    EMAIL = 'email_<ASSET_ID>'
-}
 
 const NODE_URL = 'https://nodes.wavesplatform.com';
 
@@ -59,7 +43,7 @@ export function getAssetListFromHash(hash: IHash<TField>): Array<IServiceRespons
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, id), 'ticker');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, id), 'email');
         langList.forEach(lang => {
-            const field = getDescriptionField(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, id, lang);
+            const field = getDescriptionField(id, lang);
             api.addToHash('description', lang, hash => getField(hash, field, DATA_TRANSACTION_FIELD_TYPE.STRING));
         });
 
@@ -195,12 +179,12 @@ function getAssetIdFromStatusKey(key: string): string | null {
     return id || null;
 }
 
-function replaceAssetID(key: string, id: string): string {
+export function replaceAssetID(key: string, id: string): string {
     return key.replace(PATTERNS.ASSET_ID, `<${id}>`);
 }
 
-function getDescriptionField(key: string, id: string, lang: string): string {
-    return replaceAssetID(key, id).replace(PATTERNS.LANG, `<${lang}>`);
+export function getDescriptionField(id: string, lang: string): string {
+    return replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, id).replace(PATTERNS.LANG, `<${lang}>`);
 }
 
 export interface ICallback<T> {
@@ -241,36 +225,6 @@ export interface ICreateResponseAPI<R> {
     addBoolean(from: string, to: keyof R): void;
 
     toResponse(): IServiceResponse<R>;
-}
-
-type TField =
-    IDataTransactionFieldString |
-    IDataTransactionFieldNumber |
-    IDataTransactionFieldBoolean |
-    IDataTransactionFieldBinary;
-
-interface IDataTransactionFieldString {
-    type: DATA_TRANSACTION_FIELD_TYPE.STRING;
-    key: string;
-    value: string;
-}
-
-interface IDataTransactionFieldNumber {
-    type: DATA_TRANSACTION_FIELD_TYPE.INTEGER;
-    key: string;
-    value: number;
-}
-
-interface IDataTransactionFieldBoolean {
-    type: DATA_TRANSACTION_FIELD_TYPE.BOOLEAN;
-    key: string;
-    value: boolean;
-}
-
-interface IDataTransactionFieldBinary {
-    type: DATA_TRANSACTION_FIELD_TYPE.BINARY;
-    key: string;
-    value: string;
 }
 
 interface IAddFunction<T> {
