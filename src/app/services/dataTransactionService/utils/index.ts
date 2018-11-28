@@ -1,5 +1,5 @@
 import { IHash } from '../../../../interfaces';
-import { STATUSES, IError, IServiceResponse, IAssetInfo } from '../';
+import { STATUSES, IServiceResponse, IAssetInfo } from '../';
 import * as request from 'superagent';
 import { DATA_TRANSACTION_FIELD_TYPE, DEFAULT_LANG } from '../constants';
 
@@ -88,17 +88,14 @@ export function createResponseHash<T>(hash: IHash<TField>): ICreateResponseAPI<T
     const result = {
         data: Object.create(null),
         status: STATUSES.OK,
-        errors: [] as Array<IError>
+        errors: Object.create(null)
     };
 
     const hashes = Object.create(null);
 
     const addError = (key: string, error: Error) => {
         result.status = STATUSES.ERROR;
-        result.errors.push({
-            key: key,
-            error
-        });
+        result.errors[key] = error;
     };
 
     const api: ICreateResponseAPI<any> = {

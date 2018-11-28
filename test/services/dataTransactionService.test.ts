@@ -4,11 +4,11 @@ import config from './superagent-mock-config';
 import { isEmpty } from '../../src/app/services/dataTransactionService/utils';
 
 
-require('superagent-mock')(request, config);
+const superagentMock = require('superagent-mock')(request, config);
 
-const wrapResponse = (data: any, errors: Array<any> = []) => {
+const wrapResponse = (data: any, errors: object = Object.create(null)) => {
     const isEmptyData = isEmpty(data);
-    const status = errors.length ? STATUSES.ERROR : isEmptyData ? STATUSES.EMPTY : STATUSES.OK;
+    const status = Object.keys(errors).length ? STATUSES.ERROR : isEmptyData ? STATUSES.EMPTY : STATUSES.OK;
     return { status, data, errors };
 };
 
@@ -31,6 +31,10 @@ const EMPTY_ORACLE = {
 };
 
 describe('Data transactions service test', () => {
+
+    afterAll(() => {
+        superagentMock.unset(null);
+    });
 
     it('Check empty function', () => {
         expect(isEmpty(EMPTY_ORACLE)).toBe(true);
@@ -65,18 +69,14 @@ describe('Data transactions service test', () => {
             });
         });
 
-        it('Wrong field type', done => {
-            getOracleInfo('oracle-info-binary-name').then(data => {
+        it('Wrong field type', () => {
+            return getOracleInfo('oracle-info-binary-name').then(data => {
                 expect(data).toEqual(wrapResponse({
                     ...ORACLE_INFO,
                     name: null
-                }, [
-                    {
-                        key: 'name',
-                        error: new Error('Wrong field type! Key "oracle_name" is not a "string"!')
-                    }
-                ]));
-                done();
+                }, {
+                    name: new Error('Wrong field type! Key "oracle_name" is not a "string"!')
+                }));
             });
         });
     });
