@@ -71,7 +71,7 @@
     "superagent-mock": "^3.7.0",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.2.1",
-    "typescript": "^2.9.2",
+    "typescript": "^3.1.6",
     "url-loader": "^1.1.2",
     "webpack": "^4.20.2",
     "webpack-cleanup-plugin": "^0.5.1",

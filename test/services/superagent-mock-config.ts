@@ -5,6 +5,7 @@ import {
     ORACLE_RESERVED_FIELDS
 } from '../../src/app/services/dataTransactionService';
 import { ORACLE } from './serviceData';
+import { IHash } from '../../src/interfaces';
 
 const PATTERNS = {
     ASSET_ID: '<ASSET_ID>',
@@ -45,10 +46,10 @@ const generateAsset = (asset: IAssetInfo) => [
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
         value: asset.ticker
     },
-    ...Object.keys(asset.description).map(lang => ({
+    ...Object.keys(asset.description || {}).map(lang => ({
         key: replaceDescriptionLang(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, asset.id), lang),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: asset.description[lang]
+        value: (asset.description as IHash<string>)[lang]
     }))
 ];
 
