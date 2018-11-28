@@ -48,6 +48,7 @@ export interface IOracleInfo {
 }
 
 export interface IAssetInfo {
+    id: string;
     status: number; // TODO! Add enum
     logo: string;
     site: string;

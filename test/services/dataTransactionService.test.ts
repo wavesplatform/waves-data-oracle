@@ -1,4 +1,4 @@
-import { getOracleInfo, STATUSES } from '../../src/app/services/dataTransactionService';
+import { getAssets, getOracleInfo, STATUSES } from '../../src/app/services/dataTransactionService';
 import * as request from 'superagent';
 import config from './superagent-mock-config';
 import { isEmpty } from '../../src/app/services/dataTransactionService/utils';
@@ -76,6 +76,68 @@ describe('Data transactions service test', () => {
                         error: new Error('Wrong field type! Key "oracle_name" is not a "string"!')
                     }
                 ]));
+                done();
+            });
+        });
+    });
+
+    describe('Assets info', () => {
+        describe('Empty asset list', () => {
+            it('Check empty oracle data', done => {
+                getAssets('no-oracle').then(data => {
+                    expect(data).toEqual([]);
+                    done();
+                });
+            });
+            it('Only oracle info', done => {
+                getAssets('oracle-info-no-lang').then(data => {
+                    expect(data).toEqual([]);
+                    done();
+                });
+            });
+        });
+        it('One asset', done => {
+            getAssets('with-one-asset').then(data => {
+                expect(data).toEqual([wrapResponse({
+                    id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                    email: 'test-asset@oracle.com',
+                    logo: 'asset-logo',
+                    site: 'https://test-asset.com',
+                    status: 1,
+                    ticker: 'TEST',
+                    description: {
+                        en: 'Test asset en description'
+                    }
+                })]);
+                done();
+            });
+        });
+        it('two assets', done => {
+            getAssets('with-two-asset').then(data => {
+                expect(data).toEqual([
+                    wrapResponse({
+                        id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                        email: 'test-asset@oracle.com',
+                        logo: 'asset-logo',
+                        site: 'https://test-asset.com',
+                        status: 1,
+                        ticker: 'TEST',
+                        description: {
+                            en: 'Test asset en description'
+                        }
+                    }),
+                    wrapResponse({
+                        id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
+                        email: 'test-asset@oracle.com',
+                        logo: 'asset-logo',
+                        site: 'https://test-asset.com',
+                        status: 2,
+                        ticker: 'TEST',
+                        description: {
+                            en: 'Test asset en description'
+                        }
+                    })
+                ]);
                 done();
             });
         });
