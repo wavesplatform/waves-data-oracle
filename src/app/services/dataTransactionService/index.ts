@@ -23,8 +23,8 @@ import { data } from 'waves-transactions';
 export * from './constants';
 
 
-export function getOracleInfo(address: string): Promise<IServiceResponse<IOracleInfo>> {
-    return getDataTxFields(address)
+export function getOracleInfo(address: string, server?: string): Promise<IServiceResponse<IOracleInfo>> {
+    return getDataTxFields(address, server)
         .then(toHash('key'))
         .then(hash => {
             const api = createResponseHash<IOracleInfo>(hash);
@@ -42,8 +42,8 @@ export function getOracleInfo(address: string): Promise<IServiceResponse<IOracle
         });
 }
 
-export function getAssets(address: string): Promise<Array<IServiceResponse<IAssetInfo>>> {
-    return getDataTxFields(address)
+export function getAssets(address: string, server?: string): Promise<Array<IServiceResponse<IAssetInfo>>> {
+    return getDataTxFields(address, server)
         .then(toHash('key'))
         .then(getAssetListFromHash);
 }
