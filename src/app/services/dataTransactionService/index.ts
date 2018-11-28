@@ -40,21 +40,21 @@ export function getAssets(address: string): Promise<Array<IServiceResponse<IAsse
 }
 
 export interface IOracleInfo {
-    name: string;
-    site: string;
-    mail: string;
-    description: IHash<string>;
-    logo?: string;
+    name: string | null;
+    site: string | null;
+    mail: string | null;
+    description: IHash<string> | null;
+    logo: string | null;
 }
 
 export interface IAssetInfo {
     id: string;
     status: number; // TODO! Add enum
-    logo: string;
-    site: string;
-    ticker: string;
-    email: string;
-    description: IHash<string>;
+    logo: string | null;
+    site: string | null;
+    ticker: string | null;
+    email: string | null;
+    description: IHash<string> | null;
 }
 
 export interface IServiceResponse<T> {
