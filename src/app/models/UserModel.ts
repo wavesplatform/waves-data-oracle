@@ -6,4 +6,5 @@ export interface UserModel {
     error: string;
     matcher: string;
     server: string;
+    balance: string|number|null;
 }

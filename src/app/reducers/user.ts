@@ -10,7 +10,8 @@ const initialState: RootState.UserState = {
     publicKey: '',
     error: '',
     matcher: '',
-    server: ''
+    server: '',
+    balance: null,
 };
 
 export const UserReducer = handleActions<RootState.UserState, UserModel>(

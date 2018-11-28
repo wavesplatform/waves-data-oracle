@@ -69,9 +69,9 @@ export function getAssetListFromHash(hash: IHash<TField>): Array<IServiceRespons
     return result;
 }
 
-export function getDataTxFields(address: string): Promise<Array<TField>> {
+export function getDataTxFields(address: string, server?: string): Promise<Array<TField>> {
     return new Promise((resolve, reject) =>
-        request.get(`${NODE_URL}/addresses/data/${address}`)
+        request.get(`${server || NODE_URL}/addresses/data/${address}`)
             .then(resolve as any)
             .catch(reject));
 }
