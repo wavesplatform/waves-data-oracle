@@ -52,6 +52,7 @@ export function getAssetListFromHash(hash: IHash<TField>): Array<IServiceRespons
 
         const api = createResponseHash<IAssetInfo>(hash);
 
+        api.put('id', id);
         api.addNumber(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, id), 'status');
         api.addBinary(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, id), 'logo');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, id), 'site');
@@ -192,7 +193,7 @@ function getAssetIdFromStatusKey(key: string): string | null {
     if (key.indexOf(start) !== 0) {
         return null;
     }
-    const id = (key.match(/<(.*+)?>/) || [])[1];
+    const id = (key.match(/<(.+)?>/) || [])[1];
 
     return id || null;
 }
@@ -202,7 +203,7 @@ function replaceAssetID(key: string, id: string): string {
 }
 
 function getDescriptionField(key: string, id: string, lang: string): string {
-    return replaceAssetID(key, id).replace(PATTERNS.LANG, lang);
+    return replaceAssetID(key, id).replace(PATTERNS.LANG, `<${lang}>`);
 }
 
 export interface ICallback<T> {
