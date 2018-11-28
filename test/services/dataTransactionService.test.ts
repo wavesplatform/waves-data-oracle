@@ -33,7 +33,8 @@ const EMPTY_ORACLE = {
 describe('Data transactions service test', () => {
 
     afterAll(() => {
-        superagentMock.unset(null);
+        console.log('all done')
+        superagentMock.unset();
     });
 
     it('Check empty function', () => {
