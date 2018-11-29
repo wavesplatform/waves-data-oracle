@@ -5,7 +5,9 @@ import { RouteComponentProps } from 'react-router';
 import { UserActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
-import { Avatar } from '../../components/avatar';
+import LayoutComponent from 'app/components/layout/Layout';
+import { OracleMenu } from 'app/containers/Menu/Menu';
+
 
 export namespace OracleInfo {
   export interface Props extends RouteComponentProps<void> {
@@ -29,11 +31,13 @@ export class OracleInfo extends React.Component<OracleInfo.Props> {
 
 
   render() {
+    
+    const menu = <OracleMenu/>;
+      const header = <div>Tokens Verify</div>;
+      const content = <div>Form</div>;
+    
     return (
-      <div>
-        ASSETS TABLE
-        <Avatar address={this.props.user.address} size={100}/>
-      </div>
+      <LayoutComponent leftSider={menu} content={content} header={header}/>
     );
   }
 }

@@ -1,59 +1,46 @@
 import * as React from 'react';
 import { Layout } from 'antd';
-const { Header, Sider, Content } = Layout;
+import { If } from 'app/components';
+import './layout.less';
+
+const { Header, Sider, Content, Footer } = Layout;
 
 export default class LayoutComponent extends React.PureComponent {
-  
-  public readonly state = { collapsed: true };
-  public props: IProps = {};
-  
-  protected collapseHandler = () => this.setState({ collapsed: !this.state.collapsed });
-  
-  public render(): React.ReactNode {
-    return (
-      <Layout hasSider={true} style={{ minHeight: '100vh' }}>
-        <Sider
-          theme={this.props.theme}
-          trigger={true}
-          collapsible={true}
-          collapsed={!(!this.state.collapsed && !this.props.menuCollapsed)}
-          onCollapse={this.collapseHandler}
-          reverseArrow={true}>
-          {this.props.menu}
-        </Sider>
-        <Layout>
-          {this.props.header ? <Header style={{ background: '#fff', padding: 0 }}>
-            {this.props.header}
-          </Header>: null}
-          <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-            {this.props.content}
-          </Content>
-        </Layout>
-        <Sider
-          theme={this.props.theme}
-          style={{position: 'absolute', right: 0, top: 0, height: '100%'}}
-          width={'80%'}
-          collapsedWidth={0}
-          trigger={true}
-          collapsible={true}
-          reverseArrow={true}
-          collapsed={this.props.optionsCollapsed}>
-          {this.props.options}
-        </Sider>
-      </Layout>);
-  }
+    
+    readonly props: IProps = Object.create(null);
+    
+    render(): React.ReactNode {
+        
+        const { rightSider, leftSider, header, content, footer } = this.props;
+        
+        return <Layout>
+            <If conditions={leftSider}>
+                <Sider>{leftSider}</Sider>
+            </If>
+            <Layout>
+                <If conditions={header}>
+                    <Header style={{background: '#fff'}}>{header}</Header>
+                </If>
+                
+                <If conditions={content}>
+                    <Content>{content}</Content>
+                </If>
+                
+                <If conditions={footer}>
+                    <Footer>{footer}</Footer>
+                </If>
+            </Layout>
+            <If conditions={rightSider}>
+                <Sider>{rightSider}</Sider>
+            </If>
+        </Layout>;
+    }
 }
 
 interface IProps {
-  menu?: React.ReactNode;
-  menuCollapsed?: boolean;
-  showMenu?: boolean;
-  options?: React.ReactNode;
-  optionsCollapsed?: boolean;
-  showOptions?: boolean;
-  content?: React.ReactNode;
-  header?: React.ReactNode;
-  showHeader?: boolean;
-  theme?: 'light'|'dark';
-  
+    rightSider?: React.ReactNode;
+    header?: React.ReactNode;
+    content?: React.ReactNode;
+    footer?: React.ReactNode;
+    leftSider?: React.ReactNode;
 }
