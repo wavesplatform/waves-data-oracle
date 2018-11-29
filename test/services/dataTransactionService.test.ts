@@ -1,8 +1,12 @@
+///<reference path="../../types/global.d.ts"/>
+
+
 import {
     getAssetFields,
     getAssets,
     getOracleInfo,
     getOracleInfoDataFields,
+    ORACLE_RESERVED_FIELDS, setOracleInfo,
     STATUSES
 } from '../../src/app/services/dataTransactionService';
 import * as request from 'superagent';
@@ -85,43 +89,88 @@ describe('Data transactions service test', () => {
         it('Check convert info to data transaction fields', () => {
             expect(getOracleInfoDataFields(ORACLE.DATA).sort(comparator(i => i.key))).toEqual(ORACLE.FIELDS.sort(comparator(i => i.key)));
         });
-    });
 
-    describe('Assets info', () => {
-        describe('Empty asset list', () => {
-            it('Check empty oracle data', done => {
-                getAssets('no-oracle').then(data => {
-                    expect(data).toEqual([]);
+        it('Check convert partial info to transaction fields', () => {
+            const data = { ...ORACLE.DATA, name: null };
+            const fields = ORACLE.FIELDS.filter(field => field.key !== ORACLE_RESERVED_FIELDS.NAME);
+            expect(getOracleInfoDataFields(data).sort(comparator(i => i.key))).toEqual(fields.sort(comparator(i => i.key)));
+        });
+
+        it('Send oracle info', done => {
+            let dataToSign: any = null;
+
+            global.Waves = {
+                on: ev => null,
+                publicState: () => null,
+                signAndPublishTransaction: data => {
+                    dataToSign = data;
+                    return Promise.resolve('ok');
+                }
+            };
+
+            const timestamp = Date.now();
+
+            setOracleInfo({ info: { ...ORACLE.DATA, logo: null }, timestamp })
+                .then(() => {
+                    expect(dataToSign).toEqual({
+                        'type': 12,
+                        'data': {
+                            'timestamp': timestamp,
+                            'data': [
+                                {
+                                    'key': 'oracle_name',
+                                    'type': 'string',
+                                    'value': 'Test Oracle Name'
+                                },
+                                {
+                                    'key': 'oracle_mail',
+                                    'type': 'string',
+                                    'value': 'test@oracle.com'
+                                },
+                                {
+                                    'key': 'oracle_site',
+                                    'type': 'string',
+                                    'value': 'https://test.oracle.com'
+                                },
+                                {
+                                    'key': 'oracle_lang_list',
+                                    'type': 'string',
+                                    'value': 'en'
+                                },
+                                {
+                                    'key': 'oracle_description_en',
+                                    'type': 'string',
+                                    'value': 'Some oracle en description'
+                                }
+                            ],
+                            'fee': {
+                                'coins': '100000',
+                                'assetId': 'WAVES'
+                            }
+                        }
+                    });
                     done();
                 });
-            });
-            it('Only oracle info', done => {
-                getAssets('oracle-info-no-lang').then(data => {
-                    expect(data).toEqual([]);
-                    done();
+        });
+
+        describe('Assets info', () => {
+            describe('Empty asset list', () => {
+                it('Check empty oracle data', done => {
+                    getAssets('no-oracle').then(data => {
+                        expect(data).toEqual([]);
+                        done();
+                    });
+                });
+                it('Only oracle info', done => {
+                    getAssets('oracle-info-no-lang').then(data => {
+                        expect(data).toEqual([]);
+                        done();
+                    });
                 });
             });
-        });
-        it('One asset', done => {
-            getAssets('with-one-asset').then(data => {
-                expect(data).toEqual([wrapResponse({
-                    id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-                    email: 'test-asset@oracle.com',
-                    logo: 'asset-logo',
-                    site: 'https://test-asset.com',
-                    status: 1,
-                    ticker: 'TEST',
-                    description: {
-                        en: 'Test asset en description'
-                    }
-                })]);
-                done();
-            });
-        });
-        it('two assets', done => {
-            getAssets('with-two-asset').then(data => {
-                expect(data).toEqual([
-                    wrapResponse({
+            it('One asset', done => {
+                getAssets('with-one-asset').then(data => {
+                    expect(data).toEqual([wrapResponse({
                         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
                         email: 'test-asset@oracle.com',
                         logo: 'asset-logo',
@@ -131,24 +180,42 @@ describe('Data transactions service test', () => {
                         description: {
                             en: 'Test asset en description'
                         }
-                    }),
-                    wrapResponse({
-                        id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
-                        email: 'test-asset@oracle.com',
-                        logo: 'asset-logo',
-                        site: 'https://test-asset.com',
-                        status: 2,
-                        ticker: 'TEST',
-                        description: {
-                            en: 'Test asset en description'
-                        }
-                    })
-                ]);
-                done();
+                    })]);
+                    done();
+                });
             });
-        });
-        it('Check convert asset to data transaction fields', () => {
-            expect(getAssetFields(ASSET.DATA).sort(comparator(i => i.key))).toEqual(ASSET.FIELDS.sort(comparator(i => i.key)));
+            it('two assets', done => {
+                getAssets('with-two-asset').then(data => {
+                    expect(data).toEqual([
+                        wrapResponse({
+                            id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                            email: 'test-asset@oracle.com',
+                            logo: 'asset-logo',
+                            site: 'https://test-asset.com',
+                            status: 1,
+                            ticker: 'TEST',
+                            description: {
+                                en: 'Test asset en description'
+                            }
+                        }),
+                        wrapResponse({
+                            id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
+                            email: 'test-asset@oracle.com',
+                            logo: 'asset-logo',
+                            site: 'https://test-asset.com',
+                            status: 2,
+                            ticker: 'TEST',
+                            description: {
+                                en: 'Test asset en description'
+                            }
+                        })
+                    ]);
+                    done();
+                });
+            });
+            it('Check convert asset to data transaction fields', () => {
+                expect(getAssetFields(ASSET.DATA).sort(comparator(i => i.key))).toEqual(ASSET.FIELDS.sort(comparator(i => i.key)));
+            });
         });
     });
 });

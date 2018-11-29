@@ -1,4 +1,5 @@
 import {
+    createDataTxField,
     createResponseHash,
     getAssetListFromHash,
     getDataTxFields,
@@ -11,12 +12,13 @@ import {
 } from './utils';
 import {
     DATA_TRANSACTION_FIELD_TYPE,
-    DEFAULT_LANG,
     FEE_SEED,
-    ORACLE_ASSET_FIELD_PATTERN, ORACLE_RESERVED_FIELDS,
+    ORACLE_ASSET_FIELD_PATTERN,
+    ORACLE_RESERVED_FIELDS,
     STATUSES,
     TField
 } from './constants';
+import { userService } from '../KeeperService';
 import { IHash } from '../../../interfaces';
 import { data } from 'waves-transactions';
 
@@ -48,29 +50,46 @@ export function getAssets(address: string, server?: string): Promise<Array<IServ
         .then(getAssetListFromHash);
 }
 
-export function setOracleInfo({ info }: ISetOracleInfoParams) {
-
+export function setOracleInfo({ info, timestamp }: ISetOracleInfoParams) {
+    const fields = getOracleInfoDataFields(info);
+    const fee = currentFee(fields);
+    return userService.signAndPublishData({
+        type: 12,
+        data: {
+            timestamp: timestamp || Date.now(),
+            data: fields,
+            fee: {
+                coins: fee,
+                assetId: 'WAVES'
+            }
+        } as any
+    });
 }
 
-export function getOracleInfoDataFields(info: IOracleInfo): Array<TField> {
-    return [
-        { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name || '' },
-        { key: ORACLE_RESERVED_FIELDS.MAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail || '' },
-        { key: ORACLE_RESERVED_FIELDS.LOGO, type: DATA_TRANSACTION_FIELD_TYPE.BINARY, value: info.logo || '' },
-        { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site || '' },
-        {
-            key: ORACLE_RESERVED_FIELDS.LANG_LIST,
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: Object.keys(info.description || { [DEFAULT_LANG]: true }).join(',')
-        },
-        ...Object.keys(info.description || {}).map(lang => ({
-            key: getOracleDescriptionKey(lang), type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: (info.description as IHash<string>)[lang] || ''
-        })) as Array<TField>
-    ];
+export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<TField> {
+
+    const fields = [
+        { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name },
+        { key: ORACLE_RESERVED_FIELDS.MAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail },
+        { key: ORACLE_RESERVED_FIELDS.LOGO, type: DATA_TRANSACTION_FIELD_TYPE.BINARY, value: info.logo },
+        { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site }
+    ].filter(field => field.value !== null) as Array<TField>;
+
+    const langList = Object.keys(info.description || {});
+
+    if (langList.length) {
+        const description = info.description as IHash<string>;
+        fields.push(createDataTxField(ORACLE_RESERVED_FIELDS.LANG_LIST, DATA_TRANSACTION_FIELD_TYPE.STRING, langList.join(',')));
+        fields.push(...langList.map(lang => {
+            return createDataTxField(getOracleDescriptionKey(lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]);
+        }));
+    }
+
+    return fields;
 }
 
 export function getAssetFields(asset: IAssetInfo): Array<TField> {
-    return [
+    const fields = [
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.INTEGER,
@@ -79,29 +98,35 @@ export function getAssetFields(asset: IAssetInfo): Array<TField> {
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.ticker || ''
+            value: asset.ticker
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-            value: asset.logo || ''
+            value: asset.logo
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.email || ''
+            value: asset.email
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.site || ''
-        },
-        ...Object.keys(asset.description || {}).map(lang => ({
-            key: getDescriptionField(asset.id, lang),
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: (asset.description as IHash<string>)[lang]
-        })) as Array<TField>
-    ];
+            value: asset.site
+        }
+    ].filter(field => field.value !== null) as Array<TField>;
+
+    const langList = Object.keys(asset.description || {});
+
+    if (langList.length) {
+        const description = asset.description as IHash<string>;
+        langList.forEach(lang => {
+            fields.push(createDataTxField(getDescriptionField(asset.id, lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]));
+        });
+    }
+
+    return fields;
 }
 
 export function currentFee(fields: Array<TField>): string {
@@ -110,11 +135,12 @@ export function currentFee(fields: Array<TField>): string {
 }
 
 export interface ISetOracleInfoParams {
-    info: IOracleInfo;
-    address: string;
-    publicKey: string;
-    networkByte: number;
+    info: Partial<IOracleInfo>;
+    address?: string; // TODO!
+    publicKey?: string; // TODO!
+    networkByte?: number; // TODO!
     nodeUrl?: string;
+    timestamp?: number;
 }
 
 export interface IOracleInfo {
