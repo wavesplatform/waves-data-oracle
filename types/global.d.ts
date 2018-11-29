@@ -31,3 +31,13 @@ declare module 'identity-img' {
     
     export function create(address: string, conf: { size: number }): string;
 }
+
+declare module NodeJS  {
+    interface Global {
+        Waves: {
+            publicState: () => any;
+            on: (ev: 'update', cb: (state: any) => void) => void;
+            signAndPublishTransaction: (transaction: any) => Promise<string>;
+        }
+    }
+}

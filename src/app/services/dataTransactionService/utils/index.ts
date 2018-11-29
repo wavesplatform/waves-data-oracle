@@ -22,6 +22,10 @@ export function getLangList(hash: IHash<TField>): Array<string> {
     }
 }
 
+export function createDataTxField(key: string, type: DATA_TRANSACTION_FIELD_TYPE, value: any): TField {
+    return { key, type, value } as TField;
+}
+
 export function getAssetListFromHash(hash: IHash<TField>): Array<IServiceResponse<IAssetInfo>> {
     const result: Array<IServiceResponse<IAssetInfo>> = [];
     const langList = getLangList(hash);
