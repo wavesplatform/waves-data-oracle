@@ -50,7 +50,7 @@ export function getAssets(address: string, server?: string): Promise<Array<IServ
         .then(getAssetListFromHash);
 }
 
-export function setOracleInfo({ info, timestamp }: ISetOracleInfoParams) {
+export function setOracleInfo(info: IOracleInfo, timestamp?: number) {
     const fields = getOracleInfoDataFields(info);
     const fee = currentFee(fields);
     return userService.signAndPublishData({
@@ -62,7 +62,23 @@ export function setOracleInfo({ info, timestamp }: ISetOracleInfoParams) {
                 coins: fee,
                 assetId: 'WAVES'
             }
-        } as any
+        }
+    });
+}
+
+export function setAssetInfo(asset: Partial<IAssetInfo> & { id: string }, timestamp?: number) {
+    const fields = getAssetFields(asset);
+    const fee = currentFee(fields);
+    return userService.signAndPublishData({
+        type: 12,
+        data: {
+            timestamp: timestamp || Date.now(),
+            data: fields,
+            fee: {
+                coins: fee,
+                assetId: 'WAVES'
+            }
+        }
     });
 }
 
@@ -88,7 +104,7 @@ export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<TFiel
     return fields;
 }
 
-export function getAssetFields(asset: IAssetInfo): Array<TField> {
+export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Array<TField> {
     const fields = [
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, asset.id),
