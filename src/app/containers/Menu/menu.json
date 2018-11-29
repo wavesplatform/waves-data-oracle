@@ -1,0 +1,42 @@
+{
+  "mode": "inline",
+  "theme": "dark",
+  "menu": [
+    {
+      "className": "oracle",
+      "type": "Item",
+      "title": "Oracle",
+      "key": "oracle",
+      "icon": "eye"
+    },
+    {
+      "className": "templates",
+      "type": "SubMenu",
+      "title": "Templates",
+      "toggleSubMenu": true,
+      "icon": "template",
+      "menu": [
+        {
+          "className": "tokens-verify",
+          "type": "Item",
+          "title": "Token verification",
+          "key": "tokens"
+        }
+      ]
+    },
+    {
+      "className": "data-transaction",
+      "type": "Item",
+      "title": "Data transactions",
+      "icon": "data-transaction",
+      "key": "data-transaction"
+    },
+    {
+      "className": "logout",
+      "type": "Item",
+      "title": "Logout",
+      "icon": "logout",
+      "key": "logout"
+    }
+  ]
+}
