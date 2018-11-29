@@ -45,29 +45,21 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [
-                    isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-                    {
-                        loader: 'css-loader',
-                        query: {
-                            modules: true,
-                            sourceMap: !isProduction,
-                            importLoaders: 1,
-                            localIdentName: isProduction ? '[hash:base64:5]' : '[local]__[hash:base64:5]'
-                        }
-                    },
-                    {
-                        loader: 'less-loader' // compiles Less to CSS
+                  MiniCssExtractPlugin.loader,
+                  {
+                    loader: "css-loader",
+                    // options: {
+                    //   sourceMap: true,
+                    //   modules: true,
+                    //   localIdentName: "[local]___[hash:base64:5]"
+                    // }
+                  },
+                  {
+                    loader: "less-loader",
+                    options: {
+                      javascriptEnabled: true
                     }
-                ]
-            },
-            {
-                test: /\.css$/,
-                include: [/node_modules/],
-                use: [
-                    isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-                    {
-                        loader: 'css-loader'
-                    }
+                  }
                 ]
             },
             { test: /\.html$/, use: 'html-loader' },

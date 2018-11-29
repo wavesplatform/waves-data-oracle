@@ -21,7 +21,6 @@ import {
 import { userService } from '../KeeperService';
 import { IHash } from '../../../interfaces';
 import { data } from 'waves-transactions';
-import { SIGN_TYPE } from '@waves/signature-adapter';
 
 export * from './constants';
 
@@ -55,7 +54,7 @@ export function setOracleInfo({ info, timestamp }: ISetOracleInfoParams) {
     const fields = getOracleInfoDataFields(info);
     const fee = currentFee(fields);
     return userService.signAndPublishData({
-        type: SIGN_TYPE.DATA,
+        type: 12,
         data: {
             timestamp: timestamp || Date.now(),
             data: fields,

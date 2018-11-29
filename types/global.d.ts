@@ -11,6 +11,8 @@ declare module '*.scss' {
     export = styles;
 }
 
+declare module '*.less';
+
 declare module '*.styl' {
     const styles: any;
     export = styles;
@@ -28,7 +30,6 @@ type PartialPick<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 
 declare module 'identity-img' {
     export function config(conf: any): void;
-    
     export function create(address: string, conf: { size: number }): string;
 }
 

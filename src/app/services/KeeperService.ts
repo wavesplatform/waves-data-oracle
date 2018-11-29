@@ -1,5 +1,3 @@
-import { TSignData } from '@waves/signature-adapter';
-
 declare const Waves: IWavesKeeperOptions;
 
 class KeeperService {
@@ -7,6 +5,11 @@ class KeeperService {
     protected hasWavesPromise: Promise<IWavesKeeperOptions> | null = null;
     protected hasWavesResolve: ((waves: IWavesKeeperOptions) => void) | null = null;
     protected _t: any;
+
+    constructor() {
+        this._waitWaves();
+    }
+
 
     public async getWavesApi() {
         return Waves;
@@ -22,11 +25,11 @@ class KeeperService {
 
         const Waves = await this.hasWavesPromise;
         const state = await this._getState();
-        Waves.on('update', cb);
+        Waves.on('update', state => cb(state));
         cb(state);
     }
 
-    public signAndPublishData(transaction: TSignData) {
+    public signAndPublishData(transaction: { type: number, data: any}) {
         return Waves.signAndPublishTransaction(transaction);
     }
 
@@ -43,6 +46,8 @@ class KeeperService {
 
         if (this.hasWavesResolve) {
             this.hasWavesResolve(Waves);
+        } else {
+            this.hasWavesPromise = Promise.resolve(<IWavesKeeperOptions>Waves);
         }
     }
 
@@ -76,5 +81,5 @@ export interface IPublicState {
 interface IWavesKeeperOptions {
     publicState: () => Promise<IPublicState>;
     on: (ev: 'update', cb: (state: IPublicState) => void) => void;
-    signAndPublishTransaction: (transaction: TSignData) => Promise<string>;
+    signAndPublishTransaction: (transaction: { type: number, data: any}) => Promise<string>;
 }
