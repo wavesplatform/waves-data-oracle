@@ -7,7 +7,7 @@ import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import { Avatar } from '../../components/avatar';
 
-export namespace App {
+export namespace OracleInfo {
   export interface Props extends RouteComponentProps<void> {
     user: RootState.UserState;
     assets: RootState.AssetsState;
@@ -16,15 +16,15 @@ export namespace App {
 }
 
 @connect(
-  (state: RootState, ownProps): Pick<App.Props, 'user'> => {
+  (state: RootState): Pick<OracleInfo.Props, 'user'> => {
     return { user: state.user };
   },
-  (dispatch: Dispatch): Pick<App.Props, 'actions'> => ({
+  (dispatch: Dispatch): Pick<OracleInfo.Props, 'actions'> => ({
     actions: bindActionCreators(omit(UserActions, 'Type'), dispatch)
   })
 )
-export class App extends React.Component<App.Props> {
-  static defaultProps: Partial<App.Props> = {
+export class OracleInfo extends React.Component<OracleInfo.Props> {
+  static defaultProps: Partial<OracleInfo.Props> = {
   };
 
 

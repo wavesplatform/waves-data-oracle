@@ -5,6 +5,7 @@ export enum ORACLE_STATUS {
     EMPTY = 'EMPTY',
     READY = 'READY',
     HAS_ERROR = 'HAS_ERROR',
+    SERVER_ERROR = 'SERVER_ERROR'
 }
 
 export interface OracleInfoModel extends  IOracleInfo {

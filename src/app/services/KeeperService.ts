@@ -6,6 +6,11 @@ class KeeperService {
     protected hasWavesResolve: ((waves: IWavesKeeperOptions) => void) | null = null;
     protected _t: any;
     
+    constructor() {
+        this._waitWaves();
+    }
+    
+    
     public async getWavesApi() {
         return Waves;
     }
@@ -20,7 +25,7 @@ class KeeperService {
         
         const Waves = await this.hasWavesPromise;
         const state = await this._getState();
-        Waves.on('update', cb);
+        Waves.on('update', state => cb(state));
         cb(state);
     }
     
@@ -41,6 +46,8 @@ class KeeperService {
         
         if (this.hasWavesResolve) {
             this.hasWavesResolve(Waves);
+        } else {
+            this.hasWavesPromise = Promise.resolve(<IWavesKeeperOptions>Waves);
         }
     }
     

@@ -5,9 +5,25 @@ import { RouteComponentProps, Redirect } from 'react-router';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import { UserActions, AppActions } from 'app/actions';
-import { Layout } from '../../components';
 import { Content } from './Content';
-import { Icon, Menu } from 'antd';
+import './login.less';
+import { notification, Row, Col } from 'antd';
+import * as content from './content.json';
+
+const Description: React.StatelessComponent<any> = ({ messageConf }) => {
+    return (
+        <div>
+            <Row>
+                <Col>
+                    <div>{messageConf.actionText}</div>
+                    {messageConf.help ? <div>
+                        <a href={messageConf.help} target='_blank'>more info</a>
+                    </div> : null}
+                </Col>
+            </Row>
+        </div>
+    );
+};
 
 export namespace Login {
     export interface Props extends RouteComponentProps<void> {
@@ -34,45 +50,38 @@ export class Login extends React.Component<Login.Props> {
     
     render() {
         const { app } = this.props;
+        
         if (app.isAuthenticated) {
             return <Redirect to={'/assets'}/>;
         }
         
-        const props = {
-            menu: <LoginMenu/>,
-            content: <Content onLogin={this.loginHandler} app={app}/>,
-            options: <div>Options</div>,
-            showMenu: true,
-            showOptions: true,
-            menuCollapsed: false,
-            optionsCollapsed: true,
-            theme: 'light' as 'light'
-        };
-        
         return (
-            <div>
-                <Layout {...props}/>
+            <div className="login">
+                <Content onLogin={this.loginHandler} app={app}/>
             </div>
         );
     }
     
+    componentWillUpdate(nextProps: Readonly<Login.Props>): void {
+        const { kepperError } = nextProps.app;
+        
+        if (kepperError) {
+            const messageConf = (content as any).errors[kepperError.code];
+            const notifyData = <Description messageConf={messageConf}/>;
+            notification.error({
+                message: messageConf.message,
+                description: notifyData,
+                key: kepperError.code.toString(10)
+            });
+            
+            this.props.actions.setKeeperError(null);
+            return;
+        }
+    }
+    
     onLogin() {
-        this.props.actions.setKeeperError(null);
         this.props.actions.login();
     }
     
 }
 
-const LoginMenu = () => {
-    return <div>
-        <Menu
-            mode="inline"
-            theme="dark"
-        >
-            <Menu.Item key="1">
-                <Icon type="login"/>
-                <span>Login</span>
-            </Menu.Item>
-        </Menu>
-    </div>;
-};

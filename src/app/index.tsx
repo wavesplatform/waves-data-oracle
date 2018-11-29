@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Redirect, Route, Switch, withRouter } from 'react-router';
+import { Redirect, Route, Switch, withRouter,  } from 'react-router';
 import { connect } from 'react-redux';
 import { PrivateRoute } from './components';
-import { App as OracleApp } from 'app/containers/App';
+import { OracleInfo as OracleApp } from 'app/containers/OracleInfo';
 import { Login } from 'app/containers/Login';
 import { hot } from 'react-hot-loader';
 import { RootState } from 'app/reducers';
@@ -21,6 +21,7 @@ const AppComponent: React.StatelessComponent<IProps> = (props, context) => {
   return <Switch>
     <Route path="/login" component={Login}/>
     <PrivateRoute path="/assets" component={OracleApp} isAuthenticated={isAuthenticated}/>
+    <PrivateRoute path="/assets/" component={OracleApp} isAuthenticated={isAuthenticated}/>
     <Redirect to='/login'/>
   </Switch>
 };
