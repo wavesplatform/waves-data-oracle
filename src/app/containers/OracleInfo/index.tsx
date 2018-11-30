@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router';
-import { UserActions } from 'app/actions';
+import { UserActions, OracleInfoActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import LayoutComponent from 'app/components/layout/Layout';
@@ -13,7 +13,7 @@ export namespace OracleInfo {
   export interface Props extends RouteComponentProps<void> {
     user: RootState.UserState;
     assets: RootState.AssetsState;
-    actions: UserActions;
+    actions: UserActions & OracleInfoActions;
   }
 }
 
@@ -22,14 +22,18 @@ export namespace OracleInfo {
     return { user: state.user };
   },
   (dispatch: Dispatch): Pick<OracleInfo.Props, 'actions'> => ({
-    actions: bindActionCreators(omit(UserActions, 'Type'), dispatch)
+    actions: bindActionCreators(omit({ ...UserActions, ...OracleInfoActions }, 'Type'), dispatch)
   })
 )
 export class OracleInfo extends React.Component<OracleInfo.Props> {
   
   static defaultProps: Partial<OracleInfo.Props> = {};
   
-  render() {
+  componentWillMount(): void {
+    this.props.actions.getOracleInfo();
+  }
+    
+    render() {
     
     const menu = <OracleMenu history={this.props.history}/>;
       const header = <div>Tokens Verify</div>;

@@ -12,10 +12,10 @@ import { middlewareFabric } from './utils';
 
 export const getOracleInfo: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.GET_INFO)((store) => {
     const state = store.getState();
-    const { account } = state;
+    const { user } = state;
     
     store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.LOADING));
-    apiGetInfo(account.address, account.server)
+    apiGetInfo(user.address, user.server)
         .then(oracleInfo => {
             const infoData = parseOracleInfoResponse(oracleInfo);
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
