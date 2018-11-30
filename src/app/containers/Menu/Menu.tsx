@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Menu, Icon } from 'antd';
+import { UserCard } from 'app/components'
 import './meny.less';
 import * as menuConfig from './menu.json';
 
@@ -30,7 +31,10 @@ export class OracleMenu extends React.PureComponent<IMenu> {
         
         return (
             <div className="oracle-menu">
-                <div className="title">Oracle</div>
+                <div className="oracle-menu_title">Oracle</div>
+                <div className="oracle-menu_user-card">
+                    <UserCard address={this.props.address} name={this.props.name}/>
+                </div>
                 <Menu
                     selectedKeys={[selected.key || oracle.key]}
                     selectable={true}
@@ -79,5 +83,7 @@ interface IMenuConfig {
 
 interface IMenu {
     onSelect?: (options: any) => void;
-    history?: any
+    history?: any;
+    address?: string;
+    name?: string;
 }

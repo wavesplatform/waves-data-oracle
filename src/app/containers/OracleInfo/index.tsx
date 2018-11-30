@@ -34,8 +34,8 @@ export class OracleInfo extends React.Component<OracleInfo.Props> {
   }
     
     render() {
-    
-    const menu = <OracleMenu history={this.props.history}/>;
+      const { address, name } = this.props.user;
+      const menu = <OracleMenu history={this.props.history} address={address} name={name}/>;
       const header = <div>Tokens Verify</div>;
       const content = <div>Form</div>;
     

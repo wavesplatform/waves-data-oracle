@@ -11,9 +11,9 @@ export default class LayoutComponent extends React.PureComponent<IProps> {
         
         const { rightSider, leftSider, header, content, footer } = this.props;
         
-        return <Layout>
+        return <Layout className="oracle-layout">
             <If conditions={leftSider}>
-                <Sider>{leftSider}</Sider>
+                <Sider width={370} className="oracle-layout_sider-left">{leftSider}</Sider>
             </If>
             <Layout>
                 <If conditions={header}>

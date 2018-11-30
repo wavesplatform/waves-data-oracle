@@ -18,7 +18,7 @@ export const login: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(User
                     throw { code: 3, message: 'Add account to keeper' };
             }
             
-            store.dispatch(UserActions.setUser({ ...account, ...network }));
+            store.dispatch(UserActions.setUser({ ...network, ...account }));
             store.dispatch(AppActions.setAuthenticated(true));
         })
         .catch((error) => {
