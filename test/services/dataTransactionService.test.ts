@@ -110,7 +110,7 @@ describe('Data transactions service test', () => {
 
             const timestamp = Date.now();
 
-            setOracleInfo({ info: { ...ORACLE.DATA, logo: null }, timestamp })
+            setOracleInfo({ ...ORACLE.DATA, logo: null }, timestamp)
                 .then(() => {
                     expect(dataToSign).toEqual({
                         'type': 12,
