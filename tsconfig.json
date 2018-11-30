@@ -15,7 +15,7 @@
     "noUnusedLocals": true,
     "strict": true,
     "outDir": "build",
-    "lib": ["es6", "es7", "dom"],
+    "lib": ["es6", "es7", "dom", "es5", "es2017.object"],
     "baseUrl": "src",
     "paths": {
       "app/*": ["./app/*"]

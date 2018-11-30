@@ -48,11 +48,15 @@ export class Login extends React.Component<Login.Props> {
     
     private loginHandler = () => this.onLogin();
     
+    componentWillMount(): void {
+        this.props.actions.logout();
+    }
+    
     render() {
         const { app } = this.props;
         
         if (app.isAuthenticated) {
-            return <Redirect to={'/assets'}/>;
+            return <Redirect to={'/oracle'}/>;
         }
         
         return (

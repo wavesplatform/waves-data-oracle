@@ -26,13 +26,12 @@ export namespace OracleInfo {
   })
 )
 export class OracleInfo extends React.Component<OracleInfo.Props> {
-  static defaultProps: Partial<OracleInfo.Props> = {
-  };
-
-
+  
+  static defaultProps: Partial<OracleInfo.Props> = {};
+  
   render() {
     
-    const menu = <OracleMenu/>;
+    const menu = <OracleMenu history={this.props.history}/>;
       const header = <div>Tokens Verify</div>;
       const content = <div>Form</div>;
     

@@ -5,9 +5,7 @@ import './layout.less';
 
 const { Header, Sider, Content, Footer } = Layout;
 
-export default class LayoutComponent extends React.PureComponent {
-    
-    readonly props: IProps = Object.create(null);
+export default class LayoutComponent extends React.PureComponent<IProps> {
     
     render(): React.ReactNode {
         

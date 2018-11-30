@@ -1,42 +1,39 @@
 {
   "mode": "inline",
   "theme": "dark",
-  "menu": [
-    {
+  "menu": {
+    "oracle": {
       "className": "oracle",
-      "type": "Item",
       "title": "Oracle",
       "key": "oracle",
-      "icon": "eye"
+      "icon": "eye",
+      "path": "/oracle"
     },
-    {
+    "templates": {
       "className": "templates",
-      "type": "SubMenu",
       "title": "Templates",
-      "toggleSubMenu": true,
-      "icon": "template",
-      "menu": [
-        {
-          "className": "tokens-verify",
-          "type": "Item",
-          "title": "Token verification",
-          "key": "tokens"
-        }
-      ]
+      "icon": "file-text",
+      "key": "templates"
     },
-    {
+    "tokens": {
+      "className": "tokens-verify",
+      "title": "Token verification",
+      "key": "tokens",
+      "path": "/tokens"
+    },
+    "dataTransaction": {
       "className": "data-transaction",
-      "type": "Item",
       "title": "Data transactions",
-      "icon": "data-transaction",
-      "key": "data-transaction"
+      "icon": "code-sandbox",
+      "key": "data-transaction",
+      "path": "/data"
     },
-    {
+    "logout": {
       "className": "logout",
-      "type": "Item",
       "title": "Logout",
       "icon": "logout",
-      "key": "logout"
+      "key": "logout",
+      "path": "/login"
     }
-  ]
+  }
 }
