@@ -192,7 +192,7 @@ export function getDescriptionField(id: string, lang: string): string {
     return replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, id).replace(PATTERNS.LANG, `<${lang}>`);
 }
 
-export function splitLogo(src: string | null): { meta: string | null; logo: string | null } {
+export function splitLogo(src?: string | null): { meta: string | null; logo: string | null } {
     const result = {
         meta: null,
         logo: null
@@ -201,6 +201,10 @@ export function splitLogo(src: string | null): { meta: string | null; logo: stri
 
     if (src == null) {
         return result;
+    }
+
+    if (!src) {
+        return { meta: '', logo: '' };
     }
 
     if (!src.includes(separator)) {

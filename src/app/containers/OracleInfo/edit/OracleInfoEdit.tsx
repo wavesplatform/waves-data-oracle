@@ -41,9 +41,19 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
     };
 
     handleChange = ({ fileList }: { fileList: Array<UploadFile> }) => {
-        const logo = fileList.length ? fileList[0].thumbUrl : '';
-        const oracleInfo = { ...this.state.oracleInfo, logo };
-        this.setState({ fileList, oracleInfo });
+        if (!fileList.length) {
+            const oracleInfo = { ...this.state.oracleInfo, logo: '' };
+            this.setState({ fileList, oracleInfo });
+            return null;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            const logo = reader.result;
+            const oracleInfo = { ...this.state.oracleInfo, logo };
+            this.setState({ oracleInfo });
+        };
+        reader.readAsDataURL(fileList[0].originFileObj as File);
+        this.setState({ fileList });
     };
 
     render() {
@@ -61,6 +71,7 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
                 <h1>Create an oracle</h1>
                 <div className="clearfix">
                     <Upload
+                        accept={'image/*'}
                         className={className}
                         listType="picture-card"
                         fileList={this.state.fileList}

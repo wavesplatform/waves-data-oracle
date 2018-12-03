@@ -100,7 +100,7 @@ export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IData
         { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site }
     ].filter(fieldsFilter);
 
-    const logoData = splitLogo(info.logo || null);
+    const logoData = splitLogo(info.logo);
 
     const logoFields = [
         { key: ORACLE_RESERVED_FIELDS.LOGO, type: DATA_TRANSACTION_FIELD_TYPE.BINARY, value: logoData.logo },
@@ -115,9 +115,11 @@ export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IData
 
     if (langList.length) {
         const description = info.description as IHash<string>;
-        fields.push(createDataTxField(ORACLE_RESERVED_FIELDS.LANG_LIST, DATA_TRANSACTION_FIELD_TYPE.STRING, langList.join(',')));
+
+        // TODO! Fix any
+        fields.push(createDataTxField(ORACLE_RESERVED_FIELDS.LANG_LIST, DATA_TRANSACTION_FIELD_TYPE.STRING, langList.join(',')) as any);
         fields.push(...langList.map(lang => {
-            return createDataTxField(getOracleDescriptionKey(lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]);
+            return createDataTxField(getOracleDescriptionKey(lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]) as any;
         }));
     }
 
