@@ -16,7 +16,7 @@ const stateToProps = (state: RootState): IProps => {
     return { app: state.app, router: state.router };
 };
 
-const AppComponent: React.StatelessComponent<IProps> = (props, context) => {
+const AppComponent: React.StatelessComponent<IProps> = (props) => {
     const { isAuthenticated } = props.app as RootState.AppState;
     return (
         <Switch>

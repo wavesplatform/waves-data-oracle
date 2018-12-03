@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { Route, RouteComponentProps, Switch } from 'react-router';
+import { Redirect, Route, RouteComponentProps, Switch } from 'react-router';
 import { UserActions, OracleInfoActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import LayoutComponent from 'app/components/layout/Layout';
 import { OracleMenu } from 'app/containers/Menu/Menu';
 import { Loading } from './Loading/Loading';
-import { Redirect, Route, Switch } from 'react-router';
 import { OracleInfo as OracleInfoForm } from 'app/containers/OracleInfo/edit/OracleInfoEdit';
+import { OracleTitle } from './OracleTitle/OracleTitle';
 
 
 export namespace OracleInfo {
@@ -38,19 +38,21 @@ export class OracleInfo extends React.Component<OracleInfo.Props> {
 
     render() {
         const { address, name } = this.props.user;
+        const { oracleInfo } = this.props;
         const menu = <OracleMenu history={this.props.history} address={address} name={name}/>;
-        const header = <div>Tokens Verify</div>;
-        const content = <OracleInfoForm user={this.props.user}/>;
+        const header = <OracleTitle status={oracleInfo.status}/>;
     
         return (
             <LayoutComponent leftSider={menu} header={header}>
                 <Switch>
-                    <Route path="/oracle" component={Loading}/>
-                    <Route/>
-                    <Route/>
+                    <Route path="/oracle" exact><Loading status={oracleInfo.status}/></Route>
+                    <Route path="/oracle/edit"><OracleInfoForm/></Route>
+                    <Route path="/oracle/create"><OracleInfoForm/></Route>
+                    <Route path="/oracle/error"><OracleInfoForm/></Route>
+                    <Redirect to="/oracle"/>
                 </Switch>
-                {content}
             </LayoutComponent>
         );
     }
 }
+
