@@ -66,7 +66,12 @@ export const ORACLE = {
         {
             key: ORACLE_RESERVED_FIELDS.LOGO,
             type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-            value: 'logo'
+            value: 'base64:logo'
+        },
+        {
+            key: ORACLE_RESERVED_FIELDS.LOGO_META,
+            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
+            value: 'data:image/png;base64,'
         },
         {
             key: ORACLE_RESERVED_FIELDS.LANG_LIST,
@@ -83,7 +88,7 @@ export const ORACLE = {
         name: 'Test Oracle Name',
         site: 'https://test.oracle.com',
         mail: 'test@oracle.com',
-        logo: 'logo',
+        logo: 'data:image/png;base64,logo',
         description: {
             en: 'Some oracle en description'
         }

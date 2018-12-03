@@ -68,7 +68,7 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => []
+        get: () => ({ body: [] })
     },
     {
         /**
@@ -84,7 +84,7 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => ORACLE.FIELDS
+        get: () => ({ body: ORACLE.FIELDS })
     },
     {
         /**
@@ -100,14 +100,16 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => [
-            ...ORACLE.FIELDS,
-            {
-                key: ORACLE_RESERVED_FIELDS.LANG_LIST,
-                type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-                value: ''
-            }
-        ]
+        get: () => ({
+            body: [
+                ...ORACLE.FIELDS,
+                {
+                    key: ORACLE_RESERVED_FIELDS.LANG_LIST,
+                    type: DATA_TRANSACTION_FIELD_TYPE.STRING,
+                    value: ''
+                }
+            ]
+        })
     },
     {
         /**
@@ -123,14 +125,16 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => [
-            ...ORACLE.FIELDS,
-            {
-                key: ORACLE_RESERVED_FIELDS.LANG_LIST,
-                type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-                value: 'en'
-            }
-        ]
+        get: () => ({
+            body: [
+                ...ORACLE.FIELDS,
+                {
+                    key: ORACLE_RESERVED_FIELDS.LANG_LIST,
+                    type: DATA_TRANSACTION_FIELD_TYPE.STRING,
+                    value: 'en'
+                }
+            ]
+        })
     },
     {
         /**
@@ -146,14 +150,16 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => [
-            ...ORACLE.FIELDS.filter(item => item.key !== ORACLE_RESERVED_FIELDS.NAME),
-            {
-                key: ORACLE_RESERVED_FIELDS.NAME,
-                type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-                value: 'some-data'
-            }
-        ]
+        get: () => ({
+            body: [
+                ...ORACLE.FIELDS.filter(item => item.key !== ORACLE_RESERVED_FIELDS.NAME),
+                {
+                    key: ORACLE_RESERVED_FIELDS.NAME,
+                    type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
+                    value: 'some-data'
+                }
+            ]
+        })
     },
     {
         /**
@@ -169,20 +175,22 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => [
-            ...ORACLE.FIELDS,
-            ...generateAsset({
-                id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-                email: 'test-asset@oracle.com',
-                logo: 'asset-logo',
-                site: 'https://test-asset.com',
-                status: 1,
-                ticker: 'TEST',
-                description: {
-                    en: 'Test asset en description'
-                }
-            })
-        ]
+        get: () => ({
+            body: [
+                ...ORACLE.FIELDS,
+                ...generateAsset({
+                    id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                    email: 'test-asset@oracle.com',
+                    logo: 'asset-logo',
+                    site: 'https://test-asset.com',
+                    status: 1,
+                    ticker: 'TEST',
+                    description: {
+                        en: 'Test asset en description'
+                    }
+                })
+            ]
+        })
     },
     {
         /**
@@ -198,30 +206,32 @@ export default [
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
          */
-        get: () => [
-            ...ORACLE.FIELDS,
-            ...generateAsset({
-                id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
-                email: 'test-asset@oracle.com',
-                logo: 'asset-logo',
-                site: 'https://test-asset.com',
-                status: 1,
-                ticker: 'TEST',
-                description: {
-                    en: 'Test asset en description'
-                }
-            }),
-            ...generateAsset({
-                id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
-                email: 'test-asset@oracle.com',
-                logo: 'asset-logo',
-                site: 'https://test-asset.com',
-                status: 2,
-                ticker: 'TEST',
-                description: {
-                    en: 'Test asset en description'
-                }
-            })
-        ]
+        get: () => ({
+            body: [
+                ...ORACLE.FIELDS,
+                ...generateAsset({
+                    id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                    email: 'test-asset@oracle.com',
+                    logo: 'asset-logo',
+                    site: 'https://test-asset.com',
+                    status: 1,
+                    ticker: 'TEST',
+                    description: {
+                        en: 'Test asset en description'
+                    }
+                }),
+                ...generateAsset({
+                    id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
+                    email: 'test-asset@oracle.com',
+                    logo: 'asset-logo',
+                    site: 'https://test-asset.com',
+                    status: 2,
+                    ticker: 'TEST',
+                    description: {
+                        en: 'Test asset en description'
+                    }
+                })
+            ]
+        })
     }
 ];

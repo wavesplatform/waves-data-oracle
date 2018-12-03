@@ -13,13 +13,14 @@ import { middlewareFabric } from './utils';
 export const getOracleInfo: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.GET_INFO)((store) => {
     const state = store.getState();
     const { user } = state;
-    
+
     store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.LOADING));
     apiGetInfo(user.address, user.server)
         .then(oracleInfo => {
             const infoData = parseOracleInfoResponse(oracleInfo);
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
-        }).catch(() => {
+        }).catch((e) => {
+        console.log(e);
         store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.SERVER_ERROR));
     });
 });
@@ -27,7 +28,7 @@ export const getOracleInfo: Middleware = middlewareFabric<MiddlewareAPI, AnyActi
 
 const parseOracleInfoResponse = (response: IServiceResponse<IOracleInfo>): OracleInfoModel => {
     const { status, data, errors: oracleErrors = null } = response;
-    
+
     switch (status) {
         case STATUSES.EMPTY:
             return { status: ORACLE_STATUS.EMPTY, ...data, oracleErrors };

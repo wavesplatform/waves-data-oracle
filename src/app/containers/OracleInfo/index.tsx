@@ -7,40 +7,41 @@ import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import LayoutComponent from 'app/components/layout/Layout';
 import { OracleMenu } from 'app/containers/Menu/Menu';
+import { OracleInfo as OracleInfoForm } from 'app/containers/OracleInfo/edit/OracleInfoEdit';
 
 
 export namespace OracleInfo {
-  export interface Props extends RouteComponentProps<void> {
-    user: RootState.UserState;
-    assets: RootState.AssetsState;
-    actions: UserActions & OracleInfoActions;
-  }
+    export interface Props extends RouteComponentProps<void> {
+        user: RootState.UserState;
+        actions: UserActions & OracleInfoActions;
+        oracleInfo: RootState.OracleInfoState
+    }
 }
 
 @connect(
-  (state: RootState): Pick<OracleInfo.Props, 'user'> => {
-    return { user: state.user };
-  },
-  (dispatch: Dispatch): Pick<OracleInfo.Props, 'actions'> => ({
-    actions: bindActionCreators(omit({ ...UserActions, ...OracleInfoActions }, 'Type'), dispatch)
-  })
+    (state: RootState): Pick<OracleInfo.Props, 'user' & 'oracleInfo'> => {
+        return { user: state.user, oracleInfo: state.oracleInfo };
+    },
+    (dispatch: Dispatch): Pick<OracleInfo.Props, 'actions'> => ({
+        actions: bindActionCreators(omit({ ...UserActions, ...OracleInfoActions }, 'Type'), dispatch)
+    })
 )
 export class OracleInfo extends React.Component<OracleInfo.Props> {
-  
-  static defaultProps: Partial<OracleInfo.Props> = {};
-  
-  componentWillMount(): void {
-    this.props.actions.getOracleInfo();
-  }
-    
+
+    static defaultProps: Partial<OracleInfo.Props> = {};
+
+    componentWillMount(): void {
+        this.props.actions.getOracleInfo();
+    }
+
     render() {
-      const { address, name } = this.props.user;
-      const menu = <OracleMenu history={this.props.history} address={address} name={name}/>;
-      const header = <div>Tokens Verify</div>;
-      const content = <div>Form</div>;
-    
-    return (
-      <LayoutComponent leftSider={menu} content={content} header={header}/>
-    );
-  }
+        const { address, name } = this.props.user;
+        const menu = <OracleMenu history={this.props.history} address={address} name={name}/>;
+        const header = <div>Tokens Verify</div>;
+        const content = <OracleInfoForm user={this.props.user}/>;
+
+        return (
+            <LayoutComponent leftSider={menu} content={content} header={header}/>
+        );
+    }
 }
