@@ -20,6 +20,7 @@ export const enum ORACLE_RESERVED_FIELDS {
     NAME = 'oracle_name',
     SITE = 'oracle_site',
     LOGO = 'oracle_logo',
+    LOGO_META = 'oracle_logo_meta',
     MAIL = 'oracle_mail',
     DESCRIPTION = 'oracle_description',
     LANG_LIST = 'oracle_lang_list'
@@ -38,32 +39,8 @@ export const FEE_SEED = 'seed for calculate fee';
 
 export const DEFAULT_LANG = 'en';
 
-export type TField =
-    IDataTransactionFieldString |
-    IDataTransactionFieldNumber |
-    IDataTransactionFieldBoolean |
-    IDataTransactionFieldBinary;
-
-export interface IDataTransactionFieldString {
-    type: DATA_TRANSACTION_FIELD_TYPE.STRING;
+export interface IDataTransactionField {
+    type: DATA_TRANSACTION_FIELD_TYPE;
     key: string;
-    value: string;
-}
-
-export interface IDataTransactionFieldNumber {
-    type: DATA_TRANSACTION_FIELD_TYPE.INTEGER;
-    key: string;
-    value: number;
-}
-
-export interface IDataTransactionFieldBoolean {
-    type: DATA_TRANSACTION_FIELD_TYPE.BOOLEAN;
-    key: string;
-    value: boolean;
-}
-
-export interface IDataTransactionFieldBinary {
-    type: DATA_TRANSACTION_FIELD_TYPE.BINARY;
-    key: string;
-    value: string;
+    value: string | boolean | number;
 }

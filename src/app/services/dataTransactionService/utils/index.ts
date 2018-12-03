@@ -3,9 +3,8 @@ import {
     STATUSES,
     IServiceResponse,
     IAssetInfo,
-    TField,
     ORACLE_RESERVED_FIELDS,
-    ORACLE_ASSET_FIELD_PATTERN, PATTERNS
+    ORACLE_ASSET_FIELD_PATTERN, PATTERNS, IDataTransactionField
 } from '../';
 import * as request from 'superagent';
 import { DATA_TRANSACTION_FIELD_TYPE, DEFAULT_LANG } from '../constants';
@@ -13,20 +12,20 @@ import { DATA_TRANSACTION_FIELD_TYPE, DEFAULT_LANG } from '../constants';
 
 const NODE_URL = 'https://nodes.wavesplatform.com';
 
-export function getLangList(hash: IHash<TField>): Array<string> {
+export function getLangList(hash: IHash<IDataTransactionField>): Array<string> {
     const item = hash[ORACLE_RESERVED_FIELDS.LANG_LIST] && hash[ORACLE_RESERVED_FIELDS.LANG_LIST] || null;
     if (!item || item.type !== DATA_TRANSACTION_FIELD_TYPE.STRING || !item.value) {
         return [DEFAULT_LANG];
     } else {
-        return item.value.split(',');
+        return (item.value as string).split(',');
     }
 }
 
-export function createDataTxField(key: string, type: DATA_TRANSACTION_FIELD_TYPE, value: any): TField {
-    return { key, type, value } as TField;
+export function createDataTxField(key: string, type: DATA_TRANSACTION_FIELD_TYPE, value: any): IDataTransactionField {
+    return { key, type, value } as IDataTransactionField;
 }
 
-export function getAssetListFromHash(hash: IHash<TField>): Array<IServiceResponse<IAssetInfo>> {
+export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<IServiceResponse<IAssetInfo>> {
     const result: Array<IServiceResponse<IAssetInfo>> = [];
     const langList = getLangList(hash);
 
@@ -58,10 +57,12 @@ export function getAssetListFromHash(hash: IHash<TField>): Array<IServiceRespons
     return result;
 }
 
-export function getDataTxFields(address: string, server?: string): Promise<Array<TField>> {
+export function getDataTxFields(address: string, server?: string): Promise<Array<IDataTransactionField>> {
+    const url = new URL(server || NODE_URL);
+    url.pathname = `/addresses/data/${address}`;
     return new Promise((resolve, reject) =>
-        request.get(`${server || NODE_URL}/addresses/data/${address}`)
-            .then(resolve as any)
+        request.get(url.toString())
+            .then(response => resolve(response.body))
             .catch(reject));
 }
 
@@ -72,7 +73,7 @@ export function toHash<T extends keyof R, R>(key: T): (list: Array<R>) => IHash<
     }, Object.create(null));
 }
 
-export function createResponseHash<T>(hash: IHash<TField>): ICreateResponseAPI<T> {
+export function createResponseHash<T>(hash: IHash<IDataTransactionField>): ICreateResponseAPI<T> {
     const result = {
         data: Object.create(null),
         status: STATUSES.OK,
@@ -147,12 +148,12 @@ export function createResponseHash<T>(hash: IHash<TField>): ICreateResponseAPI<T
     return api;
 }
 
-export function getField(hash: IHash<TField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.STRING): string | null;
-export function getField(hash: IHash<TField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.BINARY): string | null;
-export function getField(hash: IHash<TField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.BOOLEAN): boolean | null;
-export function getField(hash: IHash<TField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.INTEGER): number | null;
-export function getField(hash: IHash<TField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE): string | boolean | number | null;
-export function getField(hash: IHash<TField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE): any {
+export function getField(hash: IHash<IDataTransactionField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.STRING): string | null;
+export function getField(hash: IHash<IDataTransactionField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.BINARY): string | null;
+export function getField(hash: IHash<IDataTransactionField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.BOOLEAN): boolean | null;
+export function getField(hash: IHash<IDataTransactionField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE.INTEGER): number | null;
+export function getField(hash: IHash<IDataTransactionField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE): string | boolean | number | null;
+export function getField(hash: IHash<IDataTransactionField>, key: string, type: DATA_TRANSACTION_FIELD_TYPE): any {
     const item = hash[key];
     if (!item) {
         return null;
@@ -189,6 +190,32 @@ export function replaceAssetID(key: string, id: string): string {
 
 export function getDescriptionField(id: string, lang: string): string {
     return replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, id).replace(PATTERNS.LANG, `<${lang}>`);
+}
+
+export function splitLogo(src?: string | null): { meta: string | null; logo: string | null } {
+    const result = {
+        meta: null,
+        logo: null
+    };
+    const separator = 'base64,';
+
+    if (src == null) {
+        return result;
+    }
+
+    if (!src) {
+        return { meta: '', logo: '' };
+    }
+
+    if (!src.includes(separator)) {
+        throw new Error('Wrong url format!');
+    }
+
+    const [metaPart, logoPart] = src.split(separator);
+    const meta = metaPart + separator;
+    const logo = `base64:${logoPart}`;
+
+    return { meta, logo };
 }
 
 export interface ICallback<T> {
@@ -232,5 +259,5 @@ export interface ICreateResponseAPI<R> {
 }
 
 interface IAddFunction<T> {
-    (acc: IHash<TField>): T;
+    (acc: IHash<IDataTransactionField>): T;
 }

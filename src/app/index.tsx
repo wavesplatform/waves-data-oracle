@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Redirect, Route, Switch, withRouter,  } from 'react-router';
+import { Redirect, Route, Switch, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { PrivateRoute } from './components';
 import { OracleInfo as OracleApp } from 'app/containers/OracleInfo';
@@ -8,22 +8,24 @@ import { hot } from 'react-hot-loader';
 import { RootState } from 'app/reducers';
 
 interface IProps {
-  app?: RootState.AppState,
-  router?: any,
+    app?: RootState.AppState,
+    router?: any,
 }
 
 const stateToProps = (state: RootState): IProps => {
-  return { app: state.app, router: state.router };
+    return { app: state.app, router: state.router };
 };
 
 const AppComponent: React.StatelessComponent<IProps> = (props, context) => {
-  const { isAuthenticated } = props.app as RootState.AppState;
-  return <Switch>
-    <Route path="/login" component={Login}/>
-    <PrivateRoute path="/oracle" component={OracleApp} isAuthenticated={isAuthenticated}/>
-    <PrivateRoute path="/tokens" component={OracleApp} isAuthenticated={isAuthenticated}/>
-    <Redirect to='/login'/>
-  </Switch>
+    const { isAuthenticated } = props.app as RootState.AppState;
+    return (
+        <Switch>
+            <Route path="/login" component={Login}/>
+            <PrivateRoute path="/oracle" component={OracleApp} isAuthenticated={isAuthenticated}/>
+            <PrivateRoute path="/tokens" component={OracleApp} isAuthenticated={isAuthenticated}/>
+            <Redirect to='/login'/>
+        </Switch>
+    );
 };
 
 export const App = hot(module)(withRouter(connect(stateToProps)(AppComponent) as any));

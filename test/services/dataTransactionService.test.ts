@@ -15,6 +15,9 @@ import { isEmpty } from '../../src/app/services/dataTransactionService/utils';
 import { ASSET, ORACLE } from './serviceData';
 
 
+const { URL } = require('universal-url');
+
+(global as any).URL = URL;
 const superagentMock = require('superagent-mock')(request, config);
 
 const wrapResponse = (data: any, errors: object = Object.create(null)) => {
@@ -110,7 +113,7 @@ describe('Data transactions service test', () => {
 
             const timestamp = Date.now();
 
-            setOracleInfo({ ...ORACLE.DATA, logo: null }, timestamp)
+            setOracleInfo({ ...ORACLE.DATA }, timestamp)
                 .then(() => {
                     expect(dataToSign).toEqual({
                         'type': 12,
@@ -131,6 +134,16 @@ describe('Data transactions service test', () => {
                                     'key': 'oracle_site',
                                     'type': 'string',
                                     'value': 'https://test.oracle.com'
+                                },
+                                {
+                                    'key': 'oracle_logo',
+                                    'type': 'binary',
+                                    'value': 'base64:logo'
+                                },
+                                {
+                                    'key': 'oracle_logo_meta',
+                                    'type': 'string',
+                                    'value': 'data:image/png;base64,'
                                 },
                                 {
                                     'key': 'oracle_lang_list',

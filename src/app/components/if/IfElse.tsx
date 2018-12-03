@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 interface Props {
-    conditions?: any;
+    condition?: any;
 }
 
 export const IfElse: React.StatelessComponent<Props> = (props) => {
-    if (!props.conditions) {
+    if (!props.condition) {
         return <React.Fragment>{props.children}</React.Fragment>;
     }
     return null;

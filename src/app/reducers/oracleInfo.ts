@@ -3,7 +3,7 @@ import { RootState } from './state';
 import { OracleInfoActions } from 'app/actions';
 import { OracleInfoModel, ORACLE_STATUS } from 'app/models';
 
-const initialState: RootState.OracleInfoState = {
+export const oracleInfoInitialState: RootState.OracleInfoState = {
     description: {},
     logo: '',
     name: '',
@@ -23,5 +23,5 @@ export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Parti
         },
     },
     
-    initialState
+    oracleInfoInitialState
 );
