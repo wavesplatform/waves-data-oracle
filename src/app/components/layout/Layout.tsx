@@ -9,7 +9,7 @@ export default class LayoutComponent extends React.PureComponent<IProps> {
     
     render(): React.ReactNode {
         
-        const { rightSider, leftSider, header, content, footer } = this.props;
+        const { rightSider, leftSider, header, footer, children } = this.props;
         
         return <Layout className="oracle-layout">
             <If conditions={leftSider}>
@@ -20,9 +20,7 @@ export default class LayoutComponent extends React.PureComponent<IProps> {
                     <Header style={{background: '#fff'}}>{header}</Header>
                 </If>
                 
-                <If conditions={content}>
-                    <Content>{content}</Content>
-                </If>
+                <Content>{children}</Content>
                 
                 <If conditions={footer}>
                     <Footer>{footer}</Footer>
@@ -38,7 +36,6 @@ export default class LayoutComponent extends React.PureComponent<IProps> {
 interface IProps {
     rightSider?: React.ReactNode;
     header?: React.ReactNode;
-    content?: React.ReactNode;
     footer?: React.ReactNode;
     leftSider?: React.ReactNode;
 }
