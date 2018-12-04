@@ -16,13 +16,12 @@ const stateToProps = (state: RootState): IProps => {
     return { app: state.app, router: state.router };
 };
 
-const AppComponent: React.StatelessComponent<IProps> = (props, context) => {
+const AppComponent: React.StatelessComponent<IProps> = (props) => {
     const { isAuthenticated } = props.app as RootState.AppState;
     return (
         <Switch>
             <Route path="/login" component={Login}/>
             <PrivateRoute path="/oracle" component={OracleApp} isAuthenticated={isAuthenticated}/>
-            <PrivateRoute path="/tokens" component={OracleApp} isAuthenticated={isAuthenticated}/>
             <Redirect to='/login'/>
         </Switch>
     );

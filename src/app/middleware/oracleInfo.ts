@@ -1,16 +1,18 @@
 import { AnyAction, Middleware, MiddlewareAPI } from 'redux';
 import { OracleInfoActions } from '../actions';
-import { ORACLE_STATUS, OracleInfoModel } from 'app/models';
+import { ORACLE_SAVE_STATUS, ORACLE_STATUS, OracleInfoModel } from 'app/models';
 import {
+    setOracleInfo as apiSetOracleInfo,
     getOracleInfo as apiGetInfo,
     IOracleInfo,
     IServiceResponse,
     STATUSES
 } from '../services/dataTransactionService';
-import { middlewareFabric } from './utils';
+import { middlewareFabric as mwF } from './utils';
 
 
-export const getOracleInfo: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.GET_INFO)((store) => {
+export const getOracleInfo: Middleware =
+    mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.GET_INFO)((store) => {
     const state = store.getState();
     const { user } = state;
 
@@ -20,9 +22,20 @@ export const getOracleInfo: Middleware = middlewareFabric<MiddlewareAPI, AnyActi
             const infoData = parseOracleInfoResponse(oracleInfo);
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
         }).catch((e) => {
-        console.log(e);
         store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.SERVER_ERROR));
     });
+});
+
+export const setOracleinfo: Middleware =
+    mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.SAVE_INFO)((store, next, action) => {
+        store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.LOADING));
+        apiSetOracleInfo(action.payload).then(
+            () => {
+                store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.READY));
+            }
+        ).catch(() => {
+            store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.SERVER_ERROR))
+        });
 });
 
 

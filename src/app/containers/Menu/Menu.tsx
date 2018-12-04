@@ -6,11 +6,14 @@ import * as menuConfig from './menu.json';
 
 const { Item, SubMenu } = Menu;
 
-const MenuTitle:React.StatelessComponent<{ title: string, icon: any }> = ({ title, icon = null }) => {
+
+const MenuTitle:React.StatelessComponent<ITitleProps> = ({ title, icon = null }) => {
     return <span>{icon ? <Icon type={icon}/> : null}{title}</span>;
 };
 
-export class OracleMenu extends React.PureComponent<IMenu> {
+export class OracleMenu extends React.PureComponent<IMenu, IMenuState> {
+    
+    readonly state = Object.create(null);
     
     private selectMenuHandle = (params: { key: string }) => {
         const menuItem = (menuConfig as any).menu[params.key];
@@ -19,15 +22,14 @@ export class OracleMenu extends React.PureComponent<IMenu> {
         if (path != null) {
             this.props.history.push(path);
         }
+        
     };
-    
     
     render(): React.ReactNode {
 
-        const { mode, menu, theme }: IMenuConfig = menuConfig as any;
+        const { mode, menu, theme, selectedMenuBypath }: IMenuConfig = menuConfig as any;
         const { oracle, logout, dataTransaction, templates, tokens } = menu;
-        const selected = Object.values(menu)
-            .find(({ path }: any) => path === location.pathname) as any;
+        const menuKey = (selectedMenuBypath as any)[this.props.path] || Object.values(menu) || oracle.key;
         
         return (
             <div className="oracle-menu">
@@ -36,7 +38,7 @@ export class OracleMenu extends React.PureComponent<IMenu> {
                     <UserCard address={this.props.address} name={this.props.name}/>
                 </div>
                 <Menu
-                    selectedKeys={[selected.key || oracle.key]}
+                    selectedKeys={[menuKey]}
                     selectable={true}
                     mode={mode as any}
                     theme={theme as "dark"}
@@ -79,6 +81,7 @@ interface IMenuConfig {
     menu: { [key: string]: IMenuItemConf}
     mode?: string,
     theme?: string,
+    selectedMenuBypath?: Object;
 }
 
 interface IMenu {
@@ -86,4 +89,14 @@ interface IMenu {
     history?: any;
     address?: string;
     name?: string;
+    path: string;
+}
+
+interface ITitleProps {
+    title: string;
+    icon: any;
+}
+
+interface IMenuState {
+    opened: Array<string>;
 }

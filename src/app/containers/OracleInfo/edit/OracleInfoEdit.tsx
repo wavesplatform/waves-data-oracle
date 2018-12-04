@@ -105,11 +105,13 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
     }
 
     static getDerivedStateFromProps(nextProps: OracleInfo.Props, nextState: TState) {
+        
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
             ORACLE_INFO_KEYS.forEach(key => {
                 nextState.oracleInfo[key] = nextProps.oracleInfo[key];
             });
+            
             if (nextState.oracleInfo.logo) {
                 nextState.fileList = [
                     {
