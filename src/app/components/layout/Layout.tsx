@@ -12,23 +12,23 @@ export default class LayoutComponent extends React.PureComponent<IProps> {
         const { rightSider, leftSider, header, content, footer } = this.props;
         
         return <Layout className="oracle-layout">
-            <If conditions={leftSider}>
+            <If condition={leftSider}>
                 <Sider width={370} className="oracle-layout_sider-left">{leftSider}</Sider>
             </If>
             <Layout>
-                <If conditions={header}>
+                <If condition={header}>
                     <Header style={{background: '#fff'}}>{header}</Header>
                 </If>
                 
-                <If conditions={content}>
+                <If condition={content}>
                     <Content>{content}</Content>
                 </If>
                 
-                <If conditions={footer}>
+                <If condition={footer}>
                     <Footer>{footer}</Footer>
                 </If>
             </Layout>
-            <If conditions={rightSider}>
+            <If condition={rightSider}>
                 <Sider>{rightSider}</Sider>
             </If>
         </Layout>;

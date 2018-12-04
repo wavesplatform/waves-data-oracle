@@ -1,36 +1,34 @@
 import { DEFAULT_LANG } from 'app/services/dataTransactionService';
-import { Input } from 'antd';
-import * as React from 'react';
+import { Input } from 'app/components';
+import { Form } from 'app/components/form/Form';
 
 
-const { TextArea } = Input;
-
-
-export const FORM: Array<IOracleEditFormItem> = [
+export const FORM_FIELDS: Array<Form.IFormItem> = [
     {
         title: 'Provider name',
-        tag: Input,
-        field: 'name'
+        mode: Input.INPUT_MODE.INPUT,
+        field: 'name',
+        validator: Form.wrap(
+            Form.validators.required
+        )
     },
     {
         title: 'Link',
-        tag: Input,
-        field: 'site'
+        mode: Input.INPUT_MODE.INPUT,
+        field: 'site',
+        validator: Form.wrap(
+            Form.validators.required
+        )
     },
     {
         title: 'Email',
-        tag: Input,
+        mode: Input.INPUT_MODE.INPUT,
         field: 'mail'
     },
     {
         title: 'About',
-        tag: TextArea,
-        field: `description.${ DEFAULT_LANG }`
+        mode: Input.INPUT_MODE.TEXT_AREA,
+        field: `description.${DEFAULT_LANG}`
     }
 ];
 
-export interface IOracleEditFormItem {
-    title: string;
-    tag: typeof React.Component;
-    field: string;
-}

@@ -2,14 +2,17 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Upload, Icon, Input, Button } from 'antd';
+import { Upload, Icon, Button } from 'antd';
 import classNames from 'classnames';
 import './edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { assocPath, equals, path } from 'ramda';
-import { FORM } from 'app/containers/OracleInfo/edit/oracleEditForm';
+import { FORM_FIELDS } from 'app/containers/OracleInfo/edit/oracleEditForm';
 import { ORACLE_STATUS } from 'app/models';
+import { Input } from 'app/components';
+import { Form } from 'app/components/form/Form';
+import { equals } from 'ramda';
+
 
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
 
@@ -37,7 +40,8 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
     state = {
         fileList: [],
         oracleInfo: Object.create(null),
-        diff: Object.create(null)
+        diff: Object.create(null),
+        errors: Object.create(null)
     };
 
     handleChange = ({ fileList }: { fileList: Array<UploadFile> }) => {
@@ -54,6 +58,10 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
         };
         reader.readAsDataURL(fileList[0].originFileObj as File);
         this.setState({ fileList });
+    };
+
+    onChangeForm = (values: Partial<IOracleInfo>) => {
+        this.setState({ oracleInfo: values });
     };
 
     render() {
@@ -86,27 +94,7 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
                     <span>Address</span>
                     <Input readOnly={true} value={this.props.user.address}/>
                 </div>
-                {FORM.map((item, index) => {
-                    const Tag = item.tag;
-
-                    const onChange = (event: Event) => {
-                        const { value } = event.target as HTMLInputElement;
-                        const info = assocPath(item.field.split('.'), value, this.state.oracleInfo);
-                        this.setState({
-                            oracleInfo: info
-                        });
-
-                    };
-
-                    const value = path(item.field.split('.'), this.state.oracleInfo);
-
-                    return (
-                        <div key={index} className={'row'}>
-                            <span>{item.title}</span>
-                            <Tag value={value} onChange={onChange}/>
-                        </div>
-                    );
-                })}
+                <Form fields={FORM_FIELDS} values={this.state.oracleInfo} onChange={this.onChangeForm}/>
 
                 <Fee {...this.state}/>
 
@@ -155,4 +143,5 @@ type TState = {
     fileList: Array<Partial<UploadFile>>;
     lastPropsStatus?: ORACLE_STATUS;
     diff: Partial<IOracleInfo>;
+    errors: { [key in keyof IOracleInfo]: Array<string> };
 };
