@@ -4,4 +4,5 @@ export interface AppModel {
   kepperError?: { code: number; message: string }|null;
   isAuthenticated: boolean;
   filters: Array<string>;
+  serverError: null|Object;
 }

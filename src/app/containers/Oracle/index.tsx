@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router';
-import { OracleInfoActions, UserActions } from 'app/actions';
+import { AppActions, UserActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import LayoutComponent from 'app/components/layout/Layout';
@@ -20,7 +20,7 @@ import { ORACLE_STATUS } from 'app/models';
 export namespace OracleApp {
     export interface Props extends RouteComponentProps<void> {
         user: RootState.UserState;
-        actions: UserActions & OracleInfoActions;
+        actions: UserActions & AppActions;
         oracleInfo: RootState.OracleInfoState
     }
 }
@@ -30,7 +30,7 @@ export namespace OracleApp {
         return { user: state.user, oracleInfo: state.oracleInfo };
     },
     (dispatch: Dispatch): Pick<OracleApp.Props, 'actions'> => ({
-        actions: bindActionCreators(omit({ ...UserActions, ...OracleInfoActions }, 'Type'), dispatch)
+        actions: bindActionCreators(omit({ ...UserActions, ...AppActions }, 'Type'), dispatch)
     })
 )
 export class OracleApp extends React.Component<OracleApp.Props> {
@@ -39,7 +39,7 @@ export class OracleApp extends React.Component<OracleApp.Props> {
     
     reloadOracleInfo = () => {
         this.props.history.replace('/oracle');
-        this.props.actions.getOracleInfo();
+        this.props.actions.getOracleData();
     };
     
     goToCreateHandler = () => {
@@ -47,7 +47,7 @@ export class OracleApp extends React.Component<OracleApp.Props> {
     };
     
     componentWillMount(): void {
-        this.props.actions.getOracleInfo();
+        this.props.actions.getOracleData();
     }
     
     render() {
