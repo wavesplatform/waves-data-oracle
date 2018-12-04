@@ -8,6 +8,8 @@ import { userService } from 'app/services/KeeperService';
 import { Router } from 'react-router';
 import { App } from './app';
 import './assets/index.less';
+import { equals } from 'ramda';
+
 
 // prepare store
 const history = createBrowserHistory();
@@ -20,7 +22,10 @@ userService.onUpdate((state) => {
         store.dispatch(AppActions.setKeeperError(null));
         store.dispatch(UserActions.logout());
     } else {
-        store.dispatch(UserActions.setUser({ ...network, ...account }))
+        const newUser = { ...user, ...network, ...account };
+        if (!equals(newUser, user)) {
+            store.dispatch(UserActions.setUser(newUser))
+        }
     }
     
 });
