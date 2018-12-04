@@ -19,7 +19,7 @@ export const getOracleInfo: Middleware =
     store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.LOADING));
     apiGetInfo(user.address, user.server)
         .then(oracleInfo => {
-            const infoData = parseOracleInfoResponse(oracleInfo);
+            const infoData = parseOracleInfoResponse(oracleInfo.oracle);
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
         }).catch((e) => {
         store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.SERVER_ERROR));
