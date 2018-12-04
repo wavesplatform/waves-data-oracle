@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { Input } from 'app/components';
-import { IHash } from '../../../interfaces';
 import { assocPath, path } from 'ramda';
 import { ChangeEvent } from 'react';
 import classnames from 'classnames';
 
 
-export class Form<T> extends React.PureComponent<Form.IProps<T>, Form.IState<T>> {
-
-    state = {
+export class Form<T extends Record<string, unknown>> extends React.PureComponent<Form.IProps<T>, Form.IState<T>> {
+    state: Form.IState<T>  = {
         errors: Object.create(null),
         values: Object.create(null)
     };
@@ -26,7 +24,7 @@ export class Form<T> extends React.PureComponent<Form.IProps<T>, Form.IState<T>>
     private _prepareField(field: Form.IFormItem, index: number) {
         // const hasCounter = field.maxBytes || field.maxLength;
         const value = path(field.field.split('.'), this.state.values) as string;
-        const isValid = !this.state.errors[field.field] || !this.state.errors[field.field].length;
+        const isValid = !this.state.errors[field.field] || !this.state.errors[field.field];
         const inputClassName = classnames({ isValid });
 
         const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +33,6 @@ export class Form<T> extends React.PureComponent<Form.IProps<T>, Form.IState<T>>
             this.setState({ values: clone });
             this.props.onChange(clone);
         };
-
-        console.log('key', `form-item-${index}`);
 
         return (
             <div key={`form-item-${index}`} className={'row'}>
@@ -57,7 +53,8 @@ export class Form<T> extends React.PureComponent<Form.IProps<T>, Form.IState<T>>
 
         props.fields.forEach(field => {
             if (field.validator) {
-                const errors = field.validator(props.values[field.field]).filter(Boolean) as Array<string>;
+                const errors = field.validator(props.values[field.field])
+                    .filter(Boolean);
                 clone.errors[field.field] = errors;
             }
 
@@ -68,19 +65,10 @@ export class Form<T> extends React.PureComponent<Form.IProps<T>, Form.IState<T>>
         return clone;
     }
 
-    static wrap(...list: Form.ICallback<string, string | null>[]): Form.ICallback<string, Array<string>> {
-        return (input: string) =>
-            list.reduce((acc: Array<string>, cb) => {
-                const result = cb(input);
-                if (result != null) {
-                    acc.push(result);
-                }
-                return acc;
-            }, []);
-    }
-
-    static toArray<T>(some: T | Array<T>): Array<T> {
-        return Array.isArray(some) ? some : [some];
+    static wrap(...list: Array<ICallback<string, string | null>>): ICallback<string, Array<string>> {
+        const isString = (x: unknown): x is string => Boolean(x);
+        return input => list.map(validate => validate(input))
+            .filter(isString);
     }
 
     static validators = {
@@ -91,14 +79,14 @@ export class Form<T> extends React.PureComponent<Form.IProps<T>, Form.IState<T>>
 
 export namespace Form {
 
-    export interface IProps<T> {
+    export interface IProps<T extends Record<string, unknown>> {
         fields: IFormItem[];
         values: T;
-        onChange: (values: IHash<string>) => any;
+        onChange: ICallback<T, void>;
     }
 
-    export interface IState<T> {
-        errors: IHash<Array<string>>;
+    export interface IState<T extends Record<string, unknown>> {
+        errors: Record<keyof T, Array<string>>;
         values: T;
     }
 
@@ -109,9 +97,5 @@ export namespace Form {
         maxLength?: number;
         maxBytes?: number;
         validator?: ICallback<string, Array<string>>;
-    }
-
-    export interface ICallback<T, R> {
-        (input: T): R;
     }
 }

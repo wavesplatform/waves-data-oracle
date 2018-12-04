@@ -5,7 +5,6 @@ import {
     ORACLE_RESERVED_FIELDS
 } from '../../src/app/services/dataTransactionService';
 import { ORACLE } from './serviceData';
-import { IHash } from '../../src/interfaces';
 
 const PATTERNS = {
     ASSET_ID: '<ASSET_ID>',

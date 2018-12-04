@@ -18,7 +18,6 @@ import {
     STATUSES
 } from './constants';
 import { userService } from '../KeeperService';
-import { IHash } from '../../../interfaces';
 import { data } from 'waves-transactions';
 
 export * from './constants';
@@ -92,7 +91,7 @@ export function setAssetInfo(asset: Partial<IAssetInfo> & { id: string }, timest
 
 export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IDataTransactionField> {
 
-    const fieldsFilter = <T extends { value: any }>(field: T) => field.value != null;
+    const fieldsFilter = <T extends { value: unknown }>(field: T) => field.value != null;
 
     const fields = [
         { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name },
@@ -114,13 +113,17 @@ export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IData
     const langList = Object.keys(info.description || {});
 
     if (langList.length) {
-        const description = info.description as IHash<string>;
+        const description = info.description as Record<string, string>;
 
-        // TODO! Fix any
-        fields.push(createDataTxField(ORACLE_RESERVED_FIELDS.LANG_LIST, DATA_TRANSACTION_FIELD_TYPE.STRING, langList.join(',')) as any);
+        fields.push({
+            key: ORACLE_RESERVED_FIELDS.LANG_LIST,
+            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
+            value: langList.join(',')
+        });
+
         fields.push(...langList.map(lang => {
             return createDataTxField(getOracleDescriptionKey(lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]) as any;
-        }));
+        }).filter(fieldsFilter));
     }
 
     return fields as Array<IDataTransactionField>;
@@ -185,7 +188,7 @@ export interface IOracleInfo {
     name: string | null;
     site: string | null;
     mail: string | null;
-    description: IHash<string> | null;
+    description: Record<string, string> | null;
     logo: string | null;
 }
 

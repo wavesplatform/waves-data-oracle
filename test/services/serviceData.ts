@@ -6,7 +6,6 @@ import {
     PATTERNS
 } from '../../src/app/services/dataTransactionService';
 import { replaceAssetID } from '../../src/app/services/dataTransactionService/utils';
-import { IHash } from '../../src/interfaces';
 
 
 function replaceDescriptionLang(key: string, lang: string): string {

@@ -2,14 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Upload, Icon, Button } from 'antd';
-import classNames from 'classnames';
+import { Button } from 'antd';
 import './edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { FORM_FIELDS } from 'app/containers/OracleInfo/edit/oracleEditForm';
 import { ORACLE_STATUS } from 'app/models';
-import { Input } from 'app/components';
+import { Input, Logo } from 'app/components';
 import { Form } from 'app/components/form/Form';
 import { equals } from 'ramda';
 
@@ -65,36 +64,23 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
     };
 
     render() {
-        const className = classNames('border-round');
-
-        const addLogoButton = (
-            <div>
-                <Icon type="plus"/>
-                <div className="ant-upload-text">Upload</div>
-            </div>
-        );
 
         return (
             <div>
                 <h1>Create an oracle</h1>
-                <div className="clearfix">
-                    <Upload
-                        accept={'image/*'}
-                        className={className}
-                        listType="picture-card"
-                        fileList={this.state.fileList}
-                        beforeUpload={() => false}
-                        onChange={this.handleChange}
-                        showUploadList={{ showPreviewIcon: false }}
-                    >
-                        {!this.state.fileList.length ? addLogoButton : null}
-                    </Upload>
-                </div>
+
+                <Logo value={this.state.oracleInfo.logo}
+                      validate={Logo.validators.size(20)}
+                      onChange={this._onChangeLogo}/>
+
                 <div className={'row'}>
                     <span>Address</span>
                     <Input readOnly={true} value={this.props.user.address}/>
                 </div>
-                <Form fields={FORM_FIELDS} values={this.state.oracleInfo} onChange={this.onChangeForm}/>
+
+                <Form fields={FORM_FIELDS}
+                      values={this.state.oracleInfo}
+                      onChange={this.onChangeForm}/>
 
                 <Fee {...this.state}/>
 
@@ -104,14 +90,18 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
         );
     }
 
+    private _onChangeLogo = (logo: string | null) => {
+        this.setState({ oracleInfo: { ...this.state.oracleInfo, logo } });
+    };
+
     static getDerivedStateFromProps(nextProps: OracleInfo.Props, nextState: TState) {
-        
+
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
             ORACLE_INFO_KEYS.forEach(key => {
                 nextState.oracleInfo[key] = nextProps.oracleInfo[key];
             });
-            
+
             if (nextState.oracleInfo.logo) {
                 nextState.fileList = [
                     {

@@ -23,6 +23,15 @@ declare module '*.sass' {
     export = styles;
 }
 
+interface IHash<T> {
+    [key: string]: T;
+}
+
+interface ICallback<T, R> {
+    (data: T): R;
+}
+
+
 // Omit type https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-377567046
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 type PartialPick<T, K extends keyof T> = Partial<T> & Pick<T, K>;
@@ -30,10 +39,11 @@ type PartialPick<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 
 declare module 'identity-img' {
     export function config(conf: any): void;
+
     export function create(address: string, conf: { size: number }): string;
 }
 
-declare module NodeJS  {
+declare module NodeJS {
     interface Global {
         Waves: {
             publicState: () => any;

@@ -31,7 +31,7 @@ export const enum ORACLE_ASSET_FIELD_PATTERN {
     LOGO = 'logo_<ASSET_ID>',
     DESCRIPTION = 'description_<LANG>_<ASSET_ID>',
     SITE = 'site_<ASSET_ID>',
-    TICKER = 'tiker_<ASSET_ID>',
+    TICKER = 'ticker_<ASSET_ID>',
     EMAIL = 'email_<ASSET_ID>'
 }
 

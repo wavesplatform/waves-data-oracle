@@ -1,4 +1,3 @@
-import { IHash } from '../../../../interfaces';
 import {
     STATUSES,
     IServiceResponse,
