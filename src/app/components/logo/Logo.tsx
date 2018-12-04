@@ -41,6 +41,8 @@ export class Logo extends React.PureComponent<Logo.IProps, Logo.IState> {
             </div>
         );
 
+        const errors = this._getErrors();
+
         return (
             <div className={'logo'}>
                 <Upload
@@ -54,8 +56,17 @@ export class Logo extends React.PureComponent<Logo.IProps, Logo.IState> {
                 >
                     {!this.state.fileList.length ? addLogoButton : null}
                 </Upload>
+                {errors}
             </div>
         );
+    }
+
+    private _getErrors() {
+        return this.state.errors.map((error, index) => (
+            <div key={`logo-error-${index}`} className={'logo-error'}>
+                {error}
+            </div>
+        ));
     }
 
     static getDerivedStateFromProps(props: Logo.IProps, state: Logo.IState): Logo.IState {

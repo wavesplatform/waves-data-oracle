@@ -3,7 +3,7 @@ import { OracleInfoActions } from '../actions';
 import { ORACLE_SAVE_STATUS, ORACLE_STATUS, OracleInfoModel } from 'app/models';
 import {
     setOracleInfo as apiSetOracleInfo,
-    getOracleInfo as apiGetInfo,
+    getOracleData as apiGetInfo,
     IOracleInfo,
     IServiceResponse,
     STATUSES
@@ -19,7 +19,7 @@ export const getOracleInfo: Middleware =
     store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.LOADING));
     apiGetInfo(user.address, user.server)
         .then(oracleInfo => {
-            const infoData = parseOracleInfoResponse(oracleInfo);
+            const infoData = parseOracleInfoResponse(oracleInfo.oracle);
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
         }).catch((e) => {
         store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.SERVER_ERROR));
