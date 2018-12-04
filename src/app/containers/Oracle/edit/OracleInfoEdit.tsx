@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import './edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { FORM_FIELDS } from 'app/containers/OracleInfo/edit/oracleEditForm';
+import { FORM_FIELDS } from 'app/containers/Oracle/edit/oracleEditForm';
 import { ORACLE_STATUS } from 'app/models';
 import { Input, Logo } from 'app/components';
 import { Form } from 'app/components/form/Form';

@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { Redirect, Route, RouteComponentProps, Switch } from 'react-router';
+import { Route, RouteComponentProps, Switch } from 'react-router';
 import { UserActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
-import LayoutComponent from 'app/components/layout/Layout';
 import { OracleMenu } from 'app/containers/Menu/Menu';
 //import { ConditionRouter } from 'app/components/router/ConditionRouter';
 
@@ -28,22 +27,15 @@ export namespace Tokens {
 )
 export class Tokens extends React.Component<Tokens.Props> {
     
-    static defaultProps: Partial<Tokens.Props> = {};
-    
-    componentWillMount(): void {
-        //this.props.actions.getOracleInfo();
-    }
-    
     render() {
+        const component = () => <div>test</div>;
+        
         return (
-            <LayoutComponent leftSider={this.props.menu}>
-                <Switch>
-                    <Route path="/oracle/tokens" exact>
-                        <div>Tokens form</div>
-                    </Route>
-                    <Redirect to="/oracle/tokens"/>
-                </Switch>
-            </LayoutComponent>
+            <Switch>
+                <Route path="/oracle/tokens" exact component={component}/>
+                <Route path="/oracle/tokens/create" exact component={component}/>
+                <Route path="/oracle/tokens:assetId" component={component}/>
+            </Switch>
         );
     }
 }
