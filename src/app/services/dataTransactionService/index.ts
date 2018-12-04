@@ -1,12 +1,9 @@
 import {
     createDataTxField,
-    createResponseHash,
     getAssetListFromHash,
     getDataTxFields,
     getDescriptionField,
-    getField,
-    getLangList,
-    getOracleDescriptionKey,
+    getOracleDescriptionKey, getOracleInfoFromHash,
     replaceAssetID, splitLogo,
     toHash
 } from './utils';
@@ -23,43 +20,23 @@ import { data } from 'waves-transactions';
 export * from './constants';
 
 
-export function getOracleInfo(address: string, server?: string): Promise<IServiceResponse<IOracleInfo>> {
+export function getOracleData(address: string, server?: string): Promise<IOracleData> {
     return getDataTxFields(address, server)
         .then(toHash('key'))
         .then(hash => {
-            const api = createResponseHash<IOracleInfo>(hash);
 
-            api.addString(ORACLE_RESERVED_FIELDS.NAME, 'name');
-            api.addString(ORACLE_RESERVED_FIELDS.SITE, 'site');
-            api.addString(ORACLE_RESERVED_FIELDS.MAIL, 'mail');
-            api.readBinary(ORACLE_RESERVED_FIELDS.LOGO, logo => {
-                const withoutPrefix = logo && logo.replace('base64:', '') || '';
-                api.readString(ORACLE_RESERVED_FIELDS.LOGO_META, meta => {
-                    if (logo && meta) {
-                        api.put('logo', `${meta}${withoutPrefix}`);
-                    } else {
-                        api.put('logo', null);
-                    }
-                });
-            });
-            getLangList(hash).forEach(lang => {
-                const dataKey = getOracleDescriptionKey(lang);
-                api.addToHash('description', lang, hash => getField(hash, dataKey, DATA_TRANSACTION_FIELD_TYPE.STRING));
-            });
+            const oracle = getOracleInfoFromHash(hash);
+            const assets = getAssetListFromHash(hash);
 
-            return api.toResponse();
+            return { oracle, assets };
         });
 }
 
-export function getAssets(address: string, server?: string): Promise<Array<IServiceResponse<IAssetInfo>>> {
-    return getDataTxFields(address, server)
-        .then(toHash('key'))
-        .then(getAssetListFromHash);
-}
-
 export function setOracleInfo(info: IOracleInfo, timestamp?: number) {
+
     const fields = getOracleInfoDataFields(info);
     const fee = currentFee(fields);
+
     return userService.signAndPublishData({
         type: 12,
         data: {
@@ -182,6 +159,11 @@ export interface ISetOracleInfoParams {
     networkByte?: number; // TODO!
     nodeUrl?: string;
     timestamp?: number;
+}
+
+export interface IOracleData {
+    oracle: IServiceResponse<IOracleInfo>;
+    assets: Array<IServiceResponse<IAssetInfo>>;
 }
 
 export interface IOracleInfo {

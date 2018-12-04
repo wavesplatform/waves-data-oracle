@@ -3,8 +3,7 @@
 
 import {
     getAssetFields,
-    getAssets,
-    getOracleInfo,
+    getOracleData,
     getOracleInfoDataFields,
     ORACLE_RESERVED_FIELDS, setOracleInfo,
     STATUSES
@@ -51,36 +50,36 @@ describe('Data transactions service test', () => {
 
     describe('Oracle info', () => {
         it('Check empty oracle data', done => {
-            getOracleInfo('no-oracle').then(data => {
-                expect(data).toEqual(wrapResponse(EMPTY_ORACLE));
+            getOracleData('no-oracle').then(data => {
+                expect(data.oracle).toEqual(wrapResponse(EMPTY_ORACLE));
                 done();
             });
         });
 
         it('Check oracle without lang list', done => {
-            getOracleInfo('oracle-info-no-lang').then(data => {
-                expect(data).toEqual(wrapResponse(ORACLE.DATA));
+            getOracleData('oracle-info-no-lang').then(data => {
+                expect(data.oracle).toEqual(wrapResponse(ORACLE.DATA));
                 done();
             });
         });
 
         it('Check oracle with empty lang list', done => {
-            getOracleInfo('oracle-info-empty-lang').then(data => {
-                expect(data).toEqual(wrapResponse(ORACLE.DATA));
+            getOracleData('oracle-info-empty-lang').then(data => {
+                expect(data.oracle).toEqual(wrapResponse(ORACLE.DATA));
                 done();
             });
         });
 
         it('Check oracle with en description', done => {
-            getOracleInfo('oracle-info-description-en').then(data => {
-                expect(data).toEqual(wrapResponse(ORACLE.DATA));
+            getOracleData('oracle-info-description-en').then(data => {
+                expect(data.oracle).toEqual(wrapResponse(ORACLE.DATA));
                 done();
             });
         });
 
         it('Wrong field type', done => {
-            getOracleInfo('oracle-info-binary-name').then(data => {
-                expect(data).toEqual(wrapResponse({
+            getOracleData('oracle-info-binary-name').then(data => {
+                expect(data.oracle).toEqual(wrapResponse({
                     ...ORACLE.DATA,
                     name: null
                 }, {
@@ -169,21 +168,21 @@ describe('Data transactions service test', () => {
         describe('Assets info', () => {
             describe('Empty asset list', () => {
                 it('Check empty oracle data', done => {
-                    getAssets('no-oracle').then(data => {
-                        expect(data).toEqual([]);
+                    getOracleData('no-oracle').then(data => {
+                        expect(data.assets).toEqual([]);
                         done();
                     });
                 });
                 it('Only oracle info', done => {
-                    getAssets('oracle-info-no-lang').then(data => {
-                        expect(data).toEqual([]);
+                    getOracleData('oracle-info-no-lang').then(data => {
+                        expect(data.assets).toEqual([]);
                         done();
                     });
                 });
             });
             it('One asset', done => {
-                getAssets('with-one-asset').then(data => {
-                    expect(data).toEqual([wrapResponse({
+                getOracleData('with-one-asset').then(data => {
+                    expect(data.assets).toEqual([wrapResponse({
                         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
                         email: 'test-asset@oracle.com',
                         logo: 'asset-logo',
@@ -198,8 +197,8 @@ describe('Data transactions service test', () => {
                 });
             });
             it('two assets', done => {
-                getAssets('with-two-asset').then(data => {
-                    expect(data).toEqual([
+                getOracleData('with-two-asset').then(data => {
+                    expect(data.assets).toEqual([
                         wrapResponse({
                             id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
                             email: 'test-asset@oracle.com',

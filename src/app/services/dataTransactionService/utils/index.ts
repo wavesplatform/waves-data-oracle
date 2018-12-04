@@ -3,7 +3,7 @@ import {
     IServiceResponse,
     IAssetInfo,
     ORACLE_RESERVED_FIELDS,
-    ORACLE_ASSET_FIELD_PATTERN, PATTERNS, IDataTransactionField
+    ORACLE_ASSET_FIELD_PATTERN, PATTERNS, IDataTransactionField, IOracleInfo
 } from '../';
 import * as request from 'superagent';
 import { DATA_TRANSACTION_FIELD_TYPE, DEFAULT_LANG } from '../constants';
@@ -22,6 +22,31 @@ export function getLangList(hash: IHash<IDataTransactionField>): Array<string> {
 
 export function createDataTxField(key: string, type: DATA_TRANSACTION_FIELD_TYPE, value: any): IDataTransactionField {
     return { key, type, value } as IDataTransactionField;
+}
+
+export function getOracleInfoFromHash(hash: IHash<IDataTransactionField>): IServiceResponse<IOracleInfo> {
+    const api = createResponseHash<IOracleInfo>(hash);
+
+    api.addString(ORACLE_RESERVED_FIELDS.NAME, 'name');
+    api.addString(ORACLE_RESERVED_FIELDS.SITE, 'site');
+    api.addString(ORACLE_RESERVED_FIELDS.MAIL, 'mail');
+    api.readBinary(ORACLE_RESERVED_FIELDS.LOGO, logo => {
+        const withoutPrefix = logo && logo.replace('base64:', '') || '';
+        api.readString(ORACLE_RESERVED_FIELDS.LOGO_META, meta => {
+            if (logo && meta) {
+                api.put('logo', `${meta}${withoutPrefix}`);
+            } else {
+                api.put('logo', null);
+            }
+        });
+    });
+
+    getLangList(hash).forEach(lang => {
+        const dataKey = getOracleDescriptionKey(lang);
+        api.addToHash('description', lang, hash => getField(hash, dataKey, DATA_TRANSACTION_FIELD_TYPE.STRING));
+    });
+
+    return api.toResponse();
 }
 
 export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<IServiceResponse<IAssetInfo>> {
