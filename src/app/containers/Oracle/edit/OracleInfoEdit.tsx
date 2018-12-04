@@ -18,7 +18,7 @@ const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Arra
 export namespace OracleInfo {
     export interface Props {
         user: RootState.UserState;
-        assets: RootState.AssetsState;
+        tokens: RootState.TokensState;
         actions: null;
         oracleInfo: RootState.OracleInfoState;
     }
@@ -99,7 +99,7 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
             ORACLE_INFO_KEYS.forEach(key => {
-                nextState.oracleInfo[key] = nextProps.oracleInfo[key];
+                nextState.oracleInfo[key] = nextProps.oracleInfo.content[key];
             });
 
             if (nextState.oracleInfo.logo) {
@@ -113,7 +113,7 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
         }
 
         ORACLE_INFO_KEYS.forEach(key => {
-            if (equals(nextState.oracleInfo[key], nextProps.oracleInfo[key])) {
+            if (equals(nextState.oracleInfo[key], nextProps.oracleInfo.content[key])) {
                 delete nextState.diff[key];
             } else {
                 nextState.diff[key] = nextState.oracleInfo[key];

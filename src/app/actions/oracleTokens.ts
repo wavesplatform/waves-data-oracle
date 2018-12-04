@@ -2,18 +2,18 @@ import { createAction } from 'redux-actions';
 
 export namespace OracleTokensActions {
   export enum Type {
-    GET_INFO = 'GET_INFO',
-    SAVE_INFO = 'SAVE_INFO',
+    GET_TOKENS = 'GET_TOKENS',
+    SAVE_TOKEN = 'SAVE_TOKEN',
     SET_STATUS = 'SET_STATUS',
     SET_SAVE_STATUS = 'SET_SAVE_STATUS',
-    SET_INFO = 'SET_INFO',
+    SET_TOKENS = 'SET_TOKENS',
   }
   
-  export const getTokens = createAction(Type.GET_INFO);
-  export const saveToken = createAction(Type.SAVE_INFO);
+  export const getTokens = createAction(Type.GET_TOKENS);
+  export const saveToken = createAction(Type.SAVE_TOKEN);
   export const setTokenStatus = createAction(Type.SET_STATUS);
   export const setSaveTokenStatus = createAction(Type.SET_SAVE_STATUS);
-  export const setOracleTokens = createAction(Type.SET_INFO);
+  export const setOracleTokens = createAction(Type.SET_TOKENS);
 
 }
 

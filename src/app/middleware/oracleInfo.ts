@@ -3,7 +3,7 @@ import { OracleInfoActions } from '../actions';
 import { ORACLE_SAVE_STATUS, ORACLE_STATUS, OracleInfoModel } from 'app/models';
 import {
     setOracleInfo as apiSetOracleInfo,
-    getOracleInfo as apiGetInfo,
+    getOracleData as apiGetInfo,
     IOracleInfo,
     IServiceResponse,
     STATUSES

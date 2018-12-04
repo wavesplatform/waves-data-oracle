@@ -1,31 +1,26 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
 import { OracleTokensActions } from 'app/actions';
-import { OracleInfoModel, ORACLE_STATUS } from 'app/models';
+import { TokensModel, TOKENS_STATUS} from 'app/models';
 
-export const oracleInfoInitialState: RootState.OracleInfoState = {
-    description: {},
-    logo: '',
-    name: '',
-    site: '',
-    mail: '',
-    status: ORACLE_STATUS.LOADING,
+export const assetsInitState: RootState.TokensState = {
+    content: [],
+    status: TOKENS_STATUS.LOADING,
     saveStatus: null,
-    oracleErrors: {},
 };
 
-export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Partial<OracleInfoModel>>(
+export const TokensReducer = handleActions<RootState.TokensState, Partial<TokensModel>>(
     {
-        [OracleInfoActions.Type.SET_INFO]: (state, action) => {
-            return <OracleInfoModel>{ ...state, ...action.payload };
+        [OracleTokensActions.Type.SET_TOKENS]: (state, action) => {
+            return <TokensModel>{ ...state, ...action.payload };
         },
-        [OracleInfoActions.Type.SET_STATUS]: (state, action) => {
-            return <OracleInfoModel>{ ...state, status: action.payload };
+        [OracleTokensActions.Type.SET_STATUS]: (state, action) => {
+            return <TokensModel>{ ...state, status: action.payload };
         },
-        [OracleInfoActions.Type.SET_SAVE_STATUS]: (state, action) => {
-            return <OracleInfoModel>{ ...state, saveStatus: action.payload };
+        [OracleTokensActions.Type.SET_SAVE_STATUS]: (state, action) => {
+            return <TokensModel>{ ...state, saveStatus: action.payload };
         },
     },
     
-    oracleInfoInitialState
+    assetsInitState
 );
