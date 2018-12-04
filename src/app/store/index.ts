@@ -1,6 +1,6 @@
 import { Store, createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { logger, login, logout, getOracleInfo } from 'app/middleware';
+import { logger, login, logout, getOracleInfo, setOracleinfo } from 'app/middleware';
 import { RootState, rootReducer } from 'app/reducers';
 
 export function configureStore(initialState?: RootState): Store<RootState> {
@@ -8,7 +8,8 @@ export function configureStore(initialState?: RootState): Store<RootState> {
         logger,
         login,
         logout,
-        getOracleInfo
+        getOracleInfo,
+        setOracleinfo
     );
     
     if (process.env.NODE_ENV !== 'production') {

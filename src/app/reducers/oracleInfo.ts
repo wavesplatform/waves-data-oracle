@@ -10,6 +10,7 @@ export const oracleInfoInitialState: RootState.OracleInfoState = {
     site: '',
     mail: '',
     status: ORACLE_STATUS.LOADING,
+    saveStatus: null,
     oracleErrors: {},
 };
 
@@ -20,6 +21,9 @@ export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Parti
         },
         [OracleInfoActions.Type.SET_STATUS]: (state, action) => {
             return <OracleInfoModel>{ ...state, status: action.payload };
+        },
+        [OracleInfoActions.Type.SET_SAVE_STATUS]: (state, action) => {
+            return <OracleInfoModel>{ ...state, saveStatus: action.payload };
         },
     },
     
