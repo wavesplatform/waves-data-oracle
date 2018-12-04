@@ -1,6 +1,16 @@
 {
   "mode": "inline",
   "theme": "dark",
+  "selectedMenuBypath": {
+    "/": "oracle",
+    "/oracle": "oracle",
+    "/oracle/empty": "oracle",
+    "/oracle/edit": "oracle",
+    "/oracle/create": "oracle",
+    "/oracle/error": "oracle",
+    "/oracle/tokens": "tokens",
+    "/oracle/data": "data-transaction"
+  },
   "menu": {
     "oracle": {
       "className": "oracle",
@@ -19,14 +29,15 @@
       "className": "tokens-verify",
       "title": "Token verification",
       "key": "tokens",
-      "path": "/tokens"
+      "path": "/oracle/tokens",
+      "openKey": ["templates"]
     },
     "dataTransaction": {
       "className": "data-transaction",
       "title": "Data transactions",
       "icon": "code-sandbox",
       "key": "data-transaction",
-      "path": "/data"
+      "path": "/oracle/data"
     },
     "logout": {
       "className": "logout",

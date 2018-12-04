@@ -15,10 +15,12 @@ const store = configureStore();
 
 userService.onUpdate((state) => {
     const { user } = store.getState();
-    const { account, locked, initialized } = state;
+    const { account, locked, initialized, network } = state;
     if (locked || !initialized || !account || (user.address && user.address !== account.address)) {
         store.dispatch(AppActions.setKeeperError(null));
         store.dispatch(UserActions.logout());
+    } else {
+        store.dispatch(UserActions.setUser({ ...network, ...account }))
     }
     
 });

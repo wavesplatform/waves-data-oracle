@@ -19,7 +19,7 @@ export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Parti
             return <OracleInfoModel>{ ...state, ...action.payload };
         },
         [OracleInfoActions.Type.SET_STATUS]: (state, action) => {
-            return <OracleInfoModel>{ ...state, ...action.payload };
+            return <OracleInfoModel>{ ...state, status: action.payload };
         },
     },
     

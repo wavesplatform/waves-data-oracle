@@ -8,6 +8,7 @@ export const Loading: React.StatelessComponent<IProps> = ({ tip, size, status })
     
     switch (status) {
         case ORACLE_STATUS.EMPTY:
+            return <Redirect to={'/oracle/empty'}/>;
         case ORACLE_STATUS.HAS_ERROR:
             return <Redirect to={'/oracle/create'}/>;
         case ORACLE_STATUS.READY:

@@ -4,7 +4,7 @@ import { StatelessComponent } from 'react';
 
 interface Props extends RouteProps {
   isAuthenticated: boolean;
-  component: any;
+  component?: any;
 }
 
 export const PrivateRoute: StatelessComponent<Props> = ({ component: Component, isAuthenticated, children, ...rest }) => (

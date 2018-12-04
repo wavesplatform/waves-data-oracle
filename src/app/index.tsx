@@ -22,7 +22,6 @@ const AppComponent: React.StatelessComponent<IProps> = (props) => {
         <Switch>
             <Route path="/login" component={Login}/>
             <PrivateRoute path="/oracle" component={OracleApp} isAuthenticated={isAuthenticated}/>
-            <PrivateRoute path="/tokens" component={OracleApp} isAuthenticated={isAuthenticated}/>
             <Redirect to='/login'/>
         </Switch>
     );
