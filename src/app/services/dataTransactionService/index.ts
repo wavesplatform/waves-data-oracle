@@ -154,10 +154,6 @@ export function currentFee(fields: Array<IDataTransactionField>): string {
 
 export interface ISetOracleInfoParams {
     info: Partial<IOracleInfo>;
-    address?: string; // TODO!
-    publicKey?: string; // TODO!
-    networkByte?: number; // TODO!
-    nodeUrl?: string;
     timestamp?: number;
 }
 
@@ -176,12 +172,12 @@ export interface IOracleInfo {
 
 export interface IAssetInfo {
     id: string;
-    status: number; // TODO! Add enum
+    status?: number; // TODO! Add enum
     logo: string | null;
     site: string | null;
     ticker: string | null;
     email: string | null;
-    description: IHash<string> | null;
+    description: Record<string, string> | null;
 }
 
 export interface IServiceResponse<T> {

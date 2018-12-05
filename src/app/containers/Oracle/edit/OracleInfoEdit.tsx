@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import './edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { FORM_FIELDS } from 'app/containers/OracleInfo/edit/oracleEditForm';
+import { FORM_FIELDS } from 'app/containers/Oracle/edit/oracleEditForm';
 import { ORACLE_STATUS } from 'app/models';
 import { Input, Logo } from 'app/components';
 import { Form } from 'app/components/form/Form';
@@ -19,7 +19,7 @@ export namespace OracleInfo {
 
     export interface IProps {
         user: RootState.UserState;
-        assets: RootState.AssetsState;
+        tokens: RootState.TokensState;
         actions: null;
         oracleInfo: RootState.OracleInfoState;
     }
@@ -106,7 +106,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
             ORACLE_INFO_KEYS.forEach(key => {
-                nextState.oracleInfo[key] = nextProps.oracleInfo[key];
+                nextState.oracleInfo[key] = nextProps.oracleInfo.content[key];
             });
 
             if (nextState.oracleInfo.logo) {
@@ -120,7 +120,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         }
 
         ORACLE_INFO_KEYS.forEach(key => {
-            if (equals(nextState.oracleInfo[key], nextProps.oracleInfo[key])) {
+            if (equals(nextState.oracleInfo[key], nextProps.oracleInfo.content[key])) {
                 delete nextState.diff[key];
             } else {
                 nextState.diff[key] = nextState.oracleInfo[key];

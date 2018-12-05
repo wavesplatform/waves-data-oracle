@@ -2,44 +2,44 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router';
-import { OracleInfoActions, UserActions } from 'app/actions';
+import { AppActions, UserActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import LayoutComponent from 'app/components/layout/Layout';
 import { ConditionRouter } from 'app/components/router/ConditionRouter';
 import { OracleMenu } from 'app/containers/Menu/Menu';
 import { Loading } from './Loading/Loading';
-import { OracleInfo as OracleInfoForm } from 'app/containers/OracleInfo/edit/OracleInfoEdit';
-import { Tokens } from 'app/containers/Tokens';
+import { OracleInfo as OracleInfoForm } from 'app/containers/Oracle/edit/OracleInfoEdit';
+import { Tokens } from 'app/containers/Oracle/Tokens';
 import { OracleTitle } from './OracleTitle/OracleTitle';
 import { ErrorContent } from './ErrorContent/ErrorContent';
 import { EmptyContent } from './EmptyContent/EmptyContent';
 import { ORACLE_STATUS } from 'app/models';
 
 
-export namespace OracleInfo {
+export namespace OracleApp {
     export interface Props extends RouteComponentProps<void> {
         user: RootState.UserState;
-        actions: UserActions & OracleInfoActions;
+        actions: UserActions & AppActions;
         oracleInfo: RootState.OracleInfoState
     }
 }
 
 @connect(
-    (state: RootState): Pick<OracleInfo.Props, 'user' & 'oracleInfo'> => {
+    (state: RootState): Pick<OracleApp.Props, 'user' & 'oracleInfo'> => {
         return { user: state.user, oracleInfo: state.oracleInfo };
     },
-    (dispatch: Dispatch): Pick<OracleInfo.Props, 'actions'> => ({
-        actions: bindActionCreators(omit({ ...UserActions, ...OracleInfoActions }, 'Type'), dispatch)
+    (dispatch: Dispatch): Pick<OracleApp.Props, 'actions'> => ({
+        actions: bindActionCreators(omit({ ...UserActions, ...AppActions }, 'Type'), dispatch)
     })
 )
-export class OracleInfo extends React.Component<OracleInfo.Props> {
+export class OracleApp extends React.Component<OracleApp.Props> {
     
-    static defaultProps: Partial<OracleInfo.Props> = {};
+    static defaultProps: Partial<OracleApp.Props> = {};
     
     reloadOracleInfo = () => {
         this.props.history.replace('/oracle');
-        this.props.actions.getOracleInfo();
+        this.props.actions.getOracleData();
     };
     
     goToCreateHandler = () => {
@@ -47,7 +47,7 @@ export class OracleInfo extends React.Component<OracleInfo.Props> {
     };
     
     componentWillMount(): void {
-        this.props.actions.getOracleInfo();
+        this.props.actions.getOracleData();
     }
     
     render() {

@@ -4,11 +4,13 @@ import { OracleInfoActions } from 'app/actions';
 import { OracleInfoModel, ORACLE_STATUS } from 'app/models';
 
 export const oracleInfoInitialState: RootState.OracleInfoState = {
-    description: {},
-    logo: '',
-    name: '',
-    site: '',
-    mail: '',
+    content: {
+        description: {},
+        logo: '',
+        name: '',
+        site: '',
+        mail: '',
+    },
     status: ORACLE_STATUS.LOADING,
     saveStatus: null,
     oracleErrors: {},

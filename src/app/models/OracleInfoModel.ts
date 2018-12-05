@@ -15,7 +15,8 @@ export enum ORACLE_SAVE_STATUS {
 }
 
 
-export interface OracleInfoModel extends  IOracleInfo {
+export interface OracleInfoModel {
+    content: IOracleInfo;
     status: ORACLE_STATUS;
     saveStatus?: ORACLE_SAVE_STATUS|null,
     oracleErrors: { [P in keyof IOracleInfo]?: Error }|null;
