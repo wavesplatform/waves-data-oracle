@@ -172,6 +172,7 @@ export interface IOracleInfo {
 
 export interface IAssetInfo {
     id: string;
+    name: string;
     status?: number; // TODO! Add enum
     logo: string | null;
     site: string | null;

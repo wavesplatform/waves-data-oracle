@@ -5,7 +5,7 @@ import { Route, RouteComponentProps, Switch } from 'react-router';
 import { UserActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
-import { OracleMenu } from 'app/containers/Menu/Menu';
+import TokensList from './TokensList';
 //import { ConditionRouter } from 'app/components/router/ConditionRouter';
 
 
@@ -13,7 +13,6 @@ export namespace Tokens {
     export interface Props extends RouteComponentProps<void> {
         user: RootState.UserState;
         actions: UserActions;
-        menu: OracleMenu;
     }
 }
 
@@ -32,7 +31,7 @@ export class Tokens extends React.Component<Tokens.Props> {
         
         return (
             <Switch>
-                <Route path="/oracle/tokens" exact component={component}/>
+                <Route path="/oracle/tokens" exact component={TokensList}/>
                 <Route path="/oracle/tokens/create" exact component={component}/>
                 <Route path="/oracle/tokens:assetId" component={component}/>
             </Switch>
