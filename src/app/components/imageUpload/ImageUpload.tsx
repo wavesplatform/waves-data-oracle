@@ -1,27 +1,24 @@
 import * as React from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 import { Icon, Upload } from 'antd';
+import { If } from 'app/components';
+import './edit-form.less';
 
 
-export class Logo extends React.PureComponent<Logo.IProps, Logo.IState> {
+export class ImageUpload extends React.PureComponent<ImageUpload.IProps, ImageUpload.IState> {
 
     state = {
+        touched: false,
         fileList: [],
         errors: []
     };
 
     private _handleChange = ({ fileList }: { fileList: Array<UploadFile> }) => {
+        const touched = true;
+
         if (!fileList.length) {
             this.props.onChange(null);
-            this.setState({ fileList: [] });
-            return null;
-        }
-
-        const errors = [this.props.validate(fileList[0].originFileObj as File)]
-            .filter(Boolean) as Array<string>;
-
-        if (errors.length) {
-            this.setState({ errors });
+            this.setState({ touched });
             return null;
         }
 
@@ -30,7 +27,7 @@ export class Logo extends React.PureComponent<Logo.IProps, Logo.IState> {
             this.props.onChange(reader.result as string);
         };
         reader.readAsDataURL(fileList[0].originFileObj as File);
-        this.setState({ fileList });
+        this.setState({ touched });
     };
 
     public render() {
@@ -44,7 +41,7 @@ export class Logo extends React.PureComponent<Logo.IProps, Logo.IState> {
         const errors = this._getErrors();
 
         return (
-            <div className={'logo'}>
+            <div className={'image-upload'}>
                 <Upload
                     accept={'image/*'}
                     className={'border-round'}
@@ -56,55 +53,54 @@ export class Logo extends React.PureComponent<Logo.IProps, Logo.IState> {
                 >
                     {!this.state.fileList.length ? addLogoButton : null}
                 </Upload>
-                {errors}
+                <If condition={this.state.touched}>
+                    {errors}
+                </If>
             </div>
         );
     }
 
     private _getErrors() {
-        return this.state.errors.map((error, index) => (
-            <div key={`logo-error-${index}`} className={'logo-error'}>
+        return (this.props.errors || []).map((error, index) => (
+            <div key={`image-upload-error-${index}`} className={'logo-error'}>
                 {error}
             </div>
         ));
     }
 
-    static getDerivedStateFromProps(props: Logo.IProps, state: Logo.IState): Logo.IState {
+    static getDerivedStateFromProps(props: ImageUpload.IProps, state: ImageUpload.IState): ImageUpload.IState {
         if (props.value) {
             state = {
                 ...state, fileList: [
                     {
-                        uid: `t-${Date.now()}`,
+                        uid: 't-image',
                         thumbUrl: props.value
                     }
                 ]
+            };
+        } else {
+            state = {
+                ...state, fileList: []
             };
         }
 
         return state;
     }
 
-    static validators: Logo.IValidators = {
-        size: size => file => file.size > size ? 'Превышен максимальный размер картинки!' : null
-    };
-
 }
 
-export namespace Logo {
+export namespace ImageUpload {
 
     export interface IProps {
         onChange: ICallback<string | null, void>;
-        validate: ICallback<File, string | null>;
         value: string | null;
+        errors?: Array<string> | null;
     }
 
     export interface IState {
+        touched: boolean;
         fileList: Array<Partial<UploadFile>>;
         errors: Array<string>;
-    }
-
-    export interface IValidators {
-        size(size: number): ICallback<File, string | null>;
     }
 
 }

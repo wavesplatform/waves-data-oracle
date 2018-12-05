@@ -3,4 +3,4 @@ export { PrivateRoute } from './router/PrivateRouter';
 export * from './if';
 export * from './userCard/UserCard';
 export * from './input/Input';
-export * from './logo/Logo';
+export * from './imageUpload/ImageUpload';

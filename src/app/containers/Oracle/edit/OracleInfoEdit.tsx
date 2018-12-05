@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
 import { Button } from 'antd';
-import './edit-form.less';
+import '../../../components/imageUpload/edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { FORM_FIELDS } from 'app/containers/Oracle/edit/oracleEditForm';
 import { ORACLE_STATUS } from 'app/models';
-import { Input, Logo } from 'app/components';
 import { Form } from 'app/components/form/Form';
 import { equals } from 'ramda';
 
@@ -25,6 +24,7 @@ export namespace OracleInfo {
     }
 
     export interface IState {
+        isValid: boolean;
         oracleInfo: Partial<IOracleInfo>;
         fileList: Array<Partial<UploadFile>>;
         lastPropsStatus?: ORACLE_STATUS;
@@ -45,60 +45,35 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     static defaultProps: Partial<OracleInfo.IProps> = {};
 
     state = {
+        isValid: false,
         fileList: [],
         oracleInfo: Object.create(null),
         diff: Object.create(null)
     };
 
-    handleChange = ({ fileList }: { fileList: Array<UploadFile> }) => {
-        if (!fileList.length) {
-            const oracleInfo = { ...this.state.oracleInfo, logo: '' };
-            this.setState({ fileList, oracleInfo });
-            return null;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-            const logo = reader.result;
-            const oracleInfo = { ...this.state.oracleInfo, logo };
-            this.setState({ oracleInfo });
-        };
-        reader.readAsDataURL(fileList[0].originFileObj as File);
-        this.setState({ fileList });
-    };
-
-    onChangeForm = (values: Partial<IOracleInfo>) => {
-        this.setState({ oracleInfo: values });
-    };
-
     render() {
+        const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
 
         return (
             <div>
                 <h1>Create an oracle</h1>
 
-                <Logo value={this.state.oracleInfo.logo}
-                      validate={Logo.validators.size(20)}
-                      onChange={this._onChangeLogo}/>
-
-                <div className={'row'}>
-                    <span>Address</span>
-                    <Input readOnly={true} value={this.props.user.address}/>
-                </div>
-
                 <Form fields={FORM_FIELDS}
-                      values={this.state.oracleInfo}
-                      onChange={this.onChangeForm}/>
+                      values={{ ...this.state.oracleInfo, address: this.props.user.address }}
+                      readonly={{ address: true }}
+                      onChange={this._onChangeForm}/>
 
                 <Fee {...this.state}/>
 
                 <Button type="primary">Cancel</Button>
-                <Button type="primary" disabled={!Object.keys(this.state.diff).length}>Save</Button>
+                <Button type="primary"
+                        disabled={disableSave}>Save</Button>
             </div>
         );
     }
 
-    private _onChangeLogo = (logo: string | null) => {
-        this.setState({ oracleInfo: { ...this.state.oracleInfo, logo } });
+    private _onChangeForm = (data: Form.IChange<IOracleInfo & { address: string }>) => {
+        this.setState({ oracleInfo: data.values, isValid: data.isValid });
     };
 
     static getDerivedStateFromProps(nextProps: OracleInfo.IProps, nextState: OracleInfo.IState) {
@@ -132,7 +107,15 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
 }
 
 const Fee: React.StatelessComponent<OracleInfo.IState> = params => {
+    if (!params.isValid) {
+        return <span>Fee 0 WAVES</span>;
+    }
+
     const fields = getOracleInfoDataFields(params.diff);
-    const fee = fields.length ? Number(currentFee(fields)) / Math.pow(10, 8) : 0;
-    return <span>Fee {fee}</span>;
+    try {
+        const fee = fields.length ? Number(currentFee(fields)) / Math.pow(10, 8) : 0;
+        return <span>Fee {fee} WAVES</span>;
+    } catch (e) {
+        return <span>Fee 0 WAVES</span>;
+    }
 };
