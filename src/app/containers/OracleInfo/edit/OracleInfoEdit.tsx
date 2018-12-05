@@ -16,31 +16,38 @@ import { equals } from 'ramda';
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
 
 export namespace OracleInfo {
-    export interface Props {
+
+    export interface IProps {
         user: RootState.UserState;
         assets: RootState.AssetsState;
         actions: null;
         oracleInfo: RootState.OracleInfoState;
     }
+
+    export interface IState {
+        oracleInfo: Partial<IOracleInfo>;
+        fileList: Array<Partial<UploadFile>>;
+        lastPropsStatus?: ORACLE_STATUS;
+        diff: Partial<IOracleInfo>;
+    }
 }
 
 @connect(
-    (state: RootState): Pick<OracleInfo.Props, 'user' & 'oracleInfo'> => {
+    (state: RootState): Pick<OracleInfo.IProps, 'user' & 'oracleInfo'> => {
         return { user: state.user, oracleInfo: state.oracleInfo };
     },
-    (dispatch: Dispatch): Pick<OracleInfo.Props, 'actions'> => ({
+    (dispatch: Dispatch): Pick<OracleInfo.IProps, 'actions'> => ({
         actions: null
     })
 )
-export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
+export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IState> {
 
-    static defaultProps: Partial<OracleInfo.Props> = {};
+    static defaultProps: Partial<OracleInfo.IProps> = {};
 
     state = {
         fileList: [],
         oracleInfo: Object.create(null),
-        diff: Object.create(null),
-        errors: Object.create(null)
+        diff: Object.create(null)
     };
 
     handleChange = ({ fileList }: { fileList: Array<UploadFile> }) => {
@@ -94,7 +101,7 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
         this.setState({ oracleInfo: { ...this.state.oracleInfo, logo } });
     };
 
-    static getDerivedStateFromProps(nextProps: OracleInfo.Props, nextState: TState) {
+    static getDerivedStateFromProps(nextProps: OracleInfo.IProps, nextState: OracleInfo.IState) {
 
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
@@ -124,16 +131,8 @@ export class OracleInfo extends React.Component<OracleInfo.Props, TState> {
     }
 }
 
-const Fee: React.StatelessComponent<TState> = params => {
+const Fee: React.StatelessComponent<OracleInfo.IState> = params => {
     const fields = getOracleInfoDataFields(params.diff);
     const fee = fields.length ? Number(currentFee(fields)) / Math.pow(10, 8) : 0;
     return <span>Fee {fee}</span>;
-};
-
-type TState = {
-    oracleInfo: Partial<IOracleInfo>;
-    fileList: Array<Partial<UploadFile>>;
-    lastPropsStatus?: ORACLE_STATUS;
-    diff: Partial<IOracleInfo>;
-    errors: { [key in keyof IOracleInfo]: Array<string> };
 };
