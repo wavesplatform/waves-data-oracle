@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
 import { Button, Layout } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { FORM_FIELDS } from 'app/containers/Oracle/edit/oracleEditForm';
-import { ORACLE_STATUS } from 'app/models';
+import { ORACLE_SAVE_STATUS, ORACLE_STATUS } from 'app/models';
 import { Form } from 'app/components/form/Form';
 import { equals } from 'ramda';
+import { OracleInfoActions } from 'app/actions';
+import { If } from 'app/components';
+import { omit } from 'app/utils';
 
 
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
@@ -19,7 +22,7 @@ export namespace OracleInfo {
     export interface IProps {
         user: RootState.UserState;
         tokens: RootState.TokensState;
-        actions: null;
+        actions: OracleInfoActions;
         oracleInfo: RootState.OracleInfoState;
     }
     
@@ -39,43 +42,49 @@ const { Content } = Layout;
         return { user: state.user, oracleInfo: state.oracleInfo };
     },
     (dispatch: Dispatch): Pick<OracleInfo.IProps, 'actions'> => ({
-        actions: null
+        actions: bindActionCreators(omit({ ...OracleInfoActions }, 'Type'), dispatch)
     })
 )
 export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IState> {
-    
+
     static defaultProps: Partial<OracleInfo.IProps> = {};
-    
+
     state = {
         isValid: false,
         fileList: [],
         oracleInfo: Object.create(null),
         diff: Object.create(null)
     };
-    
+
     render() {
         const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
-        
+
         return (
             <Layout>
                 <Content>
-                    <h1>Create an oracle</h1>
-                    
-                    <Form fields={FORM_FIELDS}
-                          values={{ ...this.state.oracleInfo, address: this.props.user.address }}
-                          readonly={{ address: true }}
-                          onChange={this._onChangeForm}/>
-                    
-                    <Fee {...this.state}/>
-                    
-                    <Button type="primary">Cancel</Button>
-                    <Button type="primary"
-                            disabled={disableSave}>Save</Button>
+                <h1>Create an oracle</h1>
+
+                <Form fields={FORM_FIELDS}
+                      values={{ ...this.state.oracleInfo, address: this.props.user.address }}
+                      readonly={{ address: true }}
+                      onChange={this._onChangeForm}/>
+
+                <Fee {...this.state}/>
+
+                <Button type="primary">Cancel</Button>
+                <Button type="primary"
+                        onClick={() => {
+                            this.props.actions.saveOracleInfo(this.state.diff);
+                        }}
+                        disabled={disableSave}>Save</Button>
+                <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
+                    <span>Error!</span>
+                </If>
                 </Content>
             </Layout>
         );
     }
-    
+
     private _onChangeForm = (data: Form.IChange<IOracleInfo & { address: string }>) => {
         this.setState({ oracleInfo: data.values, isValid: data.isValid });
     };

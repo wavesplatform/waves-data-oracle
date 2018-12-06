@@ -9,15 +9,19 @@ export const oracleInfoInitialState: RootState.OracleInfoState = {
         logo: '',
         name: '',
         site: '',
-        mail: '',
+        mail: ''
     },
     status: ORACLE_STATUS.LOADING,
     saveStatus: null,
-    oracleErrors: {},
+    oracleErrors: {}
 };
 
 export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Partial<OracleInfoModel>>(
     {
+        [OracleInfoActions.Type.SET_DIFF]: (state, action) => {
+            const content = { ...state.content, ...action.payload };
+            return <OracleInfoModel>{ ...state, content };
+        },
         [OracleInfoActions.Type.SET_INFO]: (state, action) => {
             return <OracleInfoModel>{ ...state, ...action.payload };
         },
@@ -26,8 +30,8 @@ export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Parti
         },
         [OracleInfoActions.Type.SET_SAVE_STATUS]: (state, action) => {
             return <OracleInfoModel>{ ...state, saveStatus: action.payload };
-        },
+        }
     },
-    
+
     oracleInfoInitialState
 );
