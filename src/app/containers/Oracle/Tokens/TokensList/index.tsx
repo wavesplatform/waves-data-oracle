@@ -92,7 +92,7 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
                 },
             ]
         };
-        const data = field ? [...tokens.content].sort((token1, token2) => token1[field] >= token2[field] ? 1 : -1);
+        const data = tokens.content;
         return <div>
             <Row>Header</Row>
             <TokenHeader onSort={this.sortHandler as any}/>
@@ -110,7 +110,7 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
         return (token1: TokenModel, token2:TokenModel): number => {
             const value1 = token1.content[field];
             const value2 = token2.content[field];
-            
+            return 1;
         }
     }
 }
