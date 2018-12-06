@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ImageUpload, Input } from 'app/components';
+import { If, ImageUpload, Input } from 'app/components';
 import { assocPath, path } from 'ramda';
 import { ChangeEvent } from 'react';
 import classnames from 'classnames';
@@ -13,6 +13,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         super(props);
 
         this.state = {
+            focusField: null,
             values: Form.getValuesFromProps(props) as T,
             errors: Form.getErrorsFromProps(props)
         };
@@ -28,13 +29,28 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         );
     }
 
+    private _getLimit(field: Form.IFormItem, value: string | null) {
+        if (!field.counter) {
+            return null;
+        }
+
+        const targetCount = field.counter.count;
+        const activeCount = field.counter.processor(value);
+
+        return (
+            <If condition={this.state.focusField === field.field}>
+                <Counter targetCount={targetCount} activeCount={activeCount}/>
+            </If>
+        );
+    }
+
     private _prepareField(field: Form.IFormItem, index: number) {
-        // const hasCounter = field.maxBytes || field.maxLength;
 
         const errors = this.state.errors[field.field] || [];
         const value = path(field.field.split('.'), this.state.values) as string;
         const isValid = !errors.length;
         const inputClassName = classnames({ isValid });
+        const limit = this._getLimit(field, value);
 
         const onChangeValue = (value: string | null) => {
             const values = assocPath(field.field.split('.'), value, this.state.values);
@@ -72,10 +88,22 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
                 onChangeValue(value);
             };
 
+            const onFocus = () => {
+                this.setState({ focusField: field.field });
+            };
+
+            const onBlur = () => {
+                if (this.state.focusField === field.field) {
+                    this.setState({ focusField: null });
+                }
+            };
+
             const readonly = this.props.readonly[field.field] || false;
 
             element = <Input mode={field.mode}
                              readOnly={readonly}
+                             onFocus={onFocus}
+                             onBlur={onBlur}
                              className={inputClassName}
                              errors={errors}
                              onChange={onChange}
@@ -85,9 +113,23 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         return (
             <div key={`form-item-${index}`} className={'row'}>
                 <label>{field.title}</label>
+                {limit}
                 {element}
             </div>
         );
+    };
+
+    public static counters: Form.ILimits = {
+        length: count => ({
+            count,
+            processor: value => !value ? 0 : value.length,
+            messageError: `Max length of this field is ${count} chars!`
+        }),
+        bytes: count => ({
+            count,
+            processor: value => !value ? 0 : new Blob([value]).size,
+            messageError: `Max length of this field is ${count} bytes!`
+        })
     };
 
     public static validators: Form.IValidators = {
@@ -97,7 +139,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             if (!value) {
                 return null;
             }
-            const pattern = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+            const pattern = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
 
             if (!pattern.test(value)) {
                 return 'Link is not valid!';
@@ -127,6 +169,16 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             }
             const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(String(value).toLowerCase()) ? null : 'Email is not valid!';
+        },
+        limit: info => value => {
+            if (!value) {
+                return null;
+            }
+            const apply = (count: number): string => {
+                return typeof info.messageError === 'string' ? info.messageError : info.messageError(count);
+            };
+            const count = info.processor(value);
+            return count > info.count ? apply(count) : null;
         }
     };
 
@@ -157,6 +209,11 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
     }
 }
 
+const Counter: React.StatelessComponent<{ targetCount: number; activeCount: number }> = params => {
+    const count = params.targetCount - params.activeCount;
+    const className = classnames('counter', { isError: count < 0 });
+    return <div className={className}>{count}</div>;
+};
 
 export namespace Form {
 
@@ -180,6 +237,7 @@ export namespace Form {
     export interface IState<T extends Record<string, unknown>> {
         errors: Record<string, Array<string>>;
         values: T;
+        focusField: string | null;
     }
 
     export interface IFormItem {
@@ -187,6 +245,19 @@ export namespace Form {
         mode: ELEMENT | Input.INPUT_MODE;
         field: string;
         validator?: ICallback<string | null, Array<string>>;
+        counter?: IFormItemLimit;
+    }
+
+    export interface IFormItemLimit {
+        count: number;
+        processor: ICallback<string | null, number>;
+        messageError: ICallback<number, string> | string;
+    }
+
+    export interface ILimits {
+        length(count: number): IFormItemLimit;
+
+        bytes(count: number): IFormItemLimit;
     }
 
     export interface IValidators {
@@ -199,5 +270,7 @@ export namespace Form {
         protocol(available: string | Array<string>): ICallback<string | null, string | null>;
 
         email(email: string | null): string | null;
+
+        limit(info: IFormItemLimit): ICallback<string | null, string | null>;
     }
 }
