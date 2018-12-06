@@ -4,12 +4,13 @@ import { RootState } from 'app/reducers';
 import { OracleTokensActions } from 'app/actions';
 import TokenRow from './TokenRow';
 import TokenHeader from './TokensHeader';
-import { Row, List } from 'antd';
+import { Row, List, Button, Col } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { omit } from 'app/utils';
 import { TokenModel } from 'app/models';
 import { IAssetInfo } from 'app/services/dataTransactionService';
+import FirstToken from 'app/containers/Oracle/Tokens/FirstToken';
 
 export namespace TokensList {
     export interface Props extends RouteComponentProps<void> {
@@ -37,8 +38,8 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
         sortOptions: 'asc' as 'asc'
     };
     
-    editHandler = (tokenId: string) => {
-        this.props.history.push(`${this.props.history.location.pathname}/${tokenId}`);
+    editHandler = (tokenId: string = 'create') => {
+        this.props.history.push(`/oracle/tokens/${tokenId}`);
     };
     
     sortHandler = ({ sortField, sortOptions }: TokensList.State) => {
@@ -53,8 +54,18 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
         if (field && sort) {
             data.sort(TokensList.sorter(field, sort) as any);
         }
+        
+        if (!data.length) {
+            return <FirstToken/>;
+        }
+        
         return <div>
-            <Row>Header</Row>
+            <Row>
+                <Col span={4}>Header</Col>
+                <Col span={20}>
+                    <Button type="primary" onClick={() => this.editHandler()}>Create new</Button>
+                </Col>
+            </Row>
             <TokenHeader onSort={this.sortHandler as any}/>
             <List className=""
                   itemLayout="horizontal"
