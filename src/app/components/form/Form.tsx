@@ -51,6 +51,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         const isValid = !errors.length;
         const inputClassName = classnames({ isValid });
         const limit = this._getLimit(field, value);
+        const className = classnames('row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
 
         const onChangeValue = (value: string | null) => {
             const values = assocPath(field.field.split('.'), value, this.state.values);
@@ -111,7 +112,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         }
 
         return (
-            <div key={`form-item-${index}`} className={'row'}>
+            <div key={`form-item-${index}`} className={className}>
                 <label>{field.title}</label>
                 {limit}
                 {element}

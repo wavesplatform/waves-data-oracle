@@ -21,7 +21,7 @@ export const getOracleData: Middleware =
             store.dispatch(AppActions.setServerError(null));
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
             store.dispatch(OracleTokensActions.setOracleTokens(tokens));
-            
+
         }).catch((e) => {
             store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.SERVER_ERROR));
             store.dispatch(AppActions.setServerError(e));
@@ -35,7 +35,7 @@ export const getOracleInfo: Middleware =
     mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.GET_INFO)((store) => {
         const state = store.getState();
         const { user } = state;
-        
+
         store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.LOADING));
         apiGetInfo(user.address, user.server)
             .then(oracleInfo => {
@@ -46,12 +46,13 @@ export const getOracleInfo: Middleware =
         });
     });
 
-export const setOracleinfo: Middleware =
+export const setOracleInfo: Middleware =
     mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.SAVE_INFO)((store, next, action) => {
         store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.LOADING));
         apiSetOracleInfo(action.payload).then(
             () => {
                 store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.READY));
+                store.dispatch(OracleInfoActions.setOracleInfoDiff(action.payload));
             }
         ).catch(() => {
             store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.SERVER_ERROR));
@@ -61,7 +62,7 @@ export const setOracleinfo: Middleware =
 
 const parseOracleInfoResponse = (response: IServiceResponse<IOracleInfo>): OracleInfoModel => {
     const { status, data, errors: oracleErrors = null } = response;
-    
+
     switch (status) {
         case STATUSES.EMPTY:
             return { status: ORACLE_STATUS.EMPTY, content: data, oracleErrors };
@@ -73,7 +74,7 @@ const parseOracleInfoResponse = (response: IServiceResponse<IOracleInfo>): Oracl
 };
 
 const parseTokensResponse = (responses: Array<IServiceResponse<IAssetInfo>>): TokensModel => {
-    
+
     const result = responses.map((response) => {
         const { status, data, errors: tokenErrors } = response;
         switch (status) {
@@ -85,7 +86,7 @@ const parseTokensResponse = (responses: Array<IServiceResponse<IAssetInfo>>): To
                 return { status: TOKENS_STATUS.READY, content: data, tokenErrors };
         }
     });
-    
+
     return {
         status: TOKENS_STATUS.READY,
         saveStatus: null,

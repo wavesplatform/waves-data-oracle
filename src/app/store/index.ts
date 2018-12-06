@@ -5,7 +5,7 @@ import {
     login,
     logout,
     getOracleInfo,
-    setOracleinfo,
+    setOracleInfo,
     getOracleData,
 } from 'app/middleware';
 import { RootState, rootReducer } from 'app/reducers';
@@ -16,7 +16,7 @@ export function configureStore(initialState?: RootState): Store<RootState> {
         login,
         logout,
         getOracleInfo,
-        setOracleinfo,
+        setOracleInfo,
         getOracleData
     );
     
