@@ -1,16 +1,20 @@
 import * as React from 'react';
-import { Button } from 'antd';
+import { Link } from 'react-router-dom';
+import { Layout } from 'antd';
 
+const { Content } = Layout;
 
-export const EmptyContent: React.StatelessComponent<{ toCreate: () => void}> = ({ toCreate }) => {
+export const EmptyContent: React.StatelessComponent = (props) => {
     
     return (
-        <div>
-            <div>Data about your Oracle was not found in the library</div>
-            <Button onClick={toCreate} type="primary" size="large" icon="reload">
-                Create oracle!
-            </Button>
-        </div>
+        <Layout>
+            <Content>
+                <div>Data about your Oracle was not found in the library</div>
+                <Link to='/oracle/create'>
+                    Create oracle!
+                </Link>
+            </Content>
+        </Layout>
     );
 };
 

@@ -12,7 +12,6 @@ import { Loading } from './Loading/Loading';
 import { OracleInfo as OracleInfoForm } from 'app/containers/Oracle/edit/OracleInfoEdit';
 import { Tokens } from 'app/containers/Oracle/Tokens';
 import { ErrorContent } from './ErrorContent/ErrorContent';
-import { EmptyContent } from './EmptyContent/EmptyContent';
 import { ORACLE_STATUS } from 'app/models';
 
 
@@ -54,13 +53,13 @@ export class OracleApp extends React.Component<OracleApp.Props> {
         const { oracleInfo } = this.props;
         const path = this.props.history.location.pathname;
         const menu = <OracleMenu path={path} history={this.props.history} address={address} name={name}/>;
-    
+        
         if (path === '/oracle') {
             switch (oracleInfo.status) {
                 case ORACLE_STATUS.EMPTY:
-                    return <Redirect to={'/oracle/empty'}/>;
-                case ORACLE_STATUS.HAS_ERROR:
                     return <Redirect to={'/oracle/create'}/>;
+                case ORACLE_STATUS.HAS_ERROR:
+                    return <Redirect to={'/oracle/edit'}/>;
                 case ORACLE_STATUS.READY:
                     return <Redirect to={'/oracle/tokens'}/>;
                 case ORACLE_STATUS.SERVER_ERROR:
@@ -74,12 +73,6 @@ export class OracleApp extends React.Component<OracleApp.Props> {
                     <Route path="/oracle" exact>
                         <Loading/>
                     </Route>
-                    
-                    <ConditionRouter condition={oracleInfo.status === ORACLE_STATUS.EMPTY}
-                                     redirect="/oracle"
-                                     path="/oracle/empty">
-                        <EmptyContent toCreate={this.goToCreateHandler}/>
-                    </ConditionRouter>
                     
                     <ConditionRouter condition={oracleInfo.status !== ORACLE_STATUS.EMPTY}
                                      redirect="/oracle"

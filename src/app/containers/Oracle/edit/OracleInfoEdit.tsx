@@ -4,6 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
 import { Button, Layout } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
+import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { FORM_FIELDS } from 'app/containers/Oracle/edit/oracleEditForm';
@@ -59,6 +60,10 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     render() {
         const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
 
+        if (this.props.oracleInfo.status === ORACLE_STATUS.EMPTY) {
+            return <EmptyContent/>;
+        }
+        
         return (
             <Layout>
                 <Content>
