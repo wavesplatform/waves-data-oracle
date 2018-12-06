@@ -11,7 +11,6 @@ import { OracleMenu } from 'app/containers/Menu/Menu';
 import { Loading } from './Loading/Loading';
 import { OracleInfo as OracleInfoForm } from 'app/containers/Oracle/edit/OracleInfoEdit';
 import { Tokens } from 'app/containers/Oracle/Tokens';
-import { OracleTitle } from './OracleTitle/OracleTitle';
 import { ErrorContent } from './ErrorContent/ErrorContent';
 import { EmptyContent } from './EmptyContent/EmptyContent';
 import { ORACLE_STATUS } from 'app/models';
@@ -55,10 +54,9 @@ export class OracleApp extends React.Component<OracleApp.Props> {
         const { oracleInfo } = this.props;
         const path = this.props.history.location.pathname;
         const menu = <OracleMenu path={path} history={this.props.history} address={address} name={name}/>;
-        const header = <OracleTitle status={oracleInfo.status}/>;
         
         return (
-            <LayoutComponent leftSider={menu} header={header}>
+            <LayoutComponent leftSider={menu}>
                 <Switch>
                     <Route path="/oracle" exact>
                         <Loading status={oracleInfo.status}/>

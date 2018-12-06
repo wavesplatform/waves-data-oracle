@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Button } from 'antd';
+import { Button, Layout } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
 import { UploadFile } from 'antd/lib/upload/interface';
@@ -15,14 +15,14 @@ import { equals } from 'ramda';
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
 
 export namespace OracleInfo {
-
+    
     export interface IProps {
         user: RootState.UserState;
         tokens: RootState.TokensState;
         actions: null;
         oracleInfo: RootState.OracleInfoState;
     }
-
+    
     export interface IState {
         isValid: boolean;
         oracleInfo: Partial<IOracleInfo>;
@@ -31,6 +31,8 @@ export namespace OracleInfo {
         diff: Partial<IOracleInfo>;
     }
 }
+
+const { Content } = Layout;
 
 @connect(
     (state: RootState): Pick<OracleInfo.IProps, 'user' & 'oracleInfo'> => {
@@ -41,49 +43,51 @@ export namespace OracleInfo {
     })
 )
 export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IState> {
-
+    
     static defaultProps: Partial<OracleInfo.IProps> = {};
-
+    
     state = {
         isValid: false,
         fileList: [],
         oracleInfo: Object.create(null),
         diff: Object.create(null)
     };
-
+    
     render() {
         const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
-
+        
         return (
-            <div>
-                <h1>Create an oracle</h1>
-
-                <Form fields={FORM_FIELDS}
-                      values={{ ...this.state.oracleInfo, address: this.props.user.address }}
-                      readonly={{ address: true }}
-                      onChange={this._onChangeForm}/>
-
-                <Fee {...this.state}/>
-
-                <Button type="primary">Cancel</Button>
-                <Button type="primary"
-                        disabled={disableSave}>Save</Button>
-            </div>
+            <Layout>
+                <Content>
+                    <h1>Create an oracle</h1>
+                    
+                    <Form fields={FORM_FIELDS}
+                          values={{ ...this.state.oracleInfo, address: this.props.user.address }}
+                          readonly={{ address: true }}
+                          onChange={this._onChangeForm}/>
+                    
+                    <Fee {...this.state}/>
+                    
+                    <Button type="primary">Cancel</Button>
+                    <Button type="primary"
+                            disabled={disableSave}>Save</Button>
+                </Content>
+            </Layout>
         );
     }
-
+    
     private _onChangeForm = (data: Form.IChange<IOracleInfo & { address: string }>) => {
         this.setState({ oracleInfo: data.values, isValid: data.isValid });
     };
-
+    
     static getDerivedStateFromProps(nextProps: OracleInfo.IProps, nextState: OracleInfo.IState) {
-
+        
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
             ORACLE_INFO_KEYS.forEach(key => {
                 nextState.oracleInfo[key] = nextProps.oracleInfo.content[key];
             });
-
+            
             if (nextState.oracleInfo.logo) {
                 nextState.fileList = [
                     {
@@ -93,7 +97,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                 ];
             }
         }
-
+        
         ORACLE_INFO_KEYS.forEach(key => {
             if (equals(nextState.oracleInfo[key], nextProps.oracleInfo.content[key])) {
                 delete nextState.diff[key];
@@ -101,7 +105,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                 nextState.diff[key] = nextState.oracleInfo[key];
             }
         });
-
+        
         return nextState;
     }
 }
@@ -110,7 +114,7 @@ const Fee: React.StatelessComponent<OracleInfo.IState> = params => {
     if (!params.isValid) {
         return <span>Fee 0 WAVES</span>;
     }
-
+    
     const fields = getOracleInfoDataFields(params.diff);
     try {
         const fee = fields.length ? Number(currentFee(fields)) / Math.pow(10, 8) : 0;
