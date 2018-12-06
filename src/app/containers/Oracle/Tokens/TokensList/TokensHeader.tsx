@@ -27,20 +27,27 @@ class TokensHeader extends React.PureComponent<TokensHeader.Props, TokensHeader.
     
     changeSortHandler = (sortField: string) => {
         if (this.state.sortField !== sortField) {
-            this.setState({
+            const state = {
                 sortField,
                 sortOptions: TokensHeader.SORT.ASC,
-            });
+            };
+            this.setState(state);
             
-            this.props.onSort(this.state);
+            this.props.onSort(state);
             return;
         }
         
         const sortOptions = this.state.sortOptions === TokensHeader.SORT.ASC ?
             TokensHeader.SORT.DESC :
             TokensHeader.SORT.ASC;
+        
+        const state = {
+            sortField,
+            sortOptions,
+        };
+        
         this.setState({ sortOptions });
-        this.props.onSort(this.state);
+        this.props.onSort(state);
     };
     
     render() {
