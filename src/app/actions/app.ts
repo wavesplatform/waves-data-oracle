@@ -11,7 +11,8 @@ export namespace AppActions {
     ADD_ASSET = 'ADD_ASSET',
     EDIT_ASSET = 'EDIT_ASSET',
     REMOVE_ASSET = 'REMOVE_ASSET',
-    GET_ALL_DATA = 'GET_ALL_DATA'
+    GET_ALL_DATA = 'GET_ALL_DATA',
+    CLEAR_STORE = 'CLEAR_STORE',
   }
   
   export const getOracleData = createAction(Type.GET_ALL_DATA);
@@ -24,6 +25,7 @@ export namespace AppActions {
   export const addAsset = createAction(Type.ADD_ASSET);
   export const editAsset = createAction(Type.EDIT_ASSET);
   export const removeAsset = createAction(Type.REMOVE_ASSET);
+  export const clearStore = createAction(Type.CLEAR_STORE);
 }
 
 export type AppActions = Omit<typeof AppActions, 'Type'>;

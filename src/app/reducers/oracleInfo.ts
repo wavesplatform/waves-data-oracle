@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
-import { OracleInfoActions } from 'app/actions';
+import { AppActions, OracleInfoActions } from 'app/actions';
 import { OracleInfoModel, ORACLE_STATUS } from 'app/models';
 
 export const oracleInfoInitialState: RootState.OracleInfoState = {
@@ -30,7 +30,10 @@ export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Parti
         },
         [OracleInfoActions.Type.SET_SAVE_STATUS]: (state, action) => {
             return <OracleInfoModel>{ ...state, saveStatus: action.payload };
-        }
+        },
+        [AppActions.Type.CLEAR_STORE]: () => {
+            return <OracleInfoModel>{ ...oracleInfoInitialState };
+        },
     },
 
     oracleInfoInitialState

@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
-import { OracleTokensActions } from 'app/actions';
+import { OracleTokensActions, AppActions } from 'app/actions';
 import { TokensModel, TOKENS_STATUS} from 'app/models';
 
 export const assetsInitState: RootState.TokensState = {
@@ -19,6 +19,9 @@ export const TokensReducer = handleActions<RootState.TokensState, Partial<Tokens
         },
         [OracleTokensActions.Type.SET_SAVE_STATUS]: (state, action) => {
             return <TokensModel>{ ...state, saveStatus: action.payload };
+        },
+        [AppActions.Type.CLEAR_STORE]: () => {
+            return <TokensModel>{ ...assetsInitState };
         },
     },
     

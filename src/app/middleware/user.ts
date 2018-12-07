@@ -29,7 +29,7 @@ export const login: Middleware = middlewareFabric<MiddlewareAPI, AnyAction>(User
 
 export const logout: Middleware = (store) => (next) => (action) => {
     if (action.type === UserActions.Type.LOGOUT_USER) {
-        store.dispatch(AppActions.setAuthenticated(false));
+        store.dispatch(AppActions.clearStore());
     }
     return next(action);
 };

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Button, Layout, notification, Spin } from 'antd';
+import { Button, Layout, notification, Spin, Icon } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
@@ -73,9 +73,12 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         const spinning = this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.LOADING;
         
         return (
-            <Layout style={{backgroundColor: "#fff", height: "100%"}}>
-                <Content style={{margin: '20px', minWidth: "450px"}}>
-                    <Spin spinning={spinning}>
+            <Layout style={{ backgroundColor: '#fff', height: '100%' }}>
+                <Spin style={{height: '100%'}}
+                      spinning={spinning}
+                      indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
+                >
+                    <Content style={{ margin: '20px', minWidth: '450px'}}>
                         <h1>Create an oracle</h1>
                         
                         <Form fields={FORM_FIELDS}
@@ -92,8 +95,8 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                         <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
                             <span>Error!</span>
                         </If>
-                    </Spin>
-                </Content>
+                    </Content>
+                </Spin>
                 <RightSider/>
             </Layout>
         );
@@ -105,13 +108,13 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     
     static sendMessages(nextProps: OracleInfo.IProps) {
         const { saveStatus } = nextProps.oracleInfo;
-    
+        
         if (saveStatus === ORACLE_SAVE_STATUS.READY) {
             notification.success({
                 message: 'Oracle data saved',
                 key: saveStatus
             });
-        
+            
             nextProps.actions.setOracleSaveStatus(null);
         }
     }
@@ -144,7 +147,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                 nextState.diff[key] = nextState.oracleInfo[key];
             }
         });
-    
+        
         OracleInfo.sendMessages(nextProps);
         
         return nextState;

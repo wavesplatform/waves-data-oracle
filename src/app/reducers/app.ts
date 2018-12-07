@@ -32,6 +32,10 @@ export const AppReducer = handleActions<RootState.AppState, Partial<AppModel>>(
         [AppActions.Type.LOADING]: (state, action) => {
             return <AppModel>{ ...state, loading: action.payload };
         }
+        ,
+        [AppActions.Type.CLEAR_STORE]: () => {
+            return <AppModel>{ ...initialState };
+        }
     },
     
     initialState
