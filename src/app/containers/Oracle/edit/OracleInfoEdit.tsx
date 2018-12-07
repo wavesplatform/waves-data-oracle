@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Button, Layout } from 'antd';
+import { Button, Layout, notification } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
@@ -33,6 +33,7 @@ export namespace OracleInfo {
         fileList: Array<Partial<UploadFile>>;
         lastPropsStatus?: ORACLE_STATUS;
         diff: Partial<IOracleInfo>;
+        saveStatus?: ORACLE_SAVE_STATUS | null;
     }
 }
 
@@ -47,19 +48,23 @@ const { Content } = Layout;
     })
 )
 export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IState> {
-
+    
     static defaultProps: Partial<OracleInfo.IProps> = {};
-
+    
     state = {
         isValid: false,
         fileList: [],
         oracleInfo: Object.create(null),
         diff: Object.create(null)
     };
-
+    
+    saveOracleHandler = () => {
+        this.props.actions.saveOracleInfo(this.state.diff);
+    };
+    
     render() {
         const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
-
+        
         if (this.props.oracleInfo.status === ORACLE_STATUS.EMPTY) {
             return <EmptyContent/>;
         }
@@ -67,34 +72,48 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         return (
             <Layout>
                 <Content>
-                <h1>Create an oracle</h1>
-
-                <Form fields={FORM_FIELDS}
-                      values={{ ...this.state.oracleInfo, address: this.props.user.address }}
-                      readonly={{ address: true }}
-                      onChange={this._onChangeForm}/>
-
-                <Fee {...this.state}/>
-
-                <Button type="primary">Cancel</Button>
-                <Button type="primary"
-                        onClick={() => {
-                            this.props.actions.saveOracleInfo(this.state.diff);
-                        }}
-                        disabled={disableSave}>Save</Button>
-                <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
-                    <span>Error!</span>
-                </If>
+                    <h1>Create an oracle</h1>
+                    
+                    <Form fields={FORM_FIELDS}
+                          values={{ ...this.state.oracleInfo, address: this.props.user.address }}
+                          readonly={{ address: true }}
+                          onChange={this._onChangeForm}/>
+                    
+                    <Fee {...this.state}/>
+                    
+                    <Button type="primary">Cancel</Button>
+                    <Button type="primary"
+                            onClick={this.saveOracleHandler}
+                            disabled={disableSave}>Save</Button>
+                    <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
+                        <span>Error!</span>
+                    </If>
                 </Content>
             </Layout>
         );
     }
-
+    
     private _onChangeForm = (data: Form.IChange<IOracleInfo & { address: string }>) => {
         this.setState({ oracleInfo: data.values, isValid: data.isValid });
     };
     
+    static sendMessages(nextProps: OracleInfo.IProps) {
+        const { saveStatus } = nextProps.oracleInfo;
+    
+        if (saveStatus === ORACLE_SAVE_STATUS.READY) {
+            notification.success({
+                message: 'Oracle data saved',
+                key: saveStatus
+            });
+        
+            nextProps.actions.setOracleSaveStatus(null);
+        }
+    }
+    
     static getDerivedStateFromProps(nextProps: OracleInfo.IProps, nextState: OracleInfo.IState) {
+        const { saveStatus } = nextProps.oracleInfo;
+        
+        nextState = { ...nextState, saveStatus };
         
         if (!nextState.lastPropsStatus || nextProps.oracleInfo.status !== nextState.lastPropsStatus) {
             nextState.lastPropsStatus = nextProps.oracleInfo.status;
@@ -119,6 +138,8 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                 nextState.diff[key] = nextState.oracleInfo[key];
             }
         });
+    
+        OracleInfo.sendMessages(nextProps);
         
         return nextState;
     }
