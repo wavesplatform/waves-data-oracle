@@ -14,6 +14,7 @@ import { equals } from 'ramda';
 import { OracleInfoActions } from 'app/actions';
 import { If } from 'app/components';
 import { omit } from 'app/utils';
+import { RightSider } from 'app/containers/Oracle/edit/RightSider';
 
 
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
@@ -89,6 +90,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                         <span>Error!</span>
                     </If>
                 </Content>
+                <RightSider/>
             </Layout>
         );
     }
