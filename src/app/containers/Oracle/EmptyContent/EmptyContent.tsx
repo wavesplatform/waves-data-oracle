@@ -7,7 +7,7 @@ const { Content } = Layout;
 export const EmptyContent: React.StatelessComponent = (props) => {
     
     return (
-        <Layout>
+        <Layout style={{height: "100%", backgroundColor: "#fff"}}>
             <Content>
                 <div>Data about your Oracle was not found in the library</div>
                 <Link to='/oracle/create'>

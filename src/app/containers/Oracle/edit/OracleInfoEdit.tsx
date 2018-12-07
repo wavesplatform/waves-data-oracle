@@ -71,8 +71,8 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         }
         
         return (
-            <Layout>
-                <Content>
+            <Layout style={{backgroundColor: "#fff", height: "100%"}}>
+                <Content style={{margin: '20px', minWidth: "450px"}}>
                     <h1>Create an oracle</h1>
                     
                     <Form fields={FORM_FIELDS}

@@ -104,7 +104,7 @@ module.exports = {
         contentBase: sourcePath,
         hot: true,
         hotOnly: true,
-        inline: true,
+        inline: false,
         historyApiFallback: {
             rewrites: [
                 { from: /oracle.*/, to: '/index.html' },
