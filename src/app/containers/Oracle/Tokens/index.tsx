@@ -7,6 +7,7 @@ import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import TokensList from './TokensList';
 import { Layout } from 'antd';
+import { TokenEdit } from 'app/containers/Oracle/Tokens/Edit/TokenEdit';
 //import { ConditionRouter } from 'app/components/router/ConditionRouter';
 
 
@@ -21,25 +22,23 @@ export namespace Tokens {
 const { Content } = Layout;
 
 @connect(
-    (state: RootState): Pick<Tokens.Props, 'user'> => {
-        return { user: state.user };
+    (state: RootState): Pick<Tokens.Props, 'user' & 'tokens'> => {
+        return { user: state.user, tokens: state.tokens };
     },
     (dispatch: Dispatch): Pick<Tokens.Props, 'actions'> => ({
         actions: bindActionCreators(omit({ ...UserActions }, 'Type'), dispatch)
     })
 )
 export class Tokens extends React.Component<Tokens.Props> {
-    
+
     render() {
-        const component = () => <div>test</div>;
-        
+
         return (
             <Layout>
                 <Content>
                     <Switch>
                         <Route path="/oracle/tokens" exact component={TokensList}/>
-                        <Route path="/oracle/tokens/create" exact component={component}/>
-                        <Route path="/oracle/tokens:assetId" component={component}/>
+                        <Route path="/oracle/tokens/:assetId" component={TokenEdit}/>
                     </Switch>
                 </Content>
             </Layout>

@@ -6,37 +6,17 @@ import { Button, Layout, notification, Spin, Icon } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
-import { UploadFile } from 'antd/lib/upload/interface';
-import { FORM_FIELDS } from 'app/containers/Oracle/edit/oracleEditForm';
+import { FORM_FIELDS } from 'app/containers/Oracle/InfoEdit/oracleEditForm';
 import { ORACLE_SAVE_STATUS, ORACLE_STATUS } from 'app/models';
 import { Form } from 'app/components/form/Form';
 import { equals } from 'ramda';
 import { OracleInfoActions } from 'app/actions';
 import { If } from 'app/components';
 import { omit } from 'app/utils';
-import { RightSider } from 'app/containers/Oracle/edit/RightSider';
+import { RightSider } from 'app/containers/Oracle/InfoEdit/RightSider';
 
 
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
-
-export namespace OracleInfo {
-    
-    export interface IProps {
-        user: RootState.UserState;
-        tokens: RootState.TokensState;
-        actions: OracleInfoActions;
-        oracleInfo: RootState.OracleInfoState;
-    }
-    
-    export interface IState {
-        isValid: boolean;
-        oracleInfo: Partial<IOracleInfo>;
-        fileList: Array<Partial<UploadFile>>;
-        lastPropsStatus?: ORACLE_STATUS;
-        diff: Partial<IOracleInfo>;
-        saveStatus?: ORACLE_SAVE_STATUS | null;
-    }
-}
 
 const { Content } = Layout;
 
@@ -54,7 +34,6 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     
     state = {
         isValid: false,
-        fileList: [],
         oracleInfo: Object.create(null),
         diff: Object.create(null)
     };
@@ -129,15 +108,6 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
             ORACLE_INFO_KEYS.forEach(key => {
                 nextState.oracleInfo[key] = nextProps.oracleInfo.content[key];
             });
-            
-            if (nextState.oracleInfo.logo) {
-                nextState.fileList = [
-                    {
-                        uid: `t-${Date.now()}`,
-                        thumbUrl: nextState.oracleInfo.logo
-                    }
-                ];
-            }
         }
         
         ORACLE_INFO_KEYS.forEach(key => {
@@ -167,3 +137,20 @@ const Fee: React.StatelessComponent<OracleInfo.IState> = params => {
         return <span>Fee 0 WAVES</span>;
     }
 };
+
+export namespace OracleInfo {
+
+    export interface IProps {
+        user: RootState.UserState;
+        actions: OracleInfoActions;
+        oracleInfo: RootState.OracleInfoState;
+    }
+
+    export interface IState {
+        isValid: boolean;
+        oracleInfo: Partial<IOracleInfo>;
+        lastPropsStatus?: ORACLE_STATUS;
+        diff: Partial<IOracleInfo>;
+        saveStatus?: ORACLE_SAVE_STATUS | null;
+    }
+}

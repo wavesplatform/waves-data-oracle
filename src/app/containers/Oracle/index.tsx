@@ -9,7 +9,7 @@ import LayoutComponent from 'app/components/layout/Layout';
 import { ConditionRouter } from 'app/components/router/ConditionRouter';
 import { OracleMenu } from 'app/containers/Menu/Menu';
 import { Loading } from './Loading/Loading';
-import { OracleInfo as OracleInfoForm } from 'app/containers/Oracle/edit/OracleInfoEdit';
+import { OracleInfo as OracleInfoForm } from 'app/containers/Oracle/InfoEdit/OracleInfoEdit';
 import { Tokens } from 'app/containers/Oracle/Tokens';
 import { ErrorContent } from './ErrorContent/ErrorContent';
 import { ORACLE_STATUS } from 'app/models';

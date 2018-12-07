@@ -51,8 +51,10 @@ export function setOracleInfo(info: IOracleInfo, timestamp?: number) {
 }
 
 export function setAssetInfo(asset: Partial<IAssetInfo> & { id: string }, timestamp?: number) {
+
     const fields = getAssetFields(asset);
     const fee = currentFee(fields);
+
     return userService.signAndPublishData({
         type: 12,
         data: {

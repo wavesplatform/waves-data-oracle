@@ -24,14 +24,14 @@ export namespace TokensList {
 }
 
 @connect(
-    (state: RootState): Pick<TokensList.Props, 'tokens'> => {
+    (state: RootState): Pick<TokensList.IProps, 'tokens'> => {
         return { tokens: state.tokens };
     },
-    (dispatch: Dispatch): Pick<TokensList.Props, 'actions'> => ({
+    (dispatch: Dispatch): Pick<TokensList.IProps, 'actions'> => ({
         actions: bindActionCreators(omit({ ...OracleTokensActions }, 'Type'), dispatch)
     })
 )
-class TokensList extends React.PureComponent<TokensList.Props, TokensList.State> {
+class TokensList extends React.PureComponent<TokensList.IProps, TokensList.State> {
     
     readonly state = {
         sortField: null,
@@ -109,7 +109,7 @@ export default TokensList;
 
 
 export namespace TokensList {
-    export interface Props extends RouteComponentProps<void> {
+    export interface IProps extends RouteComponentProps<void> {
         tokens: RootState.TokensState;
         actions: OracleTokensActions;
         app: RootState.AppState;
