@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Button, Layout, notification } from 'antd';
+import { Button, Layout, notification, Spin } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
@@ -70,25 +70,29 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
             return <EmptyContent/>;
         }
         
+        const spinning = this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.LOADING;
+        
         return (
             <Layout style={{backgroundColor: "#fff", height: "100%"}}>
                 <Content style={{margin: '20px', minWidth: "450px"}}>
-                    <h1>Create an oracle</h1>
-                    
-                    <Form fields={FORM_FIELDS}
-                          values={{ ...this.state.oracleInfo, address: this.props.user.address }}
-                          readonly={{ address: true }}
-                          onChange={this._onChangeForm}/>
-                    
-                    <Fee {...this.state}/>
-                    
-                    <Button type="primary">Cancel</Button>
-                    <Button type="primary"
-                            onClick={this.saveOracleHandler}
-                            disabled={disableSave}>Save</Button>
-                    <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
-                        <span>Error!</span>
-                    </If>
+                    <Spin spinning={spinning}>
+                        <h1>Create an oracle</h1>
+                        
+                        <Form fields={FORM_FIELDS}
+                              values={{ ...this.state.oracleInfo, address: this.props.user.address }}
+                              readonly={{ address: true }}
+                              onChange={this._onChangeForm}/>
+                        
+                        <Fee {...this.state}/>
+                        
+                        <Button type="primary">Cancel</Button>
+                        <Button type="primary"
+                                onClick={this.saveOracleHandler}
+                                disabled={disableSave}>Save</Button>
+                        <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
+                            <span>Error!</span>
+                        </If>
+                    </Spin>
                 </Content>
                 <RightSider/>
             </Layout>
