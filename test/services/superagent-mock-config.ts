@@ -179,6 +179,7 @@ export default [
                 ...ORACLE.FIELDS,
                 ...generateAsset({
                     id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                    name: 'BTC',
                     email: 'test-asset@oracle.com',
                     logo: 'asset-logo',
                     site: 'https://test-asset.com',
@@ -210,6 +211,7 @@ export default [
                 ...ORACLE.FIELDS,
                 ...generateAsset({
                     id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                    name: 'BTC',
                     email: 'test-asset@oracle.com',
                     logo: 'asset-logo',
                     site: 'https://test-asset.com',
@@ -221,6 +223,7 @@ export default [
                 }),
                 ...generateAsset({
                     id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
+                    name: 'BTC',
                     email: 'test-asset@oracle.com',
                     logo: 'asset-logo',
                     site: 'https://test-asset.com',

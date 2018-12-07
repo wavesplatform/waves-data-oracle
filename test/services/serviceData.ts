@@ -1,6 +1,6 @@
 import {
     DATA_TRANSACTION_FIELD_TYPE,
-    IAssetInfo,
+    IAssetInfo, IDataTransactionField,
     ORACLE_ASSET_FIELD_PATTERN,
     ORACLE_RESERVED_FIELDS,
     PATTERNS
@@ -12,31 +12,31 @@ function replaceDescriptionLang(key: string, lang: string): string {
     return key.replace(PATTERNS.LANG, `<${lang}>`);
 }
 
-export const generateAsset = (asset: IAssetInfo) => [
+export const generateAsset = (asset: IAssetInfo): Array<IDataTransactionField> => [
     {
         key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.INTEGER,
-        value: asset.status
+        value: asset.status || ''
     },
     {
         key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: asset.site
+        value: asset.site || ''
     },
     {
         key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: asset.email
+        value: asset.email || ''
     },
     {
         key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-        value: asset.logo
+        value: asset.logo || ''
     },
     {
         key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-        value: asset.ticker
+        value: asset.ticker || ''
     },
     ...Object.keys(asset.description || {}).map(lang => ({
         key: replaceDescriptionLang(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.DESCRIPTION, asset.id), lang),
@@ -82,7 +82,7 @@ export const ORACLE = {
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: 'Some oracle en description'
         }
-    ],
+    ] as Array<IDataTransactionField>,
     DATA: {
         name: 'Test Oracle Name',
         site: 'https://test.oracle.com',
@@ -97,6 +97,7 @@ export const ORACLE = {
 export const ASSET = {
     FIELDS: generateAsset({
         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+        name: 'BTC',
         email: 'test-asset@oracle.com',
         logo: 'asset-logo',
         site: 'https://test-asset.com',
@@ -108,6 +109,7 @@ export const ASSET = {
     }),
     DATA: {
         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+        name: 'BTC',
         email: 'test-asset@oracle.com',
         logo: 'asset-logo',
         site: 'https://test-asset.com',

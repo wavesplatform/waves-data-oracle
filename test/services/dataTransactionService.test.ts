@@ -4,7 +4,7 @@
 import {
     getAssetFields,
     getOracleData,
-    getOracleInfoDataFields,
+    getOracleInfoDataFields, IDataTransactionField,
     ORACLE_RESERVED_FIELDS, setOracleInfo,
     STATUSES
 } from '../../src/app/services/dataTransactionService';
@@ -226,7 +226,7 @@ describe('Data transactions service test', () => {
                 });
             });
             it('Check convert asset to data transaction fields', () => {
-                expect(getAssetFields(ASSET.DATA).sort(comparator(i => i.key))).toEqual(ASSET.FIELDS.sort(comparator(i => i.key)));
+                expect(getAssetFields(ASSET.DATA).sort(comparator(i => i.key))).toEqual(ASSET.FIELDS.sort(comparator<IDataTransactionField, string>(i => i.key)));
             });
         });
     });
