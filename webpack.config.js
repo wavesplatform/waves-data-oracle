@@ -103,9 +103,12 @@ module.exports = {
         disableHostCheck: true,
         contentBase: sourcePath,
         hot: true,
+        hotOnly: true,
         inline: true,
         historyApiFallback: {
-            disableDotRule: true
+            rewrites: [
+                { from: /oracle.*/, to: '/index.html' },
+            ]
         },
         stats: 'minimal',
         clientLogLevel: 'warning'

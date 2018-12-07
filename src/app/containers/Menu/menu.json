@@ -17,7 +17,7 @@
       "title": "Oracle",
       "key": "oracle",
       "icon": "eye",
-      "path": "/oracle"
+      "path": "/oracle/edit"
     },
     "templates": {
       "className": "templates",

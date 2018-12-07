@@ -1,29 +1,18 @@
 import * as React from 'react';
-import { Spin } from 'antd';
-import { ORACLE_STATUS } from 'app/models';
-import { Redirect } from 'react-router';
+import { Spin, Layout } from 'antd';
 
+const { Content } = Layout;
 
-export const Loading: React.StatelessComponent<IProps> = ({ tip, size, status }) => {
+export const Loading: React.StatelessComponent<IProps> = ({ tip, size, ...props }) => {
     
-    switch (status) {
-        case ORACLE_STATUS.EMPTY:
-            return <Redirect to={'/oracle/empty'}/>;
-        case ORACLE_STATUS.HAS_ERROR:
-            return <Redirect to={'/oracle/create'}/>;
-        case ORACLE_STATUS.READY:
-            return <Redirect to={'/oracle/edit'}/>;
-        case ORACLE_STATUS.SERVER_ERROR:
-            return <Redirect to={'/oracle/error'}/>;
-    }
-    
-    return <div>
-        <Spin size={size} tip={tip}/>
-    </div>
+    return <Layout {...props}>
+        <Content>
+            <Spin size={size} tip={tip}/>
+        </Content>
+    </Layout>;
 };
 
 interface IProps {
     tip?: string;
-    size?: "default" | "small" | "large";
-    status: ORACLE_STATUS;
+    size?: 'default' | 'small' | 'large';
 }

@@ -4,11 +4,13 @@ import { RootState } from 'app/reducers';
 import { OracleTokensActions } from 'app/actions';
 import TokenRow from './TokenRow';
 import TokenHeader from './TokensHeader';
-import { Row, List } from 'antd';
+import { Row, List, Button, Col } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { omit } from 'app/utils';
 import { TokenModel } from 'app/models';
+import { IAssetInfo } from 'app/services/dataTransactionService';
+import FirstToken from 'app/containers/Oracle/Tokens/FirstToken';
 
 export namespace TokensList {
     export interface Props extends RouteComponentProps<void> {
@@ -36,8 +38,8 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
         sortOptions: 'asc' as 'asc'
     };
     
-    editHandler = (tokenId: string) => {
-        this.props.history.push(`${this.props.history.location.pathname}/${tokenId}`);
+    editHandler = (tokenId: string = 'create') => {
+        this.props.history.push(`/oracle/tokens/${tokenId}`);
     };
     
     sortHandler = ({ sortField, sortOptions }: TokensList.State) => {
@@ -45,56 +47,25 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
     };
     
     render(): React.ReactNode {
-        //const { tokens } = this.props;
+        const { tokens } = this.props;
         const field = this.state.sortField;
-        const tokens = {
-            content: [
-                {
-                    content: {
-                        id: 'asd21312313x23d1231d23123123d',
-                        status: 1,
-                        logo: null,
-                        site: 'www.mama-mia.ru',
-                        ticker: 'myTestToken',
-                        email: null,
-                        description: null
-                    }
-                },{
-                    content: {
-                        id: 'wert34v34vw34tw34vt3wvt3w4tvw34',
-                        status: 3,
-                        logo: null,
-                        site: null,
-                        ticker: 'my2',
-                        email: null,
-                        description: null
-                    }
-                },{
-                    content: {
-                        id: 'ereffreavwerfwergwergewrgwergweg',
-                        status: 2,
-                        logo: null,
-                        site: 'www.kto.tam',
-                        ticker: 'myTestToken3',
-                        email: 'graf@waves',
-                        description: null
-                    }
-                },{
-                    content: {
-                        id: '',
-                        status: 3,
-                        logo: null,
-                        site: 'wavesplatform.com',
-                        ticker: 'WAVES',
-                        email: null,
-                        description: 'Official Waves Money'
-                    }
-                },
-            ]
-        };
-        const data = tokens.content;
+        const sort = this.state.sortOptions;
+        const data = [...tokens.content];
+        if (field && sort) {
+            data.sort(TokensList.sorter(field, sort) as any);
+        }
+        
+        if (!data.length) {
+            return <FirstToken/>;
+        }
+        
         return <div>
-            <Row>Header</Row>
+            <Row>
+                <Col span={4}>Header</Col>
+                <Col span={20}>
+                    <Button type="primary" onClick={() => this.editHandler()}>Create new</Button>
+                </Col>
+            </Row>
             <TokenHeader onSort={this.sortHandler as any}/>
             <List className=""
                   itemLayout="horizontal"
@@ -106,11 +77,30 @@ class TokensList extends React.PureComponent<TokensList.Props, TokensList.State>
         </div>;
     }
     
-    static sorter(field: string) {
+    static sorter(field: keyof IAssetInfo, sortAs: "asc" | "desc") {
+        const more = sortAs === "asc" ? 1 : -1;
+        const less = 0 - more;
         return (token1: TokenModel, token2:TokenModel): number => {
-            const value1 = token1.content[field];
-            const value2 = token2.content[field];
-            return 1;
+            const value1 = (token1.content[field]);
+            const value2 = (token2.content[field]);
+            
+            if (value1 === value2) {
+                return 0;
+            }
+            
+            if (value1 == null) {
+                return less;
+            }
+    
+            if (value2 == null) {
+                return more;
+            }
+            
+            if (value1 > value2) {
+                return more;
+            }
+            
+            return less;
         }
     }
 }

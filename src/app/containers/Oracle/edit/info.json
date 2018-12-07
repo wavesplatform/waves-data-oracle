@@ -1,0 +1,14 @@
+[
+  {
+    "title": "About oracle",
+    "description": "Waves platform allows business to issue their own tokens for whatever needs they have. By releasing tokens, a business is able to create an internal digital currency via the blockchain. This way, it can use the blockchain to pay for the services and goods within projects or even crowdfunding."
+  },
+  {
+    "title": "Logo",
+    "description": "A logo is a graphic mark, emblem, or symbol used to aid and promote public identification and recognition. It may be of an abstract or figurative design or include the text of the name it represents as in a wordmark."
+  },
+  {
+    "title": "Token ID",
+    "description": "Important to know here is that names are not unique to prevent name squatting but the identifier, also called asset ID, is unique. Whenever you are looking for a token, search and confirm it is the right one by checking the asset ID."
+  }
+]

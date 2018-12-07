@@ -9,7 +9,7 @@ const FirstToken: React.StatelessComponent = () => {
         <Row>Verify your first token</Row>
         <Row>Now verification of tokens is available to you. Click Add Token to continue.</Row>
         <Row>
-            <Link to="/oracle/tokens/create"/>
+            <Link to="/oracle/tokens/create">Create New</Link>
         </Row>
     </div>;
 };
