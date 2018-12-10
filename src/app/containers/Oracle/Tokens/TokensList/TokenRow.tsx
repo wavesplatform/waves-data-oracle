@@ -36,7 +36,7 @@ const TokensRow: React.StatelessComponent<TokensRow.Props> = (props) => {
             <div>{site}</div>
         </Col>
         <Col span={6}>
-            <div>{description}</div>
+            <div>{description && description.en}</div>
         </Col>
     </Row>
 };
