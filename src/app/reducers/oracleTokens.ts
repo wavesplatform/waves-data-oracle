@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
-import { OracleTokensActions, AppActions } from 'app/actions';
-import { TokensModel, TOKENS_STATUS} from 'app/models';
+import { OracleTokensActions, AppActions, OracleInfoActions } from 'app/actions';
+import { TokensModel, TOKENS_STATUS, OracleInfoModel } from 'app/models';
 
 export const assetsInitState: RootState.TokensState = {
     content: [],
@@ -22,6 +22,10 @@ export const TokensReducer = handleActions<RootState.TokensState, Partial<Tokens
         },
         [AppActions.Type.CLEAR_STORE]: () => {
             return <TokensModel>{ ...assetsInitState };
+        },
+        [OracleTokensActions.Type.SET_TOKEN_DIFF]: (state, action) => {
+            const content = { ...state.content, ...action.payload };
+            return <TokensModel>{ ...state, content };
         },
     },
     
