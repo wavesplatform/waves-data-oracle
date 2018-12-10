@@ -34,9 +34,8 @@ export function getOracleData(address: string, server?: string): Promise<IOracle
         .then(hash => {
 
             const oracle = getOracleInfoFromHash(hash);
-            const assets = getAssetListFromHash(hash);
-
-            return { oracle, assets };
+            return getAssetListFromHash(hash, server)
+                .then(assets => ({ oracle, assets }));
         });
 }
 
@@ -143,11 +142,6 @@ export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Arr
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: asset.ticker
-        },
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-            value: asset.logo
         },
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, asset.id),
