@@ -144,11 +144,6 @@ export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Arr
             value: asset.ticker
         },
         {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-            value: asset.logo
-        },
-        {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: asset.email

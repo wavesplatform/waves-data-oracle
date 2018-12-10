@@ -21,7 +21,7 @@ const { Content } = Layout;
         return { user: state.user, tokens: state.tokens };
     },
     (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({
-        actions: bindActionCreators(omit({ ...AssetsActions }, 'Type'), dispatch)
+        actions: bindActionCreators(omit({ ...OracleTokensActions }, 'Type'), dispatch)
     })
 )
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
@@ -103,7 +103,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     };
 
     private _saveTokenHandler = () => {
-        this.props.actions.saveToken(this.state.diff);
+        this.props.actions.saveToken({ ...this.state.diff, id: this.state.token.id });
     };
 
 }
