@@ -10,8 +10,9 @@ import { find, pathEq } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { getDiff, omit } from 'app/utils';
-import { AssetsActions } from 'app/actions';
-
+import { OracleTokensActions } from 'app/actions';
+import { RightSider } from 'app/components/RightSide/RightSider';
+import * as InfoData from './info.json';
 
 const { Content } = Layout;
 
@@ -55,11 +56,10 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
         return (
             <Layout style={{ backgroundColor: '#fff', height: '100%' }}>
-                <Spin style={{ height: '100%' }}
-                      spinning={spinning}
-                      indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
-                >
-                    <Content style={{ margin: '20px', minWidth: '450px' }}>
+                <Content style={{ margin: '20px', minWidth: '450px' }}>
+                    <Spin style={{ height: '100%' }}
+                          spinning={spinning}
+                          indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}>
                         <h1>Create an oracle</h1>
 
                         <Form fields={getTokenFormFields(this.props.user.server)}
@@ -76,8 +76,9 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                         <If condition={hasError}>
                             <span>Error!</span>
                         </If>
-                    </Content>
-                </Spin>
+                    </Spin>
+                </Content>
+                <RightSider data={InfoData}/>
             </Layout>
         );
     }
@@ -102,7 +103,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     };
 
     private _saveTokenHandler = () => {
-        this.props.actions.setAsset(this.state.diff);
+        this.props.actions.saveToken(this.state.diff);
     };
 
 }
@@ -127,7 +128,7 @@ export namespace TokenEdit {
     export interface IProps extends RouteComponentProps<{ assetId: string }> {
         tokens: RootState.TokensState;
         user: RootState.UserState;
-        actions: AssetsActions;
+        actions: OracleTokensActions;
     }
 
     export interface IState {

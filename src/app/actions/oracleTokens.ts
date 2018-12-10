@@ -7,6 +7,7 @@ export namespace OracleTokensActions {
     SET_STATUS = 'SET_STATUS',
     SET_SAVE_STATUS = 'SET_SAVE_STATUS',
     SET_TOKENS = 'SET_TOKENS',
+    SET_TOKEN_DIFF = 'SET_TOKEN_DIFF'
   }
   
   export const getTokens = createAction(Type.GET_TOKENS);
@@ -14,7 +15,7 @@ export namespace OracleTokensActions {
   export const setTokenStatus = createAction(Type.SET_STATUS);
   export const setSaveTokenStatus = createAction(Type.SET_SAVE_STATUS);
   export const setOracleTokens = createAction(Type.SET_TOKENS);
-
+  export const setTokenDiff = createAction(Type.SET_TOKEN_DIFF);
 }
 
 export type OracleTokensActions = Omit<typeof OracleTokensActions, 'Type'>;
