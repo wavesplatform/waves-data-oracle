@@ -39,13 +39,10 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         hideEmpty: false
     };
 
-    saveOracleHandler = () => {
-        this.props.actions.saveOracleInfo(this.state.diff);
-    };
-
     render() {
         const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
         const hideEmpty = this.state.hideEmpty;
+
         if (!hideEmpty && this.props.oracleInfo.status === ORACLE_STATUS.EMPTY) {
             return <EmptyContent onClick={() => this.setState({ hideEmpty: true })}/>;
         }
@@ -70,7 +67,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
 
                         <Button type="primary">Cancel</Button>
                         <Button type="primary"
-                                onClick={this.saveOracleHandler}
+                                onClick={this._saveOracleHandler}
                                 disabled={disableSave}>Save</Button>
                         <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
                             <span>Error!</span>
@@ -81,6 +78,10 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
             </Layout>
         );
     }
+
+    private _saveOracleHandler = () => {
+        this.props.actions.saveOracleInfo(this.state.diff);
+    };
 
     private _onChangeForm = (data: Form.IChange<IOracleInfo & { address: string }>) => {
         this.setState({ oracleInfo: data.values, isValid: data.isValid });

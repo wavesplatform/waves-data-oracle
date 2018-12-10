@@ -38,7 +38,7 @@ export class Tokens extends React.Component<Tokens.Props> {
                 <Content>
                     <Switch>
                         <Route path="/oracle/tokens" exact component={TokensList}/>
-                        <Route path="/oracle/tokens/:assetId" component={TokenEdit}/>
+                        <Route path="/oracle/tokens/:assetId" component={TokenEdit as any}/>
                     </Switch>
                 </Content>
             </Layout>

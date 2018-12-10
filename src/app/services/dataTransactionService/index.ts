@@ -117,6 +117,22 @@ export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IData
 }
 
 export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Array<IDataTransactionField> {
+    const logoData = splitLogo(asset.logo);
+    const fieldsFilter = <T extends { value: unknown }>(field: T) => field.value != null;
+
+    const logoFields = [
+        {
+            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
+            type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
+            value: logoData.logo
+        },
+        {
+            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO_META, asset.id),
+            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
+            value: logoData.meta
+        }
+    ].filter(fieldsFilter);
+
     const fields = [
         {
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, asset.id),
@@ -142,7 +158,8 @@ export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Arr
             key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: asset.site
-        }
+        },
+        ...logoFields
     ].filter(field => field.value != null) as Array<IDataTransactionField>;
 
     const langList = Object.keys(asset.description || {});
@@ -163,11 +180,6 @@ export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Arr
 export function currentFee(fields: Array<IDataTransactionField>): string {
     const tx = data({ data: fields }, FEE_SEED);
     return String(tx.fee);
-}
-
-export interface ISetOracleInfoParams {
-    info: Partial<IOracleInfo>;
-    timestamp?: number;
 }
 
 export interface IOracleData {

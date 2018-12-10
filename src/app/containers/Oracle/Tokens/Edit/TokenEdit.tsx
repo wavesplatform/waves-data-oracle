@@ -10,7 +10,7 @@ import { find, propEq } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { getDiff, omit } from 'app/utils';
-import { OracleInfoActions } from 'app/actions';
+import { AssetsActions } from 'app/actions';
 
 
 const { Content } = Layout;
@@ -20,7 +20,7 @@ const { Content } = Layout;
         return { user: state.user };
     },
     (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({ // TODO! Add tokens actions
-        actions: bindActionCreators(omit({ ...OracleInfoActions }, 'Type'), dispatch)
+        actions: bindActionCreators(omit({ ...AssetsActions }, 'Type'), dispatch)
     })
 )
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
@@ -84,20 +84,20 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     };
 
     private _saveTokenHandler = () => {
-
+        this.props.actions.setAsset(this.state.diff);
     };
 
-    public static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState) {
+    public static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState): TokenEdit.IState {
         const { assetId } = props.match.params;
         const isNew = assetId === 'create';
 
-        const asset = !isNew && find(propEq('id', assetId), props.tokens.content);
+        const token = !isNew && find(propEq('id', assetId), props.tokens.content);
 
-        if (!isNew && !asset) {
+        if (!isNew && !token) {
             throw new Error('Add 404 error!'); //TODO 404
         }
 
-        const diff = getDiff(asset || Object.create(null), state.token);
+        const diff = getDiff(token || Object.create(null), state.token);
 
         return { ...state, diff, isNew };
     }
@@ -124,7 +124,7 @@ export namespace TokenEdit {
     export interface IProps extends RouteComponentProps<{ assetId: string }> {
         tokens: RootState.TokensState;
         user: RootState.UserState;
-        actions: any // TODO!
+        actions: AssetsActions;
     }
 
     export interface IState {
