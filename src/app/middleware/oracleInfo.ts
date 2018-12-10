@@ -1,9 +1,17 @@
 import { AnyAction, Middleware, MiddlewareAPI } from 'redux';
 import { OracleInfoActions, AppActions, OracleTokensActions } from '../actions';
-import { ORACLE_SAVE_STATUS, ORACLE_STATUS, OracleInfoModel, TokensModel, TOKENS_STATUS } from 'app/models';
+import {
+    ORACLE_SAVE_STATUS,
+    ORACLE_STATUS,
+    OracleInfoModel,
+    TokensModel,
+    TOKENS_STATUS,
+    TOKEN_SAVE_STATUS
+} from 'app/models';
 import {
     setOracleInfo as apiSetOracleInfo,
     getOracleData as apiGetInfo,
+    setAssetInfo as apiToken,
     IOracleInfo,
     IServiceResponse,
     STATUSES, IAssetInfo
@@ -56,6 +64,19 @@ export const setOracleInfo: Middleware =
             }
         ).catch(() => {
             store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.SERVER_ERROR));
+        });
+    });
+
+export const setOracleToken: Middleware =
+    mwF<MiddlewareAPI, AnyAction>(OracleTokensActions.Type.SAVE_TOKEN)((store, next, action) => {
+        store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.LOADING));
+        apiToken(action.payload).then(
+            () => {
+                store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.READY));
+                store.dispatch(OracleTokensActions.setTokenDiff(action.payload));
+            }
+        ).catch(() => {
+            store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.SERVER_ERROR));
         });
     });
 

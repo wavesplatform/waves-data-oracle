@@ -10,7 +10,7 @@ import { find, pathEq } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { getDiff, omit } from 'app/utils';
-import { AssetsActions } from 'app/actions';
+import { OracleTokensActions } from 'app/actions';
 import { RightSider } from 'app/components/RightSide/RightSider';
 import * as InfoData from './info.json';
 
@@ -21,7 +21,7 @@ const { Content } = Layout;
         return { user: state.user, tokens: state.tokens };
     },
     (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({ // TODO! Add tokens actions
-        actions: bindActionCreators(omit({ ...AssetsActions }, 'Type'), dispatch)
+        actions: bindActionCreators(omit({ ...OracleTokensActions }, 'Type'), dispatch)
     })
 )
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
@@ -85,7 +85,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     };
     
     private _saveTokenHandler = () => {
-        this.props.actions.setAsset(this.state.diff);
+        this.props.actions.saveToken(this.state.diff);
     };
     
     public static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState): TokenEdit.IState {
@@ -125,7 +125,7 @@ export namespace TokenEdit {
     export interface IProps extends RouteComponentProps<{ assetId: string }> {
         tokens: RootState.TokensState;
         user: RootState.UserState;
-        actions: AssetsActions;
+        actions: OracleTokensActions;
     }
     
     export interface IState {
