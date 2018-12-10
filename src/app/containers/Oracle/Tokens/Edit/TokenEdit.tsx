@@ -9,7 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import { find, propEq } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { omit } from 'app/utils';
+import { getDiff, omit } from 'app/utils';
 import { OracleInfoActions } from 'app/actions';
 
 
@@ -25,25 +25,12 @@ const { Content } = Layout;
 )
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
 
-    constructor(props: TokenEdit.IProps) {
-        super(props);
-
-        const { assetId } = props.match.params;
-        const isNew = assetId === 'create';
-
-        const asset = !isNew && find(propEq('id', assetId), this.props.tokens.content);
-
-        if (!isNew && !asset) {
-            throw new Error('Add 404 error!'); //TODO 404
-        }
-
-        this.state = {
-            isNew,
-            diff: Object.create(null),
-            isValid: false,
-            token: { ...asset } || Object.create(null)
-        };
-    }
+    state: TokenEdit.IState = {
+        isValid: true,
+        isNew: false,
+        token: Object.create(null),
+        diff: Object.create(null)
+    };
 
     public render() {
 
@@ -70,7 +57,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
                         <Button type="primary">Cancel</Button>
                         <Button type="primary"
-                                onClick={this._saveOracleHandler}
+                                onClick={this._saveTokenHandler}
                                 disabled={!isValid}>Save</Button>
                         <If condition={hasError}>
                             <span>Error!</span>
@@ -96,9 +83,24 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
         }
     };
 
-    private _saveOracleHandler = () => {
+    private _saveTokenHandler = () => {
 
     };
+
+    public static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState) {
+        const { assetId } = props.match.params;
+        const isNew = assetId === 'create';
+
+        const asset = !isNew && find(propEq('id', assetId), props.tokens.content);
+
+        if (!isNew && !asset) {
+            throw new Error('Add 404 error!'); //TODO 404
+        }
+
+        const diff = getDiff(asset || Object.create(null), state.token);
+
+        return { ...state, diff, isNew };
+    }
 
 }
 

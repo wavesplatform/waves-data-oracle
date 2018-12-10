@@ -150,7 +150,10 @@ export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Arr
     if (langList.length) {
         const description = asset.description as IHash<string>;
         langList.forEach(lang => {
-            fields.push(createDataTxField(getDescriptionField(asset.id, lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]));
+            const value = description[lang];
+            if (value) {
+                fields.push(createDataTxField(getDescriptionField(asset.id, lang), DATA_TRANSACTION_FIELD_TYPE.STRING, value));
+            }
         });
     }
 

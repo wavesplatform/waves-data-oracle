@@ -29,6 +29,7 @@ export const enum ORACLE_RESERVED_FIELDS {
 export const enum ORACLE_ASSET_FIELD_PATTERN {
     STATUS = 'status_id_<ASSET_ID>',
     LOGO = 'logo_<ASSET_ID>',
+    LOGO_META = 'logo_meta_<ASSET_ID>',
     DESCRIPTION = 'description_<LANG>_<ASSET_ID>',
     SITE = 'site_<ASSET_ID>',
     TICKER = 'ticker_<ASSET_ID>',
