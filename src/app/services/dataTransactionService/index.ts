@@ -3,7 +3,7 @@ import {
     getAssetListFromHash,
     getDataTxFields,
     getDescriptionField,
-    getOracleDescriptionKey, getOracleInfoFromHash,
+    getOracleDescriptionKey, getOracleInfoFromHash, getUrl,
     replaceAssetID, splitLogo,
     toHash
 } from './utils';
@@ -16,9 +16,17 @@ import {
 } from './constants';
 import { userService } from '../KeeperService';
 import { data } from 'waves-transactions';
+import * as request from 'superagent';
 
 export * from './constants';
 
+
+export function getAssetInfo(id: string, server?: string): Promise<INodeAssetInfo> {
+    return new Promise((resolve, reject) =>
+        request.get(getUrl(`/assets/details/${id}`, server))
+            .then(response => resolve(response.body))
+            .catch(reject));
+}
 
 export function getOracleData(address: string, server?: string): Promise<IOracleData> {
     return getDataTxFields(address, server)
@@ -189,4 +197,18 @@ export interface IServiceResponse<T> {
     errors: {
         [key in keyof T]: Error
     };
+}
+
+export interface INodeAssetInfo {
+    assetId: string;
+    issueHeight: number;
+    issueTimestamp: number;
+    issuer: string;
+    name: string;
+    description: string;
+    decimals: number;
+    reissuable: boolean;
+    quantity: number;
+    scripted: boolean;
+    minSponsoredAssetFee: number;
 }

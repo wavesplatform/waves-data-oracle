@@ -2,15 +2,27 @@ import { Button, Icon, Layout, Spin } from 'antd';
 import { Form } from 'app/components/form/Form';
 import { If } from 'app/components';
 import * as React from 'react';
-import { TOKEN_FORM_FIELDS } from 'app/containers/Oracle/Tokens/Edit/tokenForm';
+import { getTokenFormFields } from 'app/containers/Oracle/Tokens/Edit/tokenForm';
 import { RootState } from 'app/reducers';
-import { currentFee, getAssetFields, IAssetInfo } from 'app/services/dataTransactionService';
+import { currentFee, getAssetFields, getAssetInfo, IAssetInfo } from 'app/services/dataTransactionService';
 import { RouteComponentProps } from 'react-router';
 import { find, propEq } from 'ramda';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
+import { omit } from 'app/utils';
+import { OracleInfoActions } from 'app/actions';
 
 
 const { Content } = Layout;
 
+@connect(
+    (state: RootState): Pick<TokenEdit.IProps, 'user'> => {
+        return { user: state.user };
+    },
+    (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({ // TODO! Add tokens actions
+        actions: bindActionCreators(omit({ ...OracleInfoActions }, 'Type'), dispatch)
+    })
+)
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
 
     constructor(props: TokenEdit.IProps) {
@@ -29,7 +41,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
             isNew,
             diff: Object.create(null),
             isValid: false,
-            token: asset || Object.create(null)
+            token: { ...asset } || Object.create(null)
         };
     }
 
@@ -38,7 +50,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
         const spinning = false;
         const hasError = false;
 
-        const { isValid } = this.state;
+        const { isValid, isNew } = this.state;
 
         return (
             <Layout style={{ backgroundColor: '#fff', height: '100%' }}>
@@ -49,9 +61,9 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                     <Content style={{ margin: '20px', minWidth: '450px' }}>
                         <h1>Create an oracle</h1>
 
-                        <Form fields={TOKEN_FORM_FIELDS}
-                              values={{}}
-                              readonly={{ name: true, id: true }}
+                        <Form fields={getTokenFormFields(this.props.user.server)}
+                              values={this.state.token}
+                              readonly={{ name: true, id: !isNew }}
                               onChange={this._onChangeForm}/>
 
                         <Fee {...this.state}/>
@@ -69,8 +81,19 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
         );
     }
 
-    private _onChangeForm = () => {
-
+    private _onChangeForm = (data: Form.IChange<Partial<IAssetInfo>>) => {
+        if (data.values.id && data.values.id !== this.state.token.id) {
+            getAssetInfo(data.values.id, this.props.user.server).then(info => {
+                const name = data.values.id ? info.name : '';
+                this.setState({ token: { ...data.values, name } });
+            }).catch(e => {
+                const name = '';
+                this.setState({ token: { ...data.values, name } });
+            });
+        } else {
+            const name = data.values.id ? data.values.name : '';
+            this.setState({ token: { ...data.values, name } });
+        }
     };
 
     private _saveOracleHandler = () => {
@@ -98,6 +121,8 @@ export namespace TokenEdit {
 
     export interface IProps extends RouteComponentProps<{ assetId: string }> {
         tokens: RootState.TokensState;
+        user: RootState.UserState;
+        actions: any // TODO!
     }
 
     export interface IState {

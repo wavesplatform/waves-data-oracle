@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { If, ImageUpload, Input } from 'app/components';
-import { assocPath, path } from 'ramda';
+import { assocPath, path, mergeAll } from 'ramda';
 import { ChangeEvent } from 'react';
 import classnames from 'classnames';
+import { getAssetInfo } from 'app/services/dataTransactionService';
 
 
 export class Form<T extends Record<string, unknown>> extends React.PureComponent<Form.IProps<T>, Form.IState<T>> {
@@ -14,9 +15,14 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
 
         this.state = {
             focusField: null,
+            validationPending: false,
             values: Form.getValuesFromProps(props) as T,
-            errors: Form.getErrorsFromProps(props)
+            errors: Object.create(null)
         };
+
+        Form.getErrorsFromProps(props).then(errors => {
+            this.setState({ errors });
+        });
     }
 
     public render() {
@@ -52,29 +58,31 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         const inputClassName = classnames({ isValid });
         const limit = this._getLimit(field, value);
         const className = classnames('row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
+        const validator = field.validator || (() => Promise.resolve([]));
 
         const onChangeValue = (value: string | null) => {
             const values = assocPath(field.field.split('.'), value, this.state.values);
 
-            let error: Array<string>;
-            if (field.validator) {
-                error = field.validator(value);
-            } else {
-                error = [];
-            }
+            this.setState({ validationPending: true });
 
-            this.setState({
-                values,
-                errors: { ...this.state.errors, [field.field]: error }
-            });
+            validator(value)
+                .catch(e => [e.message])
+                .then(errors => {
 
-            const isValid = !Object.values(this.state.errors).some(list => !!list.length);
+                    this.setState({
+                        errors: { ...this.state.errors, [field.field]: errors },
+                        validationPending: false
+                    });
 
-            this.props.onChange({
-                isValid,
-                values,
-                errors: this.state.errors
-            });
+                    const isValid = !Object.keys(this.state.errors)
+                        .some(key => !!this.state.errors[key].length);
+
+                    this.props.onChange({
+                        isValid,
+                        values,
+                        errors: this.state.errors
+                    });
+                });
         };
 
         let element: JSX.Element;
@@ -180,26 +188,33 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             };
             const count = info.processor(value);
             return count > info.count ? apply(count) : null;
-        }
+        },
+        assetId: server => id => id && getAssetInfo(id, server)
+            .then(() => null)
+            .catch(() => 'Invalid asset Id!') || null
     };
 
-    public static wrap(...list: Array<ICallback<string | null, string | null>>): ICallback<string | null, Array<string>> {
-        const isString = (x: unknown): x is string => Boolean(x);
-        return input => list.map(validate => validate(input))
-            .filter(isString);
+    public static getDerivedStateFromProps(props: Form.IProps<any>, state: Form.IState<any>): Form.IState<any> {
+        return { ...state, values: { ...state.values, ...props.values } };
     }
 
-    private static getErrorsFromProps(props: Form.IProps<any>): Record<string, Array<string>> {
-        return props.fields.reduce((acc, field) => {
+    public static wrap(...list: Array<ICallback<string | null, Form.TValidatorError>>): ICallback<string | null, Promise<Array<string>>> {
+        const isString = (x: unknown): x is string => Boolean(x);
+        return input => Promise.all(list.map(validate => validate(input)))
+            .then(list => list.filter(isString))
+            .catch(e => [e.message]);
+    }
+
+    private static getErrorsFromProps(props: Form.IProps<any>): Promise<Record<string, Array<string>>> {
+        const promiseList = props.fields.map(async field => {
             if (field.validator) {
-                const errors = field.validator(props.values[field.field])
-                    .filter(Boolean);
-                acc[field.field] = errors;
+                const errors = await field.validator(props.values[field.field]);
+                return { [field.field]: errors };
             } else {
-                acc[field.field] = [];
+                return { [field.field]: [] };
             }
-            return acc;
-        }, Object.create(null));
+        });
+        return Promise.all(promiseList).then(mergeAll) as Promise<Record<string, Array<string>>>;
     }
 
     private static getValuesFromProps(props: Form.IProps<any>): Record<string, Array<string>> {
@@ -217,6 +232,9 @@ const Counter: React.StatelessComponent<{ targetCount: number; activeCount: numb
 };
 
 export namespace Form {
+
+    export type TValidatorSyncError = string | null;
+    export type TValidatorError = TValidatorSyncError | Promise<TValidatorSyncError>;
 
     export const enum ELEMENT {
         IMAGE = 'image'
@@ -239,13 +257,14 @@ export namespace Form {
         errors: Record<string, Array<string>>;
         values: T;
         focusField: string | null;
+        validationPending: boolean;
     }
 
     export interface IFormItem {
         title: string;
         mode: ELEMENT | Input.INPUT_MODE;
         field: string;
-        validator?: ICallback<string | null, Array<string>>;
+        validator?: ICallback<string | null, Promise<Array<string>>>;
         counter?: IFormItemLimit;
     }
 
@@ -273,5 +292,7 @@ export namespace Form {
         email(email: string | null): string | null;
 
         limit(info: IFormItemLimit): ICallback<string | null, string | null>;
+
+        assetId(server?: string): ICallback<string | null, string | null | Promise<string | null>>;
     }
 }

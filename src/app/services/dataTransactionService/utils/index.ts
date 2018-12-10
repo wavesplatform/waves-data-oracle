@@ -82,10 +82,8 @@ export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<
 }
 
 export function getDataTxFields(address: string, server?: string): Promise<Array<IDataTransactionField>> {
-    const url = new URL(server || NODE_URL);
-    url.pathname = `/addresses/data/${address}`;
     return new Promise((resolve, reject) =>
-        request.get(url.toString())
+        request.get(getUrl(`/addresses/data/${address}`, server))
             .then(response => resolve(response.body))
             .catch(reject));
 }
@@ -240,6 +238,12 @@ export function splitLogo(src?: string | null): { meta: string | null; logo: str
     const logo = `base64:${logoPart}`;
 
     return { meta, logo };
+}
+
+export function getUrl(path: string, server?: string): string {
+    const url = new URL(server || NODE_URL);
+    url.pathname = path;
+    return url.toString();
 }
 
 export interface ICallback<T> {
