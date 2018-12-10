@@ -65,10 +65,17 @@ export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<
 
         api.put('id', id);
         api.addNumber(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, id), 'status');
-        api.addBinary(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, id), 'logo');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, id), 'site');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, id), 'ticker');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, id), 'email');
+        api.readString(replaceAssetID(ORACLE_RESERVED_FIELDS.LOGO_META, id), meta => {
+            api.readBinary(replaceAssetID(ORACLE_RESERVED_FIELDS.LOGO, id), logo => {
+                logo = (logo || '').replace('base64:', '');
+                if (meta && logo) {
+                    api.put('logo', `${meta}${logo}`);
+                }
+            });
+        });
         langList.forEach(lang => {
             const field = getDescriptionField(id, lang);
             api.addToHash('description', lang, hash => getField(hash, field, DATA_TRANSACTION_FIELD_TYPE.STRING));
