@@ -34,9 +34,8 @@ export function getOracleData(address: string, server?: string): Promise<IOracle
         .then(hash => {
 
             const oracle = getOracleInfoFromHash(hash);
-            const assets = getAssetListFromHash(hash);
-
-            return { oracle, assets };
+            return getAssetListFromHash(hash, server)
+                .then(assets => ({ oracle, assets }));
         });
 }
 

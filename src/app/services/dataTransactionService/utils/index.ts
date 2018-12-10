@@ -3,11 +3,10 @@ import {
     IServiceResponse,
     IAssetInfo,
     ORACLE_RESERVED_FIELDS,
-    ORACLE_ASSET_FIELD_PATTERN, PATTERNS, IDataTransactionField, IOracleInfo
+    ORACLE_ASSET_FIELD_PATTERN, PATTERNS, IDataTransactionField, IOracleInfo, getAssetInfo
 } from '../';
 import * as request from 'superagent';
 import { DATA_TRANSACTION_FIELD_TYPE, DEFAULT_LANG } from '../constants';
-
 
 const NODE_URL = 'https://nodes.wavesplatform.com';
 
@@ -49,21 +48,20 @@ export function getOracleInfoFromHash(hash: IHash<IDataTransactionField>): IServ
     return api.toResponse();
 }
 
-export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<IServiceResponse<IAssetInfo>> {
-    const result: Array<IServiceResponse<IAssetInfo>> = [];
+export function getAssetListFromHash(hash: IHash<IDataTransactionField>, server?: string): Promise<Array<IServiceResponse<IAssetInfo>>> {
     const langList = getLangList(hash);
+    const assetIdList = getAssetIdList(Object.keys(hash));
 
-    Object.keys(hash).forEach(key => {
+    return loadAssets(assetIdList, server).then(list => list.map(item => {
 
-        const id = getAssetIdFromStatusKey(key);
-
-        if (!id) {
-            return;
-        }
-
+        const { id, name, error } = item;
         const api = createResponseHash<IAssetInfo>(hash);
 
+        if (error) {
+            api.addError('id', error);
+        }
         api.put('id', id);
+        api.put('name', name);
         api.addNumber(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, id), 'status');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, id), 'site');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, id), 'ticker');
@@ -81,11 +79,8 @@ export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<
             api.addToHash('description', lang, hash => getField(hash, field, DATA_TRANSACTION_FIELD_TYPE.STRING));
         });
 
-        result.push(api.toResponse());
-
-    });
-
-    return result;
+        return api.toResponse();
+    }));
 }
 
 export function getDataTxFields(address: string, server?: string): Promise<Array<IDataTransactionField>> {
@@ -117,6 +112,7 @@ export function createResponseHash<T>(hash: IHash<IDataTransactionField>): ICrea
     };
 
     const api: ICreateResponseAPI<any> = {
+        addError,
         add: <T>(targetKey: string, processor: IAddFunction<T>) => {
             try {
                 const value = processor(hash);
@@ -258,6 +254,8 @@ export interface ICallback<T> {
 }
 
 export interface ICreateResponseAPI<R> {
+    addError(key: string, error: Error): void;
+
     add<T>(targetKey: keyof R, processor: IAddFunction<T>): void;
 
     addToHash<T>(targetKey: keyof R, hashKey: string, processor: IAddFunction<T>): void;
@@ -295,4 +293,23 @@ export interface ICreateResponseAPI<R> {
 
 interface IAddFunction<T> {
     (acc: IHash<IDataTransactionField>): T;
+}
+
+function getAssetIdList(dataKeyList: Array<string>): Array<string> {
+    const filter = (item: string | null): item is string => typeof item === 'string';
+    return dataKeyList.map(getAssetIdFromStatusKey).filter(filter);
+}
+
+function loadAssets(assetIdList: Array<string>, server?: string): Promise<Array<IAssetNameInfo>> {
+    const promiseList = assetIdList.map(id => getAssetInfo(id, server)
+        .then(info => ({ id, name: info.name }))
+        .catch(e => ({ id, name: '', error: e })));
+
+    return Promise.all(promiseList);
+}
+
+interface IAssetNameInfo {
+    id: string;
+    name: string;
+    error?: Error;
 }

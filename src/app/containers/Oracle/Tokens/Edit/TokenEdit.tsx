@@ -19,18 +19,32 @@ const { Content } = Layout;
     (state: RootState): Pick<TokenEdit.IProps, 'user' & 'tokens'> => {
         return { user: state.user, tokens: state.tokens };
     },
-    (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({ // TODO! Add tokens actions
+    (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({
         actions: bindActionCreators(omit({ ...AssetsActions }, 'Type'), dispatch)
     })
 )
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
 
-    state: TokenEdit.IState = {
-        isValid: true,
-        isNew: false,
-        token: Object.create(null),
-        diff: Object.create(null)
-    };
+    private readonly asset: IAssetInfo;
+
+
+    constructor(props: TokenEdit.IProps) {
+        super(props);
+
+        const { assetId } = props.match.params;
+        const isNew = assetId === 'create';
+
+        const { content } = !isNew && find(pathEq(['content', 'id'], assetId), props.tokens.content) || Object.create(null);
+
+        this.asset = { ...content };
+
+        this.state = {
+            isValid: true,
+            isNew: false,
+            token: content,
+            diff: Object.create(null)
+        };
+    }
 
     public render() {
 
@@ -69,38 +83,27 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     }
 
     private _onChangeForm = (data: Form.IChange<Partial<IAssetInfo>>) => {
+        const apply = (name: string) => {
+            const diff = getDiff(this.asset, data.values);
+            this.setState({ token: { ...data.values, name }, diff, isValid: data.isValid });
+        };
+
         if (data.values.id && data.values.id !== this.state.token.id) {
             getAssetInfo(data.values.id, this.props.user.server).then(info => {
                 const name = data.values.id ? info.name : '';
-                this.setState({ token: { ...data.values, name } });
-            }).catch(e => {
-                const name = '';
-                this.setState({ token: { ...data.values, name } });
+                apply(name);
+            }).catch(() => {
+                apply('');
             });
         } else {
-            const name = data.values.id ? data.values.name : '';
-            this.setState({ token: { ...data.values, name } });
+            const name = data.values.id ? data.values.name || '' : '';
+            apply(name);
         }
     };
 
     private _saveTokenHandler = () => {
         this.props.actions.setAsset(this.state.diff);
     };
-
-    public static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState): TokenEdit.IState {
-        const { assetId } = props.match.params;
-        const isNew = assetId === 'create';
-
-        const { content } = !isNew && find(pathEq(['content', 'id'], assetId), props.tokens.content) || Object.create(null);
-
-        if (!isNew && !content) {
-            throw new Error('Add 404 error!'); //TODO 404
-        }
-
-        const diff = getDiff(content || Object.create(null), state.token);
-
-        return { ...state, diff, isNew, token: content };
-    }
 
 }
 

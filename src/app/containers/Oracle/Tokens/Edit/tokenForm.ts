@@ -59,7 +59,7 @@ export function getTokenFormFields(server?: string): Array<Form.IFormItem> {
         {
             title: 'Email',
             mode: Input.INPUT_MODE.INPUT,
-            field: 'mail',
+            field: 'email',
             counter: counters.email,
             validator: Form.wrap(
                 Form.validators.email,
