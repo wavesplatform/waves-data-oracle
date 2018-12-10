@@ -14,6 +14,7 @@ import { OracleInfoActions } from 'app/actions';
 import { If } from 'app/components';
 import { omit } from 'app/utils';
 import { RightSider } from 'app/containers/Oracle/InfoEdit/RightSider';
+import { RouteComponentProps } from 'react-router';
 
 
 const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
@@ -35,7 +36,8 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     state = {
         isValid: false,
         oracleInfo: Object.create(null),
-        diff: Object.create(null)
+        diff: Object.create(null),
+        hideEmpty: false,
     };
     
     saveOracleHandler = () => {
@@ -44,20 +46,20 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     
     render() {
         const disableSave = !Object.keys(this.state.diff).length || !this.state.isValid;
-        
-        if (this.props.oracleInfo.status === ORACLE_STATUS.EMPTY) {
-            return <EmptyContent/>;
+        const hideEmpty = this.state.hideEmpty;
+        if (!hideEmpty && this.props.oracleInfo.status === ORACLE_STATUS.EMPTY) {
+            return <EmptyContent onClick={() => this.setState({ hideEmpty: true })}/>;
         }
         
         const spinning = this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.LOADING;
         
         return (
             <Layout style={{ backgroundColor: '#fff', height: '100%' }}>
-                <Spin style={{height: '100%'}}
-                      spinning={spinning}
-                      indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
-                >
                     <Content style={{ margin: '20px', minWidth: '450px'}}>
+                        <Spin className="formSpinner"
+                              spinning={spinning}
+                              indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
+                        >
                         <h1>Create an oracle</h1>
                         
                         <Form fields={FORM_FIELDS}
@@ -74,8 +76,8 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                         <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
                             <span>Error!</span>
                         </If>
+                        </Spin>
                     </Content>
-                </Spin>
                 <RightSider/>
             </Layout>
         );
@@ -140,7 +142,7 @@ const Fee: React.StatelessComponent<OracleInfo.IState> = params => {
 
 export namespace OracleInfo {
 
-    export interface IProps {
+    export interface IProps extends RouteComponentProps {
         user: RootState.UserState;
         actions: OracleInfoActions;
         oracleInfo: RootState.OracleInfoState;
@@ -152,5 +154,6 @@ export namespace OracleInfo {
         lastPropsStatus?: ORACLE_STATUS;
         diff: Partial<IOracleInfo>;
         saveStatus?: ORACLE_SAVE_STATUS | null;
+        hideEmpty?: boolean;
     }
 }
