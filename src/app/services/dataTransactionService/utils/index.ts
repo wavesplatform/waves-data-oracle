@@ -68,8 +68,8 @@ export function getAssetListFromHash(hash: IHash<IDataTransactionField>): Array<
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, id), 'site');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, id), 'ticker');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, id), 'email');
-        api.readString(replaceAssetID(ORACLE_RESERVED_FIELDS.LOGO_META, id), meta => {
-            api.readBinary(replaceAssetID(ORACLE_RESERVED_FIELDS.LOGO, id), logo => {
+        api.readString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO_META, id), meta => {
+            api.readBinary(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, id), logo => {
                 logo = (logo || '').replace('base64:', '');
                 if (meta && logo) {
                     api.put('logo', `${meta}${logo}`);

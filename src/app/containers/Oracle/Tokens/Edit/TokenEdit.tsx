@@ -6,7 +6,7 @@ import { getTokenFormFields } from 'app/containers/Oracle/Tokens/Edit/tokenForm'
 import { RootState } from 'app/reducers';
 import { currentFee, getAssetFields, getAssetInfo, IAssetInfo } from 'app/services/dataTransactionService';
 import { RouteComponentProps } from 'react-router';
-import { find, propEq } from 'ramda';
+import { find, pathEq } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { getDiff, omit } from 'app/utils';
@@ -16,8 +16,8 @@ import { AssetsActions } from 'app/actions';
 const { Content } = Layout;
 
 @connect(
-    (state: RootState): Pick<TokenEdit.IProps, 'user'> => {
-        return { user: state.user };
+    (state: RootState): Pick<TokenEdit.IProps, 'user' & 'tokens'> => {
+        return { user: state.user, tokens: state.tokens };
     },
     (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({ // TODO! Add tokens actions
         actions: bindActionCreators(omit({ ...AssetsActions }, 'Type'), dispatch)
@@ -91,15 +91,15 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
         const { assetId } = props.match.params;
         const isNew = assetId === 'create';
 
-        const token = !isNew && find(propEq('id', assetId), props.tokens.content);
+        const { content } = !isNew && find(pathEq(['content', 'id'], assetId), props.tokens.content) || Object.create(null);
 
-        if (!isNew && !token) {
+        if (!isNew && !content) {
             throw new Error('Add 404 error!'); //TODO 404
         }
 
-        const diff = getDiff(token || Object.create(null), state.token);
+        const diff = getDiff(content || Object.create(null), state.token);
 
-        return { ...state, diff, isNew };
+        return { ...state, diff, isNew, token: content };
     }
 
 }
