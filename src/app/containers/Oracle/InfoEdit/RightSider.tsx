@@ -6,7 +6,7 @@ import * as pageData from './info.json';
 const { Sider } = Layout;
 
 
-export const RightSider: React.StatelessComponent = (props) => {
+export const RightSider: React.StatelessComponent = () => {
     
     return (
         <Sider theme='light'

@@ -6,7 +6,6 @@ import { AppActions, UserActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { omit } from 'app/utils';
 import LayoutComponent from 'app/components/layout/Layout';
-import { ConditionRouter } from 'app/components/router/ConditionRouter';
 import { OracleMenu } from 'app/containers/Menu/Menu';
 import { Loading } from './Loading/Loading';
 import { OracleInfo as OracleInfoForm } from 'app/containers/Oracle/InfoEdit/OracleInfoEdit';
@@ -40,10 +39,6 @@ export class OracleApp extends React.Component<OracleApp.Props> {
         this.props.actions.getOracleData();
     };
     
-    goToCreateHandler = () => {
-        this.props.history.replace('/oracle/create');
-    };
-    
     componentWillMount(): void {
         this.props.actions.getOracleData();
     }
@@ -74,26 +69,13 @@ export class OracleApp extends React.Component<OracleApp.Props> {
                         <Loading/>
                     </Route>
                     
-                    <ConditionRouter condition={oracleInfo.status !== ORACLE_STATUS.EMPTY}
-                                     redirect="/oracle"
-                                     path="/oracle/edit">
-                        <OracleInfoForm/>
-                    </ConditionRouter>
-                    
-                    <ConditionRouter path="/oracle/create"
-                                     condition={oracleInfo.status === ORACLE_STATUS.EMPTY}
-                                     redirect="/oracle">
-                        <OracleInfoForm/>
-                    </ConditionRouter>
-                    
-                    <ConditionRouter path="/oracle/error"
-                                     condition={oracleInfo.status === ORACLE_STATUS.SERVER_ERROR}
-                                     redirect="/oracle">
-                        <ErrorContent onReload={this.reloadOracleInfo}/>
-                    </ConditionRouter>
-                    
+                    <Route path="/oracle/edit" component={OracleInfoForm as never}/>
+                    <Route path="/oracle/create" component={OracleInfoForm as never}/>
+                    <Route path="/oracle/error"
+                           render={
+                               (props) => <ErrorContent {...props} onReload={this.reloadOracleInfo}/>
+                               }/>
                     <Route path="/oracle/tokens" component={Tokens}/>
-                    
                     <Redirect to="/oracle"/>
                 </Switch>
             </LayoutComponent>
