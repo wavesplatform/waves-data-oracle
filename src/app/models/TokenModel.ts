@@ -1,4 +1,4 @@
-import { IAssetInfo, IOracleInfo } from '../services/dataTransactionService';
+import { IAssetInfo } from '../services/dataTransactionService';
 
 export enum TOKENS_STATUS {
     LOADING = 'LOADING',
@@ -16,7 +16,7 @@ export enum TOKEN_SAVE_STATUS {
 
 export interface TokenModel {
     content: IAssetInfo;
-    tokenErrors: { [P in keyof IOracleInfo]?: Error }|null;
+    tokenErrors: { [P in keyof IAssetInfo]?: Error }|null;
 }
 
 export interface TokensModel {

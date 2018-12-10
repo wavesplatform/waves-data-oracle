@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions';
 import { RootState } from './state';
 import { OracleTokensActions, AppActions } from 'app/actions';
 import { TokensModel, TOKENS_STATUS } from 'app/models';
+import { find, pathEq } from 'ramda';
 
 export const assetsInitState: RootState.TokensState = {
     content: [],
@@ -24,7 +25,22 @@ export const TokensReducer = handleActions<RootState.TokensState, Partial<Tokens
             return <TokensModel>{ ...assetsInitState };
         },
         [OracleTokensActions.Type.SET_TOKEN_DIFF]: (state, action) => {
-            const content = { ...state.content, ...action.payload };
+            const { id } = action.payload as any;
+            let content = [];
+            
+            if(find(pathEq(['content', 'id'], id),  state.content)) {
+                content = state.content.map(item => {
+                    if (item.content.id !== id) {
+                        return item;
+                    }
+                    const content = { ...item.content, ...action.payload };
+                    return { ...item, content }
+                });
+            } else {
+                const item = { ...assetsInitState, content: { ...action.payload } };
+                content = [ item, ...state.content ];
+            }
+            
             return <TokensModel>{ ...state, content };
         },
     },

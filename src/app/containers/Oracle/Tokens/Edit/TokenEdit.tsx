@@ -28,7 +28,6 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
     private readonly asset: IAssetInfo;
 
-
     constructor(props: TokenEdit.IProps) {
         super(props);
 
