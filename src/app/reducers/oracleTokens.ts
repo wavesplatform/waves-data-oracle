@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
-import { OracleTokensActions, AppActions, OracleInfoActions } from 'app/actions';
-import { TokensModel, TOKENS_STATUS, OracleInfoModel } from 'app/models';
+import { OracleTokensActions, AppActions } from 'app/actions';
+import { TokensModel, TOKENS_STATUS } from 'app/models';
 
 export const assetsInitState: RootState.TokensState = {
     content: [],
