@@ -6,6 +6,9 @@ import { OracleApp } from 'app/containers/Oracle';
 import { Login } from 'app/containers/Login';
 import { hot } from 'react-hot-loader';
 import { RootState } from 'app/reducers';
+import 'app/styles/main.less';
+import 'app/styles/icons.less';
+import 'app/styles/fonts.less';
 
 interface IProps {
     app?: RootState.AppState,
