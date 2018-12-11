@@ -1,4 +1,4 @@
-import { Button, Icon, Layout, Spin } from 'antd';
+import { Button, Icon, Layout, notification, Spin } from 'antd';
 import { Form } from 'app/components/form/Form';
 import { If } from 'app/components';
 import * as React from 'react';
@@ -13,6 +13,7 @@ import { getDiff, omit } from 'app/utils';
 import { OracleTokensActions } from 'app/actions';
 import { RightSider } from 'app/components/RightSide/RightSider';
 import * as InfoData from './info.json';
+import { TOKEN_SAVE_STATUS } from 'app/models';
 
 const { Content } = Layout;
 
@@ -48,7 +49,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
     public render() {
 
-        const spinning = false;
+        const spinning = this.props.tokens.saveStatus === TOKEN_SAVE_STATUS.LOADING;
         const hasError = false;
 
         const { isValid, isNew } = this.state;
@@ -104,7 +105,35 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     private _saveTokenHandler = () => {
         this.props.actions.saveToken({ ...this.state.diff, id: this.state.token.id });
     };
+    
+    static sendMessages(nextProps: TokenEdit.IProps) {
+        const { saveStatus } = nextProps.tokens;
+        
+        if (saveStatus === TOKEN_SAVE_STATUS.READY) {
+            notification.success({
+                message: 'Token data saved',
+                key: saveStatus
+            });
+    
+            nextProps.actions.setSaveTokenStatus(null);
+        }
+    
+        if (saveStatus === TOKEN_SAVE_STATUS.SERVER_ERROR) {
+            notification.error({
+                message: 'Save Token data error',
+                key: saveStatus
+            });
+    
+            nextProps.actions.setSaveTokenStatus(null);
+        }
+    }
 
+    static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState) {
+    
+        TokenEdit.sendMessages(props);
+        
+        return state;
+    }
 }
 
 const Fee: React.StatelessComponent<TokenEdit.IState> = params => {
