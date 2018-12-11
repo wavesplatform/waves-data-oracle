@@ -12,7 +12,7 @@ export class Input extends React.PureComponent<Input.IProps, Input.IState> {
     };
 
     render() {
-        const Tag = this.props.mode === Input.INPUT_MODE.TEXT_AREA ? AntdInput.TextArea : AntdInput;
+        const Tag = (this.props.mode === Input.INPUT_MODE.TEXT_AREA ? AntdInput.TextArea : AntdInput) as any;
         const isTouched = this.state.touched;
         const className = classNames(this.props.className || '', { isTouched });
         const props = { ...this.props, onBlur: this._onBlur, className };

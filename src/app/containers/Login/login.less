@@ -1,15 +1,52 @@
-.login {
+@import '../../styles/main.less';
 
-  .layout {
-    margin: 0;
+.login {
+  height: 100%;
+
+  .wrapper {
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  h1 {
+    margin-top: 290px;
   }
 
   .content {
+    height: calc(100% ~'- 100px');
     padding: 0 50px;
   }
-  
-  .header {
-    background: #fff;
+
+  .ant-layout {
+    height: 100%;
+  }
+
+  .left-side,
+  .right-side {
+    width: 50%;
+    height: 100%;
+  }
+
+  .left-side {
+    background-color: @submit600;
+    position: relative;
+  }
+
+  .ant-layout {
+    background: @white;
+    &-header {
+      padding: 50px 0 0;
+    }
+    &-header,
+    &-footer {
+      height: 50px;
+      background: @white;
+      display: flex;
+      justify-content: center;
+    }
+    &-footer {
+     padding: 0;
+    }
   }
 }
-

@@ -11,9 +11,33 @@ body {
   line-height: 18px;
   width: 100%;
   height: 100%;
+  min-width: 1024px;
+}
+
+.logo {
+  &-white {
+    background: url(../img/waves180-white.svg) center no-repeat;
+    width: 180px;
+    height: 24px;
+    margin: 0 auto;
+  }
+  &-black {
+    background: url(../img/waves220-black.svg) center no-repeat;
+    width: 220px;
+    height: 30px;
+    margin: 0 auto;
+  }
 }
 
 // layout
+
+.flex {
+  display: flex;
+}
+
+.center {
+  text-align: center;
+}
 
   .marginAuto {margin: 0 auto;}
   .margin0 {margin: 0;}
@@ -25,6 +49,8 @@ body {
 
 // colors
 
+  @white: white;
+  @black: black;
   @basic1000: #151E36;
   @basic800: #444B5E;
   @basic600: #6D7487;
@@ -43,6 +69,26 @@ body {
   @red: #eb4d4b;
   @green: #72c150;
   @orange: #ffc443;
+
+
+
+  .white {color: white;}
+  .black {color: black;}
+  .basic1000 {color: @basic1000;}
+  .basic800 {color: @basic800;}
+  .basic600 {color: @basic600;}
+  .basic400 {color: @basic400;}
+  .basic200 {color: @basic200;}
+  .structure800 {color: @structure800;}
+  .structure600 {color: @structure600;}
+  .structure400 {color: @structure400;}
+  .structure200 {color: @structure200;}
+  .submit600 {color: @submit600;}
+  .submit400 {color: @submit400;}
+  .submit200 {color: @submit200;}
+  .red {color: @red;}
+  .green {color: @green;}
+  .orange {color: @orange;}
 
 // typography
 
