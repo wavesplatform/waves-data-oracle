@@ -40,8 +40,8 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
         this.state = {
             isValid: true,
-            isNew: false,
-            token: content,
+            isNew,
+            token: { ...content },
             diff: Object.create(null)
         };
     }
@@ -108,7 +108,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 }
 
 const Fee: React.StatelessComponent<TokenEdit.IState> = params => {
-    if (!params.isValid) {
+    if (!params.isValid || !params.token) {
         return <span>Fee 0 WAVES</span>;
     }
 

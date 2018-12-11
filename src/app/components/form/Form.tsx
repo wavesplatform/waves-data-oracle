@@ -63,7 +63,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         const onChangeValue = (value: string | null) => {
             const values = assocPath(field.field.split('.'), value, this.state.values);
 
-            this.setState({ validationPending: true });
+            this.setState({ validationPending: true, values });
 
             validator(value)
                 .catch(e => [e.message])
@@ -195,7 +195,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
     };
 
     public static getDerivedStateFromProps(props: Form.IProps<any>, state: Form.IState<any>): Form.IState<any> {
-        return { ...state, values: { ...state.values, ...props.values } };
+        return { ...state, values: { ...props.values, ...state.values } };
     }
 
     public static wrap(...list: Array<ICallback<string | null, Form.TValidatorError>>): ICallback<string | null, Promise<Array<string>>> {
