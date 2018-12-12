@@ -8,9 +8,9 @@ export class UserCard extends React.PureComponent<IProps, IState> {
     readonly state = Object.create(null);
     
     render() {
-        return <div className="user-card">
-            <Avatar address={this.state.address} size={67} className="user-card_avatar"/>
-            <div className="user-card_name">{this.state.name}</div>
+        return <div className="user-card center">
+            <Avatar address={this.state.address} size={50} className="user-card_avatar margin2"/>
+            <h3 className="user-card_name">{this.state.name}</h3>
             <div className="user-card_address">{this.state.address}</div>
         </div>;
     }

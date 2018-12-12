@@ -19,7 +19,7 @@ body {
     background: url(../img/waves180-white.svg) center no-repeat;
     width: 180px;
     height: 24px;
-    margin: 0 auto;
+    margin: 40px auto 60px;
   }
   &-black {
     background: url(../img/waves220-black.svg) center no-repeat;
@@ -31,8 +31,29 @@ body {
 
 // layout
 
+.centering {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.height {
+  height: 100%;
+}
+
 .flex {
   display: flex;
+
+  &-center-h {
+    align-items: center;
+  }
+  &-center-v {
+    justify-content: center;
+  }
+  &-col {
+    flex-direction: column;
+  }
 }
 
 .center {
@@ -47,6 +68,10 @@ body {
   .margin4 {margin-bottom: 40px;}
   .margin5 {margin-bottom: 50px;}
 
+  .border-radius {
+    border-radius: 4px;
+  }
+
 // colors
 
   @white: white;
@@ -56,21 +81,16 @@ body {
   @basic600: #6D7487;
   @basic400: #9EA5B7;
   @basic200: #D4D8E3;
-
   @structure800: #A7B3D1;
   @structure600: #d3d9e8;
   @structure400: #EDEEF6;
   @structure200: #F5F6FA;
-
   @submit600: #1d5ef1;
   @submit400: #b2b6c1;
   @submit200: #9fbcff;
-
   @red: #eb4d4b;
   @green: #72c150;
   @orange: #ffc443;
-
-
 
   .white {color: white;}
   .black {color: black;}
@@ -91,8 +111,12 @@ body {
   .orange {color: @orange;}
 
 // typography
+  h2, h3, h4 {
+    font-weight: 400;
+  }
 
   h1 {
+    font-family: 'Avenir Light', 'Tahoma' !important;
     font-size: 32px;
     line-height: 38px;
   }

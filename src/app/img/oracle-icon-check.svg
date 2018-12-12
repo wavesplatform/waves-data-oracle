@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180px" height="180px" viewBox="0 0 180 180" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>Img/172/Oko/Error</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M172,125.458489 C165.948443,118.44168 156.992927,114 147,114 C128.774603,114 114,128.774603 114,147 C114,156.992927 118.44168,165.948443 125.458489,172 L38.458278,172 C25.0854969,172 20.2362033,170.607616 15.3473144,167.993009 C10.4584256,165.378403 6.62159695,161.541574 4.00699056,156.652686 C1.39238417,151.763797 -2.95086063e-15,146.914503 -4.58855399e-15,133.541722 L1.03584031e-15,38.458278 C-6.01853049e-16,25.0854969 1.39238417,20.2362033 4.00699056,15.3473144 C6.62159695,10.4584256 10.4584256,6.62159695 15.3473144,4.00699056 C20.2362033,1.39238417 25.0854969,-2.64993411e-15 38.458278,-5.10647414e-15 L133.541722,1.55376046e-15 C146.914503,-9.02779573e-16 151.763797,1.39238417 156.652686,4.00699056 C161.541574,6.62159695 165.378403,10.4584256 167.993009,15.3473144 C170.607616,20.2362033 172,25.0854969 172,38.458278 L172,125.458489 Z" id="path-1"></path>
+        <filter x="-4.1%" y="-2.9%" width="108.1%" height="108.1%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.929411765   0 0 0 0 0.937254902   0 0 0 0 0.976470588  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="50%" x2="2.20375723%" y2="97.7962428%" id="linearGradient-3">
+            <stop stop-color="#3F7AFF" offset="0%"></stop>
+            <stop stop-color="#0055FF" stop-opacity="0.8" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6.-Verify-your-first-token" transform="translate(-785.000000, -178.000000)">
+            <g id="Img/172/Oko/Verify" transform="translate(789.000000, 180.000000)">
+                <g>
+                    <rect id="ico-zone" fill-opacity="0" fill="#D8D8D8" fill-rule="nonzero" x="0" y="0" width="172" height="172"></rect>
+                    <g id="white-block-2" fill-rule="nonzero">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <use fill="#FFFFFF" xlink:href="#path-1"></use>
+                    </g>
+                    <circle id="Oval" fill="#66D338" fill-rule="nonzero" cx="147" cy="147" r="25"></circle>
+                    <g id="check" transform="translate(136.000000, 140.000000)" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+                        <polyline id="Path" points="22 0 6.875 15.125 0 8.25"></polyline>
+                    </g>
+                    <circle id="Oval" fill-opacity="0.25" fill="#3F7AFF" fill-rule="nonzero" cx="86" cy="86" r="51.6"></circle>
+                    <circle id="Oval" fill="url(#linearGradient-3)" fill-rule="nonzero" cx="86" cy="86" r="24"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

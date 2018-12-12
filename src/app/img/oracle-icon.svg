@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180px" height="180px" viewBox="0 0 180 180" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M38.458278,-1.55376046e-15 L133.541722,5.10647414e-15 C146.914503,2.64993411e-15 151.763797,1.39238417 156.652686,4.00699056 C161.541574,6.62159695 165.378403,10.4584256 167.993009,15.3473144 C170.607616,20.2362033 172,25.0854969 172,38.458278 L172,133.541722 C172,146.914503 170.607616,151.763797 167.993009,156.652686 C165.378403,161.541574 161.541574,165.378403 156.652686,167.993009 C151.763797,170.607616 146.914503,172 133.541722,172 L38.458278,172 C25.0854969,172 20.2362033,170.607616 15.3473144,167.993009 C10.4584256,165.378403 6.62159695,161.541574 4.00699056,156.652686 C1.39238417,151.763797 6.01853049e-16,146.914503 -1.03584031e-15,133.541722 L4.58855399e-15,38.458278 C2.95086063e-15,25.0854969 1.39238417,20.2362033 4.00699056,15.3473144 C6.62159695,10.4584256 10.4584256,6.62159695 15.3473144,4.00699056 C20.2362033,1.39238417 25.0854969,9.02779573e-16 38.458278,-1.55376046e-15 Z" id="path-1"></path>
+        <filter x="-4.1%" y="-2.9%" width="108.1%" height="108.1%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.929411765   0 0 0 0 0.937254902   0 0 0 0 0.976470588  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="50%" x2="2.20375723%" y2="97.7962428%" id="linearGradient-3">
+            <stop stop-color="#3F7AFF" offset="0%"></stop>
+            <stop stop-color="#0055FF" stop-opacity="0.8" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="2.-Oracle-not-found" transform="translate(-785.000000, -178.000000)" fill-rule="nonzero">
+            <g id="Group" transform="translate(789.000000, 180.000000)">
+                <rect id="ico-zone" fill-opacity="0" fill="#D8D8D8" x="3.55271368e-15" y="3.55271368e-15" width="172" height="172"></rect>
+                <g id="white-block">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FFFFFF" xlink:href="#path-1"></use>
+                </g>
+                <circle id="Oval" fill-opacity="0.25" fill="#3F7AFF" cx="86" cy="86" r="51.6"></circle>
+                <circle id="Oval" fill="url(#linearGradient-3)" cx="86" cy="86" r="24"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
