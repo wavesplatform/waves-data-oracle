@@ -17,13 +17,13 @@ export const PATTERNS = {
 };
 
 export const enum ORACLE_RESERVED_FIELDS {
-    NAME = 'oracle_name',
-    SITE = 'oracle_site',
-    LOGO = 'oracle_logo',
-    LOGO_META = 'oracle_logo_meta',
-    MAIL = 'oracle_mail',
-    DESCRIPTION = 'oracle_description',
-    LANG_LIST = 'oracle_lang_list'
+    NAME = 'data_provider_name',
+    SITE = 'data_provider_link',
+    LOGO = 'data_provider_logo',
+    LOGO_META = 'data_provider_logo_meta',
+    EMAIL = 'data_provider_email',
+    DESCRIPTION = 'data_provider_description',
+    LANG_LIST = 'data_provider_lang_list'
 }
 
 export const enum ORACLE_ASSET_FIELD_PATTERN {
@@ -31,7 +31,7 @@ export const enum ORACLE_ASSET_FIELD_PATTERN {
     LOGO = 'logo_<ASSET_ID>',
     LOGO_META = 'logo_meta_<ASSET_ID>',
     DESCRIPTION = 'description_<LANG>_<ASSET_ID>',
-    SITE = 'site_<ASSET_ID>',
+    LINK = 'link_<ASSET_ID>',
     TICKER = 'ticker_<ASSET_ID>',
     EMAIL = 'email_<ASSET_ID>'
 }

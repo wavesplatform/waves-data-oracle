@@ -81,7 +81,7 @@ export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IData
 
     const fields = [
         { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name },
-        { key: ORACLE_RESERVED_FIELDS.MAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail },
+        { key: ORACLE_RESERVED_FIELDS.EMAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail },
         { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site }
     ].filter(fieldsFilter);
 
@@ -149,7 +149,7 @@ export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Arr
             value: asset.email
         },
         {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
+            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LINK, asset.id),
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: asset.site
         },

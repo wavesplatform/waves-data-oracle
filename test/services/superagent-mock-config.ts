@@ -26,7 +26,7 @@ const generateAsset = (asset: IAssetInfo) => [
         value: asset.status
     },
     {
-        key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
+        key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LINK, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
         value: asset.site
     },

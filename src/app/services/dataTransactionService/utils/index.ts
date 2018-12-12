@@ -28,7 +28,7 @@ export function getOracleInfoFromHash(hash: IHash<IDataTransactionField>): IServ
 
     api.addString(ORACLE_RESERVED_FIELDS.NAME, 'name');
     api.addString(ORACLE_RESERVED_FIELDS.SITE, 'site');
-    api.addString(ORACLE_RESERVED_FIELDS.MAIL, 'mail');
+    api.addString(ORACLE_RESERVED_FIELDS.EMAIL, 'mail');
     api.readBinary(ORACLE_RESERVED_FIELDS.LOGO, logo => {
         const withoutPrefix = logo && logo.replace('base64:', '') || '';
         api.readString(ORACLE_RESERVED_FIELDS.LOGO_META, meta => {
@@ -63,7 +63,7 @@ export function getAssetListFromHash(hash: IHash<IDataTransactionField>, server?
         api.put('id', id);
         api.put('name', name);
         api.addNumber(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, id), 'status');
-        api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, id), 'site');
+        api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LINK, id), 'site');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, id), 'ticker');
         api.addString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, id), 'email');
         api.readString(replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO_META, id), meta => {
