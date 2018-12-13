@@ -22,7 +22,6 @@ export class OracleMenu extends React.PureComponent<IMenu, IMenuState> {
         if (path != null) {
             this.props.history.push(path);
         }
-
     };
 
     render(): React.ReactNode {

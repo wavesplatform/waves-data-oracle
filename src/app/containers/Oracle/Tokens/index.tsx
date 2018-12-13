@@ -10,7 +10,6 @@ import { Layout } from 'antd';
 import { TokenEdit } from 'app/containers/Oracle/Tokens/Edit/TokenEdit';
 //import { ConditionRouter } from 'app/components/router/ConditionRouter';
 
-
 export namespace Tokens {
     export interface Props extends RouteComponentProps<void> {
         user: RootState.UserState;
@@ -29,6 +28,7 @@ const { Content } = Layout;
         actions: bindActionCreators(omit({ ...UserActions }, 'Type'), dispatch)
     })
 )
+
 export class Tokens extends React.Component<Tokens.Props> {
 
     render() {

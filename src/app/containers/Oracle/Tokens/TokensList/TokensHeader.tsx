@@ -52,23 +52,23 @@ class TokensHeader extends React.PureComponent<TokensHeader.Props, TokensHeader.
     
     render() {
         return (
-            <Row gutter={5}>
-                <Col span={4}>
-                    <div/>
+            <Row justify="space-between" type="flex" align="middle" className="token-list__list-header margin1 basic400">
+                <Col span={1}>
+                    <div className="tokens-list__avatar"/>
                 </Col>
-                <Col span={4}>
+                <Col span={6}>
                     <HeaderItem name="name"
                                 title="Name"
                                 sort={this.state}
                                 onClick={this.changeSortHandler} />
                 </Col>
-                <Col span={4}>
+                <Col span={2}>
                     <HeaderItem name="ticker"
                                 title="Ticker"
                                 sort={this.state}
                                 onClick={this.changeSortHandler} />
                 </Col>
-                <Col span={4}>
+                <Col span={3}>
                     <HeaderItem name="status"
                                 title="Status"
                                 sort={this.state}
@@ -80,7 +80,7 @@ class TokensHeader extends React.PureComponent<TokensHeader.Props, TokensHeader.
                                 sort={this.state}
                                 onClick={this.changeSortHandler} />
                 </Col>
-                <Col span={4}>
+                <Col span={6}>
                     <HeaderItem name="description"
                                 title="Description"
                                 sort={this.state}

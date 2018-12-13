@@ -48,7 +48,7 @@ export class OracleApp extends React.Component<OracleApp.Props> {
         const { oracleInfo } = this.props;
         const path = this.props.history.location.pathname;
         const menu = <OracleMenu path={path} history={this.props.history} address={address} name={name}/>;
-        
+        //oracleInfo.status = ORACLE_STATUS.SERVER_ERROR as any;
         if (path === '/oracle') {
             switch (oracleInfo.status) {
                 case ORACLE_STATUS.EMPTY:

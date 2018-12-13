@@ -1,0 +1,55 @@
+@import '../../../../styles/main.less';
+
+.token-list {
+  padding: 40px 40px 0;
+  height: 100%;
+  overflow: hidden;
+  background: @white;
+  border-radius: @border-radius;
+
+  &__container {
+    height: calc(100% - 32px);
+    border: 1px solid @structure400;
+    min-width: 800px;
+  }
+
+  &__scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: calc(100% - 106px);
+  }
+
+  &__header {
+    min-width: 800px;
+    align-items: center;
+  }
+
+  &__list-header {
+    padding: 0 20px;
+    min-width: 800px;
+  }
+
+  &__row {
+    padding: 15px 20px;
+    border-top: 1px solid @structure400;
+    height: 70px;
+
+    div:not(.ant-col-1) {
+      overflow: hidden;
+    }
+
+    &:first-child {
+      border-top: 0 none;
+    }
+  }
+
+  &__avatar {
+    margin-right: 26px;
+    min-width: 40px;
+  }
+
+  &__description-overflow {
+    max-height: 38px;
+    overflow: hidden;
+  }
+}
