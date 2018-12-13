@@ -1,14 +1,25 @@
 @import "../../../assets/index";
+@import "../../styles/main.less";
 
-.ant-layout-sider {
-  &.right-info {
-    background: @layout-body-background;
+body {
+  .ant-list-split {
+    .ant-list-item {
+      padding: 0;
+      border: 0 none;
+    }
+  }
 
-    .right-info {
-      &_conteiner {
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-top: 10px;
+  .ant-layout-sider {
+    background: @basic1000;
+
+    &.right-info {
+      background: @layout-body-background;
+      padding: @padding-layout;
+
+      .right-info {
+        &_container {
+
+        }
       }
     }
   }

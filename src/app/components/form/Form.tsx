@@ -57,7 +57,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         const isValid = !errors.length;
         const inputClassName = classnames({ isValid });
         const limit = this._getLimit(field, value);
-        const className = classnames('row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
+        const className = classnames('basic400', 'margin2', 'block', 'flex', 'flex-col', 'row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
         const validator = field.validator || (() => Promise.resolve([]));
 
         const onChangeValue = (value: string | null) => {
@@ -113,7 +113,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
                              readOnly={readonly}
                              onFocus={onFocus}
                              onBlur={onBlur}
-                             className={inputClassName}
+                             className={`${inputClassName} input-text`}
                              errors={errors}
                              onChange={onChange}
                              value={value}/>;

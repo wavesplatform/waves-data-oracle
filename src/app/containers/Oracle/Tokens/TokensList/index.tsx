@@ -60,7 +60,7 @@ class TokensList extends React.PureComponent<TokensList.IProps, TokensList.State
             return <FirstToken/>;
         }
         
-        return <div className="token-list">
+        return <div className="token-list padding-layout">
             <Row className="token-list__header margin2">
                 <Col span={12}>
                     <h2 className="margin0">Token verification</h2>

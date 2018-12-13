@@ -4,7 +4,6 @@ import { Icon, Upload } from 'antd';
 import { If } from 'app/components';
 import './edit-form.less';
 
-
 export class ImageUpload extends React.PureComponent<ImageUpload.IProps, ImageUpload.IState> {
 
     state = {
@@ -41,7 +40,7 @@ export class ImageUpload extends React.PureComponent<ImageUpload.IProps, ImageUp
         const errors = this._getErrors();
 
         return (
-            <div className={'image-upload'}>
+            <div className={'image-upload flex'}>
                 <Upload
                     accept={'image/*'}
                     className={'border-round'}
@@ -53,16 +52,21 @@ export class ImageUpload extends React.PureComponent<ImageUpload.IProps, ImageUp
                 >
                     {!this.state.fileList.length ? addLogoButton : null}
                 </Upload>
-                <If condition={this.state.touched}>
-                    {errors}
-                </If>
+                <div className="flex flex-col flex-center-v">
+                    <div className="margin1">You can upload JPEG photos over 20 KB and PNG photos over 40KB and either type under 25MB.</div>
+                    <div className="margin1">You can upload photos that are .JPEG, .JPG, or .PNG.</div>
+
+                    <If condition={this.state.touched}>
+                        {errors}
+                    </If>
+                </div>
             </div>
         );
     }
 
     private _getErrors() {
         return (this.props.errors || []).map((error, index) => (
-            <div key={`image-upload-error-${index}`} className={'logo-error'}>
+            <div key={`image-upload-error-${index}`} className={'error'}>
                 {error}
             </div>
         ));

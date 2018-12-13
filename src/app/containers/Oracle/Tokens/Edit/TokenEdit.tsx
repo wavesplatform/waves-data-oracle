@@ -55,10 +55,9 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
         const { isValid, isNew } = this.state;
 
         return (
-            <Layout style={{ backgroundColor: '#fff', height: '100%' }}>
-                <Content style={{ margin: '20px', minWidth: '450px' }}>
-                    <Spin style={{ height: '100%' }}
-                          spinning={spinning}
+            <Layout>
+                <Content className="padding-layout">
+                    <Spin spinning={spinning}
                           indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}>
                         <h1>Create an oracle</h1>
 
@@ -67,12 +66,16 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                               readonly={{ name: true, id: !isNew }}
                               onChange={this._onChangeForm}/>
 
+                        <div className='block margin-top3 basic400'>
                         <Fee {...this.state}/>
+                            </div>
 
-                        <Button type="primary">Cancel</Button>
-                        <Button type="primary"
-                                onClick={this._saveTokenHandler}
-                                disabled={!isValid}>Save</Button>
+                        <div className="buttons-wrapper">
+                            <Button type="primary">Cancel</Button>
+                            <Button type="primary"
+                                    onClick={this._saveTokenHandler}
+                                    disabled={!isValid}>Save</Button>
+                        </div>
                         <If condition={hasError}>
                             <span>Error!</span>
                         </If>
