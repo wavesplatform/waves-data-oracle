@@ -1,5 +1,6 @@
 import { AnyAction, Middleware, MiddlewareAPI } from 'redux';
 import { OracleInfoActions, AppActions, OracleTokensActions } from '../actions';
+import * as OracleData from '@waves/oracle-data';
 import {
     ORACLE_SAVE_STATUS,
     ORACLE_STATUS,
@@ -12,9 +13,6 @@ import {
     setOracleInfo as apiSetOracleInfo,
     getOracleData as apiGetInfo,
     setAssetInfo as apiToken,
-    IOracleInfo,
-    IServiceResponse,
-    STATUSES, IAssetInfo
 } from '../services/dataTransactionService';
 import { middlewareFabric as mwF } from './utils';
 
@@ -23,9 +21,11 @@ export const getOracleData: Middleware =
         const state = store.getState();
         const { user } = state;
         store.dispatch(AppActions.setLoading(true));
+        
         apiGetInfo(user.address, user.server).then(({ oracle, assets }) => {
             const infoData = parseOracleInfoResponse(oracle);
             const tokens = parseTokensResponse(assets);
+            
             store.dispatch(AppActions.setServerError(null));
             store.dispatch(OracleInfoActions.setOracleInfo(infoData));
             store.dispatch(OracleTokensActions.setOracleTokens(tokens));
@@ -39,20 +39,6 @@ export const getOracleData: Middleware =
     });
 
 
-export const getOracleInfo: Middleware =
-    mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.GET_INFO)((store) => {
-        const state = store.getState();
-        const { user } = state;
-
-        store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.LOADING));
-        apiGetInfo(user.address, user.server)
-            .then(oracleInfo => {
-                const infoData = parseOracleInfoResponse(oracleInfo.oracle);
-                store.dispatch(OracleInfoActions.setOracleInfo(infoData));
-            }).catch((e) => {
-            store.dispatch(OracleInfoActions.setOracleInfoStatus(ORACLE_STATUS.SERVER_ERROR));
-        });
-    });
 
 export const setOracleInfo: Middleware =
     mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.SAVE_INFO)((store, next, action) => {
@@ -81,32 +67,45 @@ export const setOracleToken: Middleware =
     });
 
 
-const parseOracleInfoResponse = (response: IServiceResponse<IOracleInfo>): OracleInfoModel => {
-    const { status, data, errors: oracleErrors = null } = response;
+const parseOracleInfoResponse = (response: OracleData.TResponse<OracleData.IProviderData>): OracleInfoModel => {
 
-    switch (status) {
-        case STATUSES.EMPTY:
-            return { status: ORACLE_STATUS.EMPTY, content: data, oracleErrors };
-        case STATUSES.ERROR:
-            return { status: ORACLE_STATUS.HAS_ERROR, content: data, oracleErrors };
-        case STATUSES.OK:
-            return { status: ORACLE_STATUS.READY, content: data, oracleErrors };
+    if (response.status === OracleData.RESPONSE_STATUSES.OK) {
+        const { content } = response;
+        return {
+            errors: null,
+            status: ORACLE_STATUS.READY,
+            content
+        };
+    } else {
+        const { content, errors } = response;
+        const isEmpty = Object.keys(content).length === 0;
+        return {
+            status: isEmpty ?  ORACLE_STATUS.EMPTY : ORACLE_STATUS.HAS_ERROR,
+            errors: isEmpty ? null : errors,
+            content,
+        }
     }
 };
 
-const parseTokensResponse = (responses: Array<IServiceResponse<IAssetInfo>>): TokensModel => {
+const parseTokensResponse = (responses: Array<OracleData.TResponse<OracleData.TProviderAsset>>): TokensModel => {
 
-    const result = responses.map((response) => {
-        const { status, data, errors: tokenErrors } = response;
-        switch (status) {
-            case STATUSES.EMPTY:
-                return { status: TOKENS_STATUS.EMPTY, content: data, tokenErrors };
-            case STATUSES.ERROR:
-                return { status: TOKENS_STATUS.HAS_ERROR, content: data, tokenErrors };
-            case STATUSES.OK:
-                return { status: TOKENS_STATUS.READY, content: data, tokenErrors };
+    const getAsset = (response: OracleData.TResponse<OracleData.TProviderAsset>) => {
+        if (response.status === OracleData.RESPONSE_STATUSES.OK) {
+            return {
+                status: TOKENS_STATUS.READY,
+                content: response.content,
+                errors: null,
+            }
+        } else {
+            return {
+                status: TOKENS_STATUS.HAS_ERROR,
+                content: response.content,
+                errors: response.errors,
+            };
         }
-    });
+    };
+    
+    const result = responses.map(getAsset);
 
     return {
         status: TOKENS_STATUS.READY,

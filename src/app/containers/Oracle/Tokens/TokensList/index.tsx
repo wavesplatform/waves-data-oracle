@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { omit } from 'app/utils';
 import { TokenModel } from 'app/models';
-import { IAssetInfo } from 'app/services/dataTransactionService';
+import * as OracleData from '@waves/oracle-data';
 import FirstToken from 'app/containers/Oracle/Tokens/FirstToken';
 import './tokenList.less';
 
@@ -83,7 +83,7 @@ class TokensList extends React.PureComponent<TokensList.IProps, TokensList.State
         </div>;
     }
     
-    static sorter(field: keyof IAssetInfo, sortAs: "asc" | "desc") {
+    static sorter(field: keyof OracleData.IProviderAsset, sortAs: "asc" | "desc") {
         const more = sortAs === "asc" ? 1 : -1;
         const less = 0 - more;
         return (token1: TokenModel, token2:TokenModel): number => {

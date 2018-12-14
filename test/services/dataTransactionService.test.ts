@@ -1,3 +1,4 @@
+/*
 ///<reference path="../../types/global.d.ts"/>
 
 
@@ -231,3 +232,4 @@ describe('Data transactions service test', () => {
         });
     });
 });
+*/

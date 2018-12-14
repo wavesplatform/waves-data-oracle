@@ -8,12 +8,12 @@ export const oracleInfoInitialState: RootState.OracleInfoState = {
         description: {},
         logo: '',
         name: '',
-        site: '',
-        mail: ''
+        link: '',
+        email: ''
     },
     status: ORACLE_STATUS.LOADING,
     saveStatus: null,
-    oracleErrors: {}
+    errors: []
 };
 
 export const OracleInfosReducer = handleActions<RootState.OracleInfoState, Partial<OracleInfoModel>>(

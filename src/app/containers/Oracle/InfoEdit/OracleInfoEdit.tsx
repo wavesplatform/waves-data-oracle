@@ -5,19 +5,18 @@ import { RootState } from 'app/reducers';
 import { Button, Layout, notification, Spin, Icon } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
-import { currentFee, getOracleInfoDataFields, IOracleInfo } from 'app/services/dataTransactionService';
+import { currentFee } from 'app/services/dataTransactionService';
+import * as OracleData from '@waves/oracle-data';
 import { FORM_FIELDS } from 'app/containers/Oracle/InfoEdit/oracleEditForm';
 import { ORACLE_SAVE_STATUS, ORACLE_STATUS } from 'app/models';
 import { Form } from 'app/components/form/Form';
 import { OracleInfoActions } from 'app/actions';
 import { If } from 'app/components';
-import { getDiff, omit } from 'app/utils';
+import { omit } from 'app/utils';
 import { RightSider } from 'app/components/RightSide/RightSider';
 import { RouteComponentProps } from 'react-router';
 import * as AboutData from './info.json';
 
-
-const ORACLE_INFO_KEYS = ['name', 'site', 'mail', 'logo', 'description'] as Array<keyof IOracleInfo>;
 
 const { Content } = Layout;
 
@@ -69,8 +68,9 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                         </div>
 
                         <div className="buttons-wrapper margin-top3">
-                            <Button type="primary">Cancel</Button>
+                            <Button type="default" htmlType="button">Cancel</Button>
                             <Button type="primary"
+                                    htmlType="button"
                                     onClick={this._saveOracleHandler}
                                     disabled={disableSave}>Save</Button>
                         </div>
@@ -89,7 +89,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         this.props.actions.saveOracleInfo(this.state.diff);
     };
 
-    private _onChangeForm = (data: Form.IChange<IOracleInfo & { address: string }>) => {
+    private _onChangeForm = (data: Form.IChange<OracleData.IProviderData>) => {
         this.setState({ oracleInfo: data.values, isValid: data.isValid });
     };
 
@@ -122,12 +122,10 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
 
         if (!state.lastPropsStatus || props.oracleInfo.status !== state.lastPropsStatus) {
             state.lastPropsStatus = props.oracleInfo.status;
-            ORACLE_INFO_KEYS.forEach(key => {
-                state.oracleInfo[key] = props.oracleInfo.content[key];
-            });
+            state.oracleInfo = { ...state.oracleInfo, ...props.oracleInfo.content };
         }
 
-        state.diff = getDiff(props.oracleInfo.content, state.oracleInfo);
+        state.diff = OracleData.getDifferenceByData(props.oracleInfo.content as any, state.oracleInfo);
 
         OracleInfo.sendMessages(props);
 
@@ -140,9 +138,8 @@ const Fee: React.StatelessComponent<OracleInfo.IState> = params => {
         return <span>Fee 0 WAVES</span>;
     }
 
-    const fields = getOracleInfoDataFields(params.diff);
     try {
-        const fee = fields.length ? Number(currentFee(fields)) / Math.pow(10, 8) : 0;
+        const fee = params.diff.length ? Number(currentFee(params.diff)) / Math.pow(10, 8) : 0;
         return <span>Fee {fee} WAVES</span>;
     } catch (e) {
         return <span>Fee 0 WAVES</span>;
@@ -159,9 +156,9 @@ export namespace OracleInfo {
 
     export interface IState {
         isValid: boolean;
-        oracleInfo: Partial<IOracleInfo>;
+        oracleInfo: Partial<OracleData.IProviderData>;
         lastPropsStatus?: ORACLE_STATUS;
-        diff: Partial<IOracleInfo>;
+        diff: Array<OracleData.TDataTxField>;
         saveStatus?: ORACLE_SAVE_STATUS | null;
         hideEmpty?: boolean;
     }

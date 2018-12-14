@@ -1,11 +1,9 @@
-import { IAssetInfo } from '../services/dataTransactionService';
+import * as OracleData from '@waves/oracle-data';
 
 export enum TOKENS_STATUS {
     LOADING = 'LOADING',
-    EMPTY = 'EMPTY',
     READY = 'READY',
     HAS_ERROR = 'HAS_ERROR',
-    SERVER_ERROR = 'SERVER_ERROR'
 }
 
 export enum TOKEN_SAVE_STATUS {
@@ -15,8 +13,8 @@ export enum TOKEN_SAVE_STATUS {
 }
 
 export interface TokenModel {
-    content: IAssetInfo;
-    tokenErrors: { [P in keyof IAssetInfo]?: Error }|null;
+    content: Partial<OracleData.TProviderAsset>& { name?: string };
+    errors: Array<OracleData.IResponseError>|null;
 }
 
 export interface TokensModel {

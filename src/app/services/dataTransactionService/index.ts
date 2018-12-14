@@ -1,22 +1,17 @@
 import {
-    createDataTxField,
-    getAssetListFromHash,
     getDataTxFields,
-    getDescriptionField,
-    getOracleDescriptionKey, getOracleInfoFromHash, getUrl,
-    replaceAssetID, splitLogo,
-    toHash
+    getUrl,
 } from './utils';
+
+import * as OracleData from '@waves/oracle-data';
+
 import {
-    DATA_TRANSACTION_FIELD_TYPE,
-    FEE_SEED, IDataTransactionField,
-    ORACLE_ASSET_FIELD_PATTERN,
-    ORACLE_RESERVED_FIELDS,
-    STATUSES
+    FEE_SEED,
 } from './constants';
 import { userService } from '../KeeperService';
 import { data } from 'waves-transactions';
 import * as request from 'superagent';
+import { IProviderData } from '@waves/oracle-data';
 
 export * from './constants';
 
@@ -28,20 +23,16 @@ export function getAssetInfo(id: string, server?: string): Promise<INodeAssetInf
             .catch(reject));
 }
 
-export function getOracleData(address: string, server?: string): Promise<IOracleData> {
-    return getDataTxFields(address, server)
-        .then(toHash('key'))
-        .then(hash => {
-
-            const oracle = getOracleInfoFromHash(hash);
-            return getAssetListFromHash(hash, server)
-                .then(assets => ({ oracle, assets }));
-        });
+export async function getOracleData(address: string, server?: string): Promise<IOracleData> {
+    const data = await getDataTxFields(address, server) as Array<OracleData.TDataTxField>;
+    const oracle = OracleData.getProviderData(data);
+    const assets = OracleData.getProviderAssets(data);
+    return { oracle, assets };
 }
 
-export function setOracleInfo(info: IOracleInfo, timestamp?: number) {
 
-    const fields = getOracleInfoDataFields(info);
+export function setOracleInfo(oracleData: IProviderData, timestamp?: number) {
+    const fields = OracleData.getFields(oracleData);
     const fee = currentFee(fields);
 
     return userService.signAndPublishData({
@@ -57,9 +48,9 @@ export function setOracleInfo(info: IOracleInfo, timestamp?: number) {
     });
 }
 
-export function setAssetInfo(asset: Partial<IAssetInfo> & { id: string }, timestamp?: number) {
+export function setAssetInfo(asset: OracleData.TProviderAsset, timestamp?: number) {
 
-    const fields = getAssetFields(asset);
+    const fields = OracleData.getFields(asset);
     const fee = currentFee(fields);
 
     return userService.signAndPublishData({
@@ -75,137 +66,14 @@ export function setAssetInfo(asset: Partial<IAssetInfo> & { id: string }, timest
     });
 }
 
-export function getOracleInfoDataFields(info: Partial<IOracleInfo>): Array<IDataTransactionField> {
-
-    const fieldsFilter = <T extends { value: unknown }>(field: T) => field.value != null;
-
-    const fields = [
-        { key: ORACLE_RESERVED_FIELDS.NAME, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.name },
-        { key: ORACLE_RESERVED_FIELDS.EMAIL, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.mail },
-        { key: ORACLE_RESERVED_FIELDS.SITE, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: info.site }
-    ].filter(fieldsFilter);
-
-    const logoData = splitLogo(info.logo);
-
-    const logoFields = [
-        { key: ORACLE_RESERVED_FIELDS.LOGO, type: DATA_TRANSACTION_FIELD_TYPE.BINARY, value: logoData.logo },
-        { key: ORACLE_RESERVED_FIELDS.LOGO_META, type: DATA_TRANSACTION_FIELD_TYPE.STRING, value: logoData.meta }
-    ].filter(fieldsFilter);
-
-    if (logoFields.length) {
-        fields.push(...logoFields);
-    }
-
-    const langList = Object.keys(info.description || {});
-
-    if (langList.length) {
-        const description = info.description as Record<string, string>;
-
-        fields.push({
-            key: ORACLE_RESERVED_FIELDS.LANG_LIST,
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: langList.join(',')
-        });
-
-        fields.push(...langList.map(lang => {
-            return createDataTxField(getOracleDescriptionKey(lang), DATA_TRANSACTION_FIELD_TYPE.STRING, description[lang]) as any;
-        }).filter(fieldsFilter));
-    }
-
-    return fields as Array<IDataTransactionField>;
-}
-
-export function getAssetFields(asset: Partial<IAssetInfo> & { id: string }): Array<IDataTransactionField> {
-    const logoData = splitLogo(asset.logo);
-    const fieldsFilter = <T extends { value: unknown }>(field: T) => field.value != null;
-
-    const logoFields = [
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.BINARY,
-            value: logoData.logo
-        },
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LOGO_META, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: logoData.meta
-        }
-    ].filter(fieldsFilter);
-
-    const fields = [
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.STATUS, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.INTEGER,
-            value: asset.status
-        },
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.TICKER, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.ticker
-        },
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.EMAIL, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.email
-        },
-        {
-            key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LINK, asset.id),
-            type: DATA_TRANSACTION_FIELD_TYPE.STRING,
-            value: asset.site
-        },
-        ...logoFields
-    ].filter(field => field.value != null) as Array<IDataTransactionField>;
-
-    const langList = Object.keys(asset.description || {});
-
-    if (langList.length) {
-        const description = asset.description as IHash<string>;
-        langList.forEach(lang => {
-            const value = description[lang];
-            if (value) {
-                fields.push(createDataTxField(getDescriptionField(asset.id, lang), DATA_TRANSACTION_FIELD_TYPE.STRING, value));
-            }
-        });
-    }
-
-    return fields;
-}
-
-export function currentFee(fields: Array<IDataTransactionField>): string {
+export function currentFee(fields: Array<OracleData.TDataTxField>): string {
     const tx = data({ data: fields }, FEE_SEED);
     return String(tx.fee);
 }
 
 export interface IOracleData {
-    oracle: IServiceResponse<IOracleInfo>;
-    assets: Array<IServiceResponse<IAssetInfo>>;
-}
-
-export interface IOracleInfo {
-    name: string | null;
-    site: string | null;
-    mail: string | null;
-    description: Record<string, string> | null;
-    logo: string | null;
-}
-
-export interface IAssetInfo {
-    id: string;
-    name: string;
-    status?: number; // TODO! Add enum
-    logo: string | null;
-    site: string | null;
-    ticker: string | null;
-    email: string | null;
-    description: Record<string, string> | null;
-}
-
-export interface IServiceResponse<T> {
-    status: STATUSES;
-    data: T,
-    errors: {
-        [key in keyof T]: Error
-    };
+    oracle: OracleData.TResponse<OracleData.IProviderData>;
+    assets: Array<OracleData.TResponse<OracleData.TProviderAsset>>;
 }
 
 export interface INodeAssetInfo {

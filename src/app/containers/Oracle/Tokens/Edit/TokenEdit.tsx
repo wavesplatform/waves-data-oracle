@@ -4,16 +4,17 @@ import { If } from 'app/components';
 import * as React from 'react';
 import { getTokenFormFields } from 'app/containers/Oracle/Tokens/Edit/tokenForm';
 import { RootState } from 'app/reducers';
-import { currentFee, getAssetFields, getAssetInfo, IAssetInfo } from 'app/services/dataTransactionService';
+import { currentFee, getAssetInfo } from 'app/services/dataTransactionService';
 import { RouteComponentProps } from 'react-router';
 import { find, pathEq } from 'ramda';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { getDiff, omit } from 'app/utils';
+import { omit } from 'app/utils';
 import { OracleTokensActions } from 'app/actions';
 import { RightSider } from 'app/components/RightSide/RightSider';
 import * as InfoData from './info.json';
 import { TOKEN_SAVE_STATUS } from 'app/models';
+import * as OracleData from '@waves/oracle-data';
 
 const { Content } = Layout;
 
@@ -27,7 +28,7 @@ const { Content } = Layout;
 )
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
 
-    private readonly asset: IAssetInfo;
+    private readonly asset: Partial<OracleData.TProviderAsset & { name: string }>;
 
     constructor(props: TokenEdit.IProps) {
         super(props);
@@ -86,9 +87,9 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
         );
     }
 
-    private _onChangeForm = (data: Form.IChange<Partial<IAssetInfo>>) => {
+    private _onChangeForm = (data: Form.IChange<Partial<OracleData.TProviderAsset & { name?: string }>>) => {
         const apply = (name: string) => {
-            const diff = getDiff(this.asset, data.values);
+            const diff = OracleData.getDifferenceByData(this.asset as any, data.values);
             this.setState({ token: { ...data.values, name }, diff, isValid: data.isValid });
         };
 
@@ -144,9 +145,8 @@ const Fee: React.StatelessComponent<TokenEdit.IState> = params => {
         return <span>Fee 0 WAVES</span>;
     }
 
-    const fields = getAssetFields({ ...params.diff, id: params.token.id || '' });
     try {
-        const fee = fields.length ? Number(currentFee(fields)) / Math.pow(10, 8) : 0;
+        const fee = params.diff.length ? Number(currentFee(params.diff)) / Math.pow(10, 8) : 0;
         return <span>Fee {fee} WAVES</span>;
     } catch (e) {
         return <span>Fee 0 WAVES</span>;
@@ -165,7 +165,7 @@ export namespace TokenEdit {
     export interface IState {
         isNew: boolean;
         isValid: boolean;
-        token: Partial<IAssetInfo>;
-        diff: Partial<IAssetInfo>;
+        token: Partial<OracleData.TProviderAsset & { name?: string }>;
+        diff: Array<OracleData.TDataTxField>;
     }
 }

@@ -1,3 +1,4 @@
+/*
 import {
     DATA_TRANSACTION_FIELD_TYPE,
     IAssetInfo, IDataTransactionField,
@@ -120,3 +121,4 @@ export const ASSET = {
         }
     }
 };
+*/

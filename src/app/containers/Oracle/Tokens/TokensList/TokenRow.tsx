@@ -11,8 +11,8 @@ export namespace TokensRow {
 
 const TokensRow: React.StatelessComponent<TokensRow.Props> = (props) => {
 
-    const onSelect = () => props.onSelect(props.token.content.id);
-    const { id, status, name, site, logo, ticker, description } = props.token.content;
+    const onSelect = () => props.onSelect(props.token.content.id as string);
+    const { id, status, name = 'N/A', link, logo, ticker, description } = props.token.content;
     return (
         <Row onClick={onSelect} justify="space-between" type="flex" align="middle" className="token-list__row body2">
             <Col span={1}>
@@ -29,7 +29,7 @@ const TokensRow: React.StatelessComponent<TokensRow.Props> = (props) => {
                 <div>{status}</div>
             </Col>
             <Col span={4}>
-                <div className="submit400 word-break">{site}</div>
+                <div className="submit400 word-break">{link}</div>
             </Col>
             <Col span={6}>
                 <div className="token-list__description-overflow">{description && description.en}</div>

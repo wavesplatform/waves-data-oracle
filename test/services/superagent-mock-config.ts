@@ -1,3 +1,4 @@
+/*
 import {
     DATA_TRANSACTION_FIELD_TYPE,
     IAssetInfo,
@@ -54,51 +55,51 @@ const generateAsset = (asset: IAssetInfo) => [
 
 export default [
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/no-oracle',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({ body: [] })
     },
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/oracle-info-no-lang',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({ body: ORACLE.FIELDS })
     },
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/oracle-info-empty-lang',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({
             body: [
                 ...ORACLE.FIELDS,
@@ -111,19 +112,19 @@ export default [
         })
     },
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/oracle-info-description-en',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({
             body: [
                 ...ORACLE.FIELDS,
@@ -136,19 +137,19 @@ export default [
         })
     },
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/oracle-info-binary-name',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({
             body: [
                 ...ORACLE.FIELDS.filter(item => item.key !== ORACLE_RESERVED_FIELDS.NAME),
@@ -161,19 +162,19 @@ export default [
         })
     },
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/with-one-asset',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({
             body: [
                 ...ORACLE.FIELDS,
@@ -193,19 +194,19 @@ export default [
         })
     },
     {
-        /**
+        /!**
          * regular expression of URL
-         */
+         *!/
         pattern: 'https://nodes.wavesplatform.com/addresses/data/with-two-asset',
 
         fixtures: () => null,
 
-        /**
+        /!**
          * returns the result of the GET request
          *
          * @param match array Result of the resolution of the regular expression
          * @param data  mixed Data returns by `fixtures` attribute
-         */
+         *!/
         get: () => ({
             body: [
                 ...ORACLE.FIELDS,
@@ -237,3 +238,4 @@ export default [
         })
     }
 ];
+*/
