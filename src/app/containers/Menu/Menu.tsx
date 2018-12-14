@@ -1,34 +1,33 @@
 import * as React from 'react';
-import { Menu, Icon } from 'antd';
-import { UserCard } from 'app/components'
-import './meny.less';
+import {Menu, Icon} from 'antd';
+import {UserCard} from 'app/components'
+import './menu.less';
 import * as menuConfig from './menu.json';
 
-const { Item, SubMenu } = Menu;
+const {Item, SubMenu} = Menu;
 
 
-const MenuTitle:React.StatelessComponent<ITitleProps> = ({ title, icon = null }) => {
+const MenuTitle: React.StatelessComponent<ITitleProps> = ({title, icon = null}) => {
     return <span>{icon ? <Icon type={icon}/> : null}{title}</span>;
 };
 
 export class OracleMenu extends React.PureComponent<IMenu, IMenuState> {
-    
+
     readonly state = Object.create(null);
-    
+
     private selectMenuHandle = (params: { key: string }) => {
         const menuItem = (menuConfig as any).menu[params.key];
         const path = (menuItem && menuItem.path) || null;
-        
+
         if (path != null) {
             this.props.history.push(path);
         }
-        
     };
-    
+
     render(): React.ReactNode {
 
-        const { mode, menu, theme, selectedMenuBypath = {} }: IMenuConfig = menuConfig as any;
-        const { oracle, logout, dataTransaction, templates, tokens } = menu;
+        const {mode, menu, theme, selectedMenuBypath = {}}: IMenuConfig = menuConfig as any;
+        const {oracle, logout, dataTransaction, templates, tokens} = menu;
         const currentPath = this.props.path;
         const realPath = Object.keys(selectedMenuBypath).reduce((acc, path) => {
             if (currentPath.includes(path) && acc.length < path.length) {
@@ -36,24 +35,24 @@ export class OracleMenu extends React.PureComponent<IMenu, IMenuState> {
             }
             return acc;
         }, '/');
-        
+
         const menuKey = (selectedMenuBypath as any)[realPath] || oracle.key;
-        
+
         return (
             <div className="oracle-menu">
-                <div className="oracle-menu_title">Oracle</div>
-                <div className="oracle-menu_user-card">
-                    <UserCard address={this.props.address} name={this.props.name}/>
-                </div>
-                <Menu
-                    selectedKeys={[menuKey]}
-                    selectable={true}
-                    mode={mode as any}
-                    theme={theme as "dark"}
-                    multiple={false}
-                    onSelect={this.selectMenuHandle}
-                    {...this.props}
-                >
+                <div className=" logo-white"></div>
+                    <div className=" oracle-menu_user-card border-radius">
+                        <UserCard address={this.props.address} name={this.props.name}/>
+                    </div>
+                    <Menu
+                        selectedKeys={[menuKey]}
+                        selectable={true}
+                        mode={mode as any}
+                        theme={theme as "dark"}
+                        multiple={false}
+                        onSelect={this.selectMenuHandle}
+                        {...this.props}
+                    >
                     <Item key={oracle.key}>
                         <MenuTitle title={oracle.title} icon={oracle.icon}/>
                     </Item>

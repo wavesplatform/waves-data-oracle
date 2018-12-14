@@ -5,7 +5,6 @@ import cn from 'classnames';
 
 const { Sider } = Layout;
 
-
 export const RightSider: React.StatelessComponent<IProps> = ({ data, width = 450 }) => {
     
     return (
@@ -23,16 +22,12 @@ export const RightSider: React.StatelessComponent<IProps> = ({ data, width = 450
 
 const InfoItem: React.StatelessComponent<IItem> = ({ title, description, className }) => {
     
-    const itemClassName = cn('right-info_conteiner', className);
+    const itemClassName = cn('right-info_container', className);
     return (
-        <List.Item style={{ borderBottom: 'none' }}>
+        <List.Item>
             <div className={itemClassName}>
-                <div>
-                    <h2>{title}</h2>
-                </div>
-                <div>
-                    {description}
-                </div>
+                <h2 className='margin1 basic800'>{title}</h2>
+                <div className='margin2 basic600'>{description}</div>
             </div>
         </List.Item>
     );

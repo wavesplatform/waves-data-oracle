@@ -51,25 +51,30 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
         const spinning = this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.LOADING;
 
         return (
-            <Layout style={{ backgroundColor: '#fff', height: '100%' }}>
-                <Content style={{ margin: '20px', minWidth: '450px' }}>
+            <Layout>
+                <Content className="padding-layout">
                     <Spin className="formSpinner"
                           spinning={spinning}
                           indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}
                     >
-                        <h1>Create an oracle</h1>
+                        <h2 className='margin2'>Create an oracle</h2>
 
                         <Form fields={FORM_FIELDS}
                               values={{ ...this.state.oracleInfo, address: this.props.user.address }}
                               readonly={{ address: true }}
                               onChange={this._onChangeForm}/>
 
-                        <Fee {...this.state}/>
+                        <div className='block basic400'>
+                            <Fee {...this.state}/>
+                        </div>
 
-                        <Button type="primary">Cancel</Button>
-                        <Button type="primary"
-                                onClick={this._saveOracleHandler}
-                                disabled={disableSave}>Save</Button>
+                        <div className="buttons-wrapper margin-top3">
+                            <Button type="primary">Cancel</Button>
+                            <Button type="primary"
+                                    onClick={this._saveOracleHandler}
+                                    disabled={disableSave}>Save</Button>
+                        </div>
+
                         <If condition={this.props.oracleInfo.saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR}>
                             <span>Error!</span>
                         </If>

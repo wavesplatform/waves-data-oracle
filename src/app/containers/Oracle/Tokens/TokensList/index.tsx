@@ -11,6 +11,7 @@ import { omit } from 'app/utils';
 import { TokenModel } from 'app/models';
 import { IAssetInfo } from 'app/services/dataTransactionService';
 import FirstToken from 'app/containers/Oracle/Tokens/FirstToken';
+import './tokenList.less';
 
 export namespace TokensList {
     export interface Props extends RouteComponentProps<void> {
@@ -59,21 +60,26 @@ class TokensList extends React.PureComponent<TokensList.IProps, TokensList.State
             return <FirstToken/>;
         }
         
-        return <div>
-            <Row>
-                <Col span={4}>Header</Col>
-                <Col span={20}>
-                    <Button type="primary" onClick={() => this.editHandler()}>Create new</Button>
+        return <div className="token-list padding-layout">
+            <Row className="token-list__header margin2">
+                <Col span={12}>
+                    <h2 className="margin0">Token verification</h2>
+                    <div className="basic400">Total 1 entries</div>
+                </Col>
+                <Col span={12} className="right">
+                    <Button type="primary" onClick={() => this.editHandler()}>Add Token</Button>
                 </Col>
             </Row>
-            <TokenHeader onSort={this.sortHandler as any}/>
-            <List className=""
-                  itemLayout="horizontal"
-                  dataSource={data}
-                  renderItem={(token: TokenModel) => (
-                      <TokenRow token={token} onSelect={this.editHandler}/>
-                  )}
-            />
+            <div className="token-list__scroller">
+                <TokenHeader onSort={this.sortHandler as any}/>
+                <List className="token-list__container border-radius"
+                      itemLayout="horizontal"
+                      dataSource={data}
+                      renderItem={(token: TokenModel) => (
+                          <TokenRow token={token} onSelect={this.editHandler}/>
+                      )}
+                />
+            </div>
         </div>;
     }
     
