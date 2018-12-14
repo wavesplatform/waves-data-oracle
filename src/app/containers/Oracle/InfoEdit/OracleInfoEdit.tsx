@@ -99,13 +99,13 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
 
             nextProps.actions.setOracleSaveStatus(null);
         }
-    
+
         if (saveStatus === ORACLE_SAVE_STATUS.SERVER_ERROR) {
             notification.error({
                 message: 'Save Oracle data error',
                 key: saveStatus
             });
-        
+
             nextProps.actions.setOracleSaveStatus(null);
         }
     }
@@ -122,7 +122,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
             });
         }
 
-        state.diff = getDiff(state.oracleInfo, props.oracleInfo.content);
+        state.diff = getDiff(props.oracleInfo.content, state.oracleInfo);
 
         OracleInfo.sendMessages(props);
 

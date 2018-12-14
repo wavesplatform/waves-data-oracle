@@ -10,7 +10,7 @@ const counters = {
     description: Form.counters.length(1000)
 };
 
-export function getTokenFormFields(server?: string): Array<Form.IFormItem> {
+export function getTokenFormFields(server?: string) {
     return [
         {
             title: 'Logo',
@@ -28,6 +28,15 @@ export function getTokenFormFields(server?: string): Array<Form.IFormItem> {
             validator: Form.wrap(
                 Form.validators.required,
                 Form.validators.assetId(server)
+            )
+        },
+        {
+            title: 'Status',
+            mode: Input.INPUT_MODE.INPUT,
+            field: 'status',
+            validator: Form.wrap(
+                Form.validators.required,
+                Form.validators.protocol
             )
         },
         {

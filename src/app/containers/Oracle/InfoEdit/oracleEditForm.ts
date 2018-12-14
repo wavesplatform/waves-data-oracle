@@ -10,7 +10,7 @@ const counters = {
 };
 
 
-export const FORM_FIELDS: Array<Form.IFormItem> = [
+export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     {
         title: 'Logo',
         mode: Form.ELEMENT.IMAGE,
