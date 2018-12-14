@@ -35,7 +35,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         );
     }
 
-    private _getLimit(field: Form.IFormItem, value: string | null) {
+    private _getLimit(field: Form.IFormItem<unknown>, value: string | null) {
         if (!field.counter) {
             return null;
         }
@@ -50,7 +50,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         );
     }
 
-    private _prepareField(field: Form.IFormItem, index: number) {
+    private _prepareField(field: Form.IFormItem<any>, index: number) {
 
         const errors = this.state.errors[field.field] || [];
         const value = path(field.field.split('.'), this.state.values) as string;
@@ -60,7 +60,8 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         const className = classnames('basic400', 'margin2', 'block', 'flex', 'flex-col', 'row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
         const validator = field.validator || (() => Promise.resolve([]));
 
-        const onChangeValue = (value: string | null) => {
+        const onChangeValue = (inputValue: string | null) => {
+            const value = field.convertValue ? field.convertValue(inputValue) : inputValue;
             const values = assocPath(field.field.split('.'), value, this.state.values);
 
             this.setState({ validationPending: true, values });
@@ -142,7 +143,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
     };
 
     public static validators: Form.IValidators = {
-        required: value => !value || !value.length ? 'Field is required!' : null,
+        required: value => (value == null || value === '') ? 'Field is required!' : null,
         imageSizeKb: size => value => (value && value.length / 1.33 / 1024 > size) ? `Picture exceeds maximum size ${size} kb!` : null,
         link: value => {
             if (!value) {
@@ -195,10 +196,10 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
     };
 
     public static getDerivedStateFromProps(props: Form.IProps<any>, state: Form.IState<any>): Form.IState<any> {
-        return { ...state, values: { ...props.values, ...state.values } };
+        return { ...state, values: { ...state.values, ...props.values } };
     }
 
-    public static wrap(...list: Array<ICallback<string | null, Form.TValidatorError>>): ICallback<string | null, Promise<Array<string>>> {
+    public static wrap<T>(...list: Array<ICallback<T | null, Form.TValidatorError>>): ICallback<T | null, Promise<Array<string>>> {
         const isString = (x: unknown): x is string => Boolean(x);
         return input => Promise.all(list.map(validate => validate(input)))
             .then(list => list.filter(isString))
@@ -241,7 +242,7 @@ export namespace Form {
     }
 
     export interface IProps<T extends Record<string, unknown>> {
-        fields: Array<IFormItem>;
+        fields: Array<IFormItem<any>>;
         values: T;
         onChange: ICallback<IChange<T>, void>;
         readonly: Record<string, boolean>;
@@ -260,12 +261,13 @@ export namespace Form {
         validationPending: boolean;
     }
 
-    export interface IFormItem {
+    export interface IFormItem<T> {
         title: string;
         mode: ELEMENT | Input.INPUT_MODE;
         field: string;
-        validator?: ICallback<string | null, Promise<Array<string>>>;
+        validator?: ICallback<T, Promise<Array<string>>>;
         counter?: IFormItemLimit;
+        convertValue?: ICallback<string | null, T>;
     }
 
     export interface IFormItemLimit {
@@ -281,7 +283,7 @@ export namespace Form {
     }
 
     export interface IValidators {
-        required(value: string | null): string | null;
+        required(value: unknown | null): string | null;
 
         imageSizeKb(maxSize: number): ICallback<string | null, string | null>;
 
