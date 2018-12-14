@@ -34,171 +34,242 @@ body {
   height: 100%;
   min-width: 1200px;
   color: @basic800;
+  min-height: 1px;
 
   #root {
     height: 100%;
+    overflow: hidden;
   }
 
-.logo {
-  &-white {
-    background: url(../img/waves180-white.svg) center no-repeat;
-    width: 180px;
-    height: 24px;
-    margin: 40px auto 60px;
+  .logo {
+    &-white {
+      background: url(../img/waves180-white.svg) center no-repeat;
+      width: 180px;
+      height: 24px;
+      margin: 40px auto 60px;
+    }
+    &-black {
+      background: url(../img/waves220-black.svg) center no-repeat;
+      width: 220px;
+      height: 30px;
+      margin: 0 auto;
+    }
   }
-  &-black {
-    background: url(../img/waves220-black.svg) center no-repeat;
-    width: 220px;
-    height: 30px;
-    margin: 0 auto;
+
+  // layout
+
+  .centering {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
-}
 
-// layout
+  .height {
+    height: 100%;
+  }
 
-.centering {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+  .block {
+    display: block;
+  }
 
-.height {
-  height: 100%;
-}
+  .flex {
+    display: flex;
 
-.block {
-  display: block;
-}
+    &-center-h {
+      align-items: center;
+    }
+    &-center-v {
+      justify-content: center;
+    }
+    &-col {
+      flex-direction: column;
+    }
+  }
 
-.flex {
-  display: flex;
+  .center {
+    text-align: center;
+  }
 
-  &-center-h {
+  .right {
+    text-align: right;
+    justify-content: flex-end;
+  }
+
+  .ant-btn {
+    background: #3f7aff;
+    font-size: 13px;
+    padding: 0 40px;
+    line-height: 46px;
+    height: 46px;
+  }
+
+  .buttons-wrapper {
+    display: flex;
     align-items: center;
-  }
-  &-center-v {
-    justify-content: center;
-  }
-  &-col {
-    flex-direction: column;
-  }
-}
+    width: 100%;
+    justify-content: space-between;
 
-.center {
-  text-align: center;
-}
-
-.right {
-  text-align: right;
-  justify-content: flex-end;
-}
-
-.buttons-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: space-between;
-
-  button {
-    flex-basis: 48%;
+    button {
+      flex-basis: 48%;
+    }
   }
-}
 
   .padding-layout {
     padding: @padding-layout;
   }
 
-  .marginAuto {margin: 0 auto;}
-  .margin0 {margin: 0;}
-  .margin1 {margin-bottom: 10px;}
-  .margin2 {margin-bottom: 20px;}
-  .margin3 {margin-bottom: 30px;}
-  .margin4 {margin-bottom: 40px;}
-  .margin5 {margin-bottom: 50px;}
-  .margin-top1 {margin-top: 10px;}
-  .margin-top2 {margin-top: 20px;}
-  .margin-top3 {margin-top: 30px;}
-  .margin-top4 {margin-top: 40px;}
-  .margin-top5 {margin-top: 50px;}
+  .marginAuto {
+    margin: 0 auto;
+  }
+  .margin0 {
+    margin: 0;
+  }
+  .margin1 {
+    margin-bottom: 10px;
+  }
+  .margin2 {
+    margin-bottom: 20px;
+  }
+  .margin3 {
+    margin-bottom: 30px;
+  }
+  .margin4 {
+    margin-bottom: 40px;
+  }
+  .margin5 {
+    margin-bottom: 50px;
+  }
+  .margin-top1 {
+    margin-top: 10px;
+  }
+  .margin-top2 {
+    margin-top: 20px;
+  }
+  .margin-top3 {
+    margin-top: 30px;
+  }
+  .margin-top4 {
+    margin-top: 40px;
+  }
+  .margin-top5 {
+    margin-top: 50px;
+  }
 
   .border-radius {
     border-radius: @border-radius;
   }
 
-    .input {
-      &-text {
+  .word-break {
+    word-break: break-all;
+  }
+
+  .input {
+    &-text {
+      border: 1px solid @structure600;
+      padding: 0 20px;
+      margin-top: 10px;
+      height: 46px;
+
+      & + .error {
+        margin-top: 4px;
+      }
+    }
+  }
+
+  input {
+    &[readonly] {
+      background: @structure200;
+      cursor: not-allowed;
+
+      &:hover,
+      &:focus {
+        box-shadow: none;
         border: 1px solid @structure600;
-        padding: 0 20px;
-        margin-top: 10px;
-        height: 46px;
-
-        & + .error {
-          margin-top: 4px;
-        }
       }
     }
+  }
 
-    input {
-      &[readonly] {
-        background: @structure200;
-        cursor: not-allowed;
-
-        &:hover,
-        &:focus {
-          box-shadow: none;
-          border: 1px solid @structure600;
-        }
-      }
+  textarea {
+    &.input-text {
+      padding: 10px 20px;
+      min-height: 80px;
     }
+  }
 
-    textarea {
-      &.input-text {
-        padding: 10px 20px;
-        min-height: 80px;
-      }
-    }
+  .error {
+    color: @red;
+  }
 
-    .error {
-      color: @red;
-    }
+  .ant-layout-content {
+    height: 100%;
+    background: @white;
+  }
 
-    .ant-layout-content {
-      height: 100%;
-      background: @white;
-    }
+  // colors
 
-// colors
+  .white {
+    color: white;
+  }
+  .black {
+    color: black;
+  }
+  .basic1000 {
+    color: @basic1000;
+  }
+  .basic800 {
+    color: @basic800;
+  }
+  .basic600 {
+    color: @basic600;
+  }
+  .basic400 {
+    color: @basic400;
+  }
+  .basic200 {
+    color: @basic200;
+  }
+  .structure800 {
+    color: @structure800;
+  }
+  .structure600 {
+    color: @structure600;
+  }
+  .structure400 {
+    color: @structure400;
+  }
+  .structure200 {
+    color: @structure200;
+  }
+  .submit600 {
+    color: @submit600;
+  }
+  .submit400 {
+    color: @submit400;
+  }
+  .submit200 {
+    color: @submit200;
+  }
+  .red {
+    color: @red;
+  }
+  .green {
+    color: @green;
+  }
+  .orange {
+    color: @orange;
+  }
 
-  .white {color: white;}
-  .black {color: black;}
-  .basic1000 {color: @basic1000;}
-  .basic800 {color: @basic800;}
-  .basic600 {color: @basic600;}
-  .basic400 {color: @basic400;}
-  .basic200 {color: @basic200;}
-  .structure800 {color: @structure800;}
-  .structure600 {color: @structure600;}
-  .structure400 {color: @structure400;}
-  .structure200 {color: @structure200;}
-  .submit600 {color: @submit600;}
-  .submit400 {color: @submit400;}
-  .submit200 {color: @submit200;}
-  .red {color: @red;}
-  .green {color: @green;}
-  .orange {color: @orange;}
-
-// typography
-  h2, h3, h4 {
-    font-weight: 400;
+  // typography
+  h1, h2, h3, h4 {
+    font-family: 'Avenir Light', 'Tahoma';
+    font-weight: 900;
     margin: 0;
   }
 
   h1 {
-    font-family: 'Avenir Light', 'Tahoma' !important;
     font-size: 32px;
     line-height: 38px;
-    margin: 0;
   }
 
   h2 {
@@ -236,4 +307,5 @@ body {
     line-height: 14px;
   }
 }
+
 // misc

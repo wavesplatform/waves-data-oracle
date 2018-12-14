@@ -4,7 +4,7 @@ import { assocPath, path, mergeAll } from 'ramda';
 import { ChangeEvent } from 'react';
 import classnames from 'classnames';
 import { getAssetInfo } from 'app/services/dataTransactionService';
-
+import './form.less';
 
 export class Form<T extends Record<string, unknown>> extends React.PureComponent<Form.IProps<T>, Form.IState<T>> {
 

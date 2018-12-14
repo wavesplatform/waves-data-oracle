@@ -20,7 +20,7 @@ const TokensRow: React.StatelessComponent<TokensRow.Props> = (props) => {
             </Col>
             <Col span={6}>
                 <div>{name}</div>
-                <div className="basic400 footnote2">{id}</div>
+                <div className="basic400 footnote2 word-break">{id}</div>
             </Col>
             <Col span={2}>
                 <div>{ticker}</div>
@@ -29,7 +29,7 @@ const TokensRow: React.StatelessComponent<TokensRow.Props> = (props) => {
                 <div>{status}</div>
             </Col>
             <Col span={4}>
-                <div className="submit400">{site}</div>
+                <div className="submit400 word-break">{site}</div>
             </Col>
             <Col span={6}>
                 <div className="token-list__description-overflow">{description && description.en}</div>
