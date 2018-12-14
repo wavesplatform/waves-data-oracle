@@ -1,0 +1,18 @@
+@import '../../styles/main.less';
+
+body {
+  .row__input {
+    position: relative;
+  }
+
+  .counter {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &.isError {
+      color: @red;
+    }
+  }
+}

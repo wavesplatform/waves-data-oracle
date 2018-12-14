@@ -9,6 +9,7 @@
     height: calc(100% - 32px);
     border: 1px solid @structure400;
     min-width: 800px;
+    overflow: auto;
   }
 
   &__scroller {
@@ -29,15 +30,21 @@
 
   &__row {
     padding: 15px 20px;
-    border-top: 1px solid @structure400;
+    border-bottom: 1px solid @structure400;
     height: 70px;
+    cursor: pointer;
+    transition: .3s;
+
+    &:last-child {
+      margin-bottom: -1px;
+    }
 
     div:not(.ant-col-1) {
       overflow: hidden;
     }
 
-    &:first-child {
-      border-top: 0 none;
+    &:hover {
+      background: @structure200;
     }
   }
 

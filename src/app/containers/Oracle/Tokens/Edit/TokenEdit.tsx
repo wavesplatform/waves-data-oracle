@@ -59,7 +59,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                 <Content className="padding-layout">
                     <Spin spinning={spinning}
                           indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}>
-                        <h1>Create an oracle</h1>
+                        <h2 className="margin2">Create an oracle</h2>
 
                         <Form fields={getTokenFormFields(this.props.user.server)}
                               values={this.state.token}
@@ -70,7 +70,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                         <Fee {...this.state}/>
                             </div>
 
-                        <div className="buttons-wrapper">
+                        <div className="buttons-wrapper margin-top3">
                             <Button type="primary">Cancel</Button>
                             <Button type="primary"
                                     onClick={this._saveTokenHandler}
