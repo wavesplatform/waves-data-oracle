@@ -83,7 +83,7 @@ describe('Data transactions service test', () => {
                     ...ORACLE.DATA,
                     name: null
                 }, {
-                    name: new Error('Wrong field type! Key "oracle_name" is not a "string"!')
+                    name: new Error('Wrong field type! Key "data_provider_name" is not a "string"!')
                 }));
                 done();
             });
@@ -120,37 +120,37 @@ describe('Data transactions service test', () => {
                             'timestamp': timestamp,
                             'data': [
                                 {
-                                    'key': 'oracle_name',
+                                    'key': 'data_provider_name',
                                     'type': 'string',
                                     'value': 'Test Oracle Name'
                                 },
                                 {
-                                    'key': 'oracle_mail',
+                                    'key': 'data_provider_email',
                                     'type': 'string',
                                     'value': 'test@oracle.com'
                                 },
                                 {
-                                    'key': 'oracle_site',
+                                    'key': 'data_provider_link',
                                     'type': 'string',
                                     'value': 'https://test.oracle.com'
                                 },
                                 {
-                                    'key': 'oracle_logo',
+                                    'key': 'data_provider_logo',
                                     'type': 'binary',
                                     'value': 'base64:logo'
                                 },
                                 {
-                                    'key': 'oracle_logo_meta',
+                                    'key': 'data_provider_logo_meta',
                                     'type': 'string',
                                     'value': 'data:image/png;base64,'
                                 },
                                 {
-                                    'key': 'oracle_lang_list',
+                                    'key': 'data_provider_lang_list',
                                     'type': 'string',
                                     'value': 'en'
                                 },
                                 {
-                                    'key': 'oracle_description_en',
+                                    'key': 'data_provider_description_en',
                                     'type': 'string',
                                     'value': 'Some oracle en description'
                                 }
@@ -184,8 +184,8 @@ describe('Data transactions service test', () => {
                 getOracleData('with-one-asset').then(data => {
                     expect(data.assets).toEqual([wrapResponse({
                         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
+                        name: "WBTC",
                         email: 'test-asset@oracle.com',
-                        logo: 'asset-logo',
                         site: 'https://test-asset.com',
                         status: 1,
                         ticker: 'TEST',
@@ -202,7 +202,7 @@ describe('Data transactions service test', () => {
                         wrapResponse({
                             id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
                             email: 'test-asset@oracle.com',
-                            logo: 'asset-logo',
+                            name: "WBTC",
                             site: 'https://test-asset.com',
                             status: 1,
                             ticker: 'TEST',
@@ -211,9 +211,9 @@ describe('Data transactions service test', () => {
                             }
                         }),
                         wrapResponse({
-                            id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJe',
+                            id: '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu',
                             email: 'test-asset@oracle.com',
-                            logo: 'asset-logo',
+                            name: "Ethereum",
                             site: 'https://test-asset.com',
                             status: 2,
                             ticker: 'TEST',

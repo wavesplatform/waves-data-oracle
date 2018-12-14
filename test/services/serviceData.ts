@@ -19,7 +19,7 @@ export const generateAsset = (asset: IAssetInfo): Array<IDataTransactionField> =
         value: asset.status || ''
     },
     {
-        key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.SITE, asset.id),
+        key: replaceAssetID(ORACLE_ASSET_FIELD_PATTERN.LINK, asset.id),
         type: DATA_TRANSACTION_FIELD_TYPE.STRING,
         value: asset.site || ''
     },
@@ -53,7 +53,7 @@ export const ORACLE = {
             value: 'Test Oracle Name'
         },
         {
-            key: ORACLE_RESERVED_FIELDS.MAIL,
+            key: ORACLE_RESERVED_FIELDS.EMAIL,
             type: DATA_TRANSACTION_FIELD_TYPE.STRING,
             value: 'test@oracle.com'
         },
@@ -99,7 +99,7 @@ export const ASSET = {
         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
         name: 'BTC',
         email: 'test-asset@oracle.com',
-        logo: 'asset-logo',
+        logo: 'base64:asset-logo',
         site: 'https://test-asset.com',
         status: 1,
         ticker: 'TEST',
@@ -111,7 +111,7 @@ export const ASSET = {
         id: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
         name: 'BTC',
         email: 'test-asset@oracle.com',
-        logo: 'asset-logo',
+        logo: 'data:image/png,base64,asset-logo',
         site: 'https://test-asset.com',
         status: 1,
         ticker: 'TEST',
