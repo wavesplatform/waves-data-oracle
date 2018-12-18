@@ -4,7 +4,7 @@ import { If } from 'app/components';
 import * as React from 'react';
 import { getTokenFormFields } from 'app/containers/Oracle/Tokens/Edit/tokenForm';
 import { RootState } from 'app/reducers';
-import { currentFee, getAssetInfo } from 'app/services/dataTransactionService';
+import { currentFee } from 'app/services/dataTransactionService';
 import { RouteComponentProps } from 'react-router';
 import { find, pathEq } from 'ramda';
 import { connect } from 'react-redux';
@@ -19,8 +19,8 @@ import * as OracleData from '@waves/oracle-data';
 const { Content } = Layout;
 
 @connect(
-    (state: RootState): Pick<TokenEdit.IProps, 'user' & 'tokens'> => {
-        return { user: state.user, tokens: state.tokens };
+    (state: RootState): Pick<TokenEdit.IProps, 'user' & 'tokens' & 'nodeTokens'> => {
+        return { user: state.user, tokens: state.tokens, nodeTokens: state.nodeTokens };
     },
     (dispatch: Dispatch): Pick<TokenEdit.IProps, 'actions'> => ({
         actions: bindActionCreators(omit({ ...OracleTokensActions }, 'Type'), dispatch)
@@ -44,7 +44,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
             isValid: true,
             isNew,
             token: { ...content },
-            diff: Object.create(null)
+            diff: []
         };
     }
 
@@ -62,7 +62,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                           indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}>
                         <h2 className="margin2">Create an oracle</h2>
 
-                        <Form fields={getTokenFormFields(this.props.user.server)}
+                        <Form fields={getTokenFormFields(this.props.user.server) as any}
                               values={this.state.token}
                               readonly={{ name: true, id: !isNew }}
                               onChange={this._onChangeForm}/>
@@ -88,26 +88,19 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     }
 
     private _onChangeForm = (data: Form.IChange<Partial<OracleData.TProviderAsset & { name?: string }>>) => {
-        const apply = (name: string) => {
-            const diff = OracleData.getDifferenceByData(this.asset as any, data.values);
-            this.setState({ token: { ...data.values, name }, diff, isValid: data.isValid });
-        };
-
-        if (data.values.id && data.values.id !== this.state.token.id) {
-            getAssetInfo(data.values.id, this.props.user.server).then(info => {
-                const name = data.values.id ? info.name : '';
-                apply(name);
-            }).catch(() => {
-                apply('');
-            });
+        let diff = [] as any;
+    
+        if (!this.state.isNew) {
+            diff = OracleData.getDifferenceByData(this.asset as any, data.values);
         } else {
-            const name = data.values.id ? data.values.name || '' : '';
-            apply(name);
+            diff = OracleData.getFields(data.values as any);
         }
+        
+        this.setState({ token: { ...data.values, name }, diff, isValid: data.isValid });
     };
 
     private _saveTokenHandler = () => {
-        this.props.actions.saveToken({ ...this.state.diff, id: this.state.token.id });
+        this.props.actions.saveToken(this.state.diff);
     };
     
     static sendMessages(nextProps: TokenEdit.IProps) {
@@ -134,6 +127,15 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
     static getDerivedStateFromProps(props: TokenEdit.IProps, state: TokenEdit.IState) {
     
+        if (state.token.id && !props.nodeTokens[state.token.id]) {
+            props.actions.getTokenName(state.token.id);
+            state.token.name = '';
+        } else if (state.token.id && props.nodeTokens[state.token.id]) {
+            state.token.name = props.nodeTokens[state.token.id].name;
+        } else {
+            state.token.name = '';
+        }
+        
         TokenEdit.sendMessages(props);
         
         return state;
@@ -160,6 +162,7 @@ export namespace TokenEdit {
         tokens: RootState.TokensState;
         user: RootState.UserState;
         actions: OracleTokensActions;
+        nodeTokens: RootState.NodeTokensState;
     }
 
     export interface IState {

@@ -38,7 +38,7 @@ export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     {
         title: 'Link',
         mode: Input.INPUT_MODE.INPUT,
-        field: 'site',
+        field: 'link',
         counter: counters.site,
         validator: Form.wrap(
             Form.validators.required,
@@ -50,7 +50,7 @@ export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     {
         title: 'Email',
         mode: Input.INPUT_MODE.INPUT,
-        field: 'mail',
+        field: 'email',
         counter: counters.email,
         validator: Form.wrap(
             Form.validators.email,

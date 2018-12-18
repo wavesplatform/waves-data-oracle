@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
-import { Button, Layout, notification, Spin, Icon } from 'antd';
+import { Button, Icon, Layout, notification, Spin } from 'antd';
 import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee } from 'app/services/dataTransactionService';
@@ -125,8 +125,16 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
             state.oracleInfo = { ...state.oracleInfo, ...props.oracleInfo.content };
         }
 
-        state.diff = OracleData.getDifferenceByData(props.oracleInfo.content as any, state.oracleInfo);
-
+        try {
+            if (props.oracleInfo.status === ORACLE_STATUS.EMPTY) {
+                state.diff = OracleData.getFields(state.oracleInfo as any);
+            } else {
+                state.diff = OracleData.getDifferenceByData(props.oracleInfo.content as any, state.oracleInfo);
+            }
+        } catch (e) {
+            state.diff = Object.create(null);
+        }
+        
         OracleInfo.sendMessages(props);
 
         return state;

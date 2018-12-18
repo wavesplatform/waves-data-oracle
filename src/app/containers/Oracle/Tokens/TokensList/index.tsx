@@ -25,8 +25,8 @@ export namespace TokensList {
 }
 
 @connect(
-    (state: RootState): Pick<TokensList.IProps, 'tokens'> => {
-        return { tokens: state.tokens };
+    (state: RootState): Pick<TokensList.IProps, 'tokens' & 'nodeTokens'> => {
+        return { tokens: state.tokens, nodeTokens: state.nodeTokens };
     },
     (dispatch: Dispatch): Pick<TokensList.IProps, 'actions'> => ({
         actions: bindActionCreators(omit({ ...OracleTokensActions }, 'Type'), dispatch)
@@ -76,7 +76,10 @@ class TokensList extends React.PureComponent<TokensList.IProps, TokensList.State
                       itemLayout="horizontal"
                       dataSource={data}
                       renderItem={(token: TokenModel) => (
-                          <TokenRow token={token} onSelect={this.editHandler}/>
+                          <TokenRow token={token}
+                                    getToken={this.props.actions.getTokenName}
+                                    nodeToken={this.props.nodeTokens[token.content.id as string]}
+                                    onSelect={this.editHandler}/>
                       )}
                 />
             </div>
@@ -117,6 +120,7 @@ export default TokensList;
 export namespace TokensList {
     export interface IProps extends RouteComponentProps<void> {
         tokens: RootState.TokensState;
+        nodeTokens: RootState.NodeTokensState;
         actions: OracleTokensActions;
         app: RootState.AppState;
     }

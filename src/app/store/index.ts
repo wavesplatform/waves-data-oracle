@@ -7,6 +7,7 @@ import {
     setOracleInfo,
     getOracleData,
     setOracleToken,
+    getNodeAssetInfo,
 } from 'app/middleware';
 import { RootState, rootReducer } from 'app/reducers';
 
@@ -18,6 +19,7 @@ export function configureStore(initialState?: RootState): Store<RootState> {
         setOracleInfo,
         getOracleData,
         setOracleToken,
+        getNodeAssetInfo
     );
     
     if (process.env.NODE_ENV !== 'production') {

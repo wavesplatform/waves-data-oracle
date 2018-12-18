@@ -5,6 +5,7 @@ export interface RootState {
     app: RootState.AppState;
     oracleInfo: RootState.OracleInfoState;
     tokens: RootState.TokensState;
+    nodeTokens: RootState.NodeTokensState;
     router?: any;
 }
 
@@ -13,4 +14,5 @@ export namespace RootState {
     export type AppState = AppModel;
     export type TokensState = TokensModel;
     export type OracleInfoState = OracleInfoModel;
+    export type NodeTokensState = Record<string, { name: string, assetId: string }>;
 }

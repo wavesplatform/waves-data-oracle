@@ -13,8 +13,30 @@ import {
     setOracleInfo as apiSetOracleInfo,
     getOracleData as apiGetInfo,
     setAssetInfo as apiToken,
+    getAssetInfo as apiNodeAsset,
 } from '../services/dataTransactionService';
 import { middlewareFabric as mwF } from './utils';
+
+const loadingTokens = Object.create(null);
+
+export const getNodeAssetInfo: Middleware =
+    mwF<MiddlewareAPI, AnyAction>(OracleTokensActions.Type.GET_TOKEN_NAME)((store, next, action) => {
+        if (loadingTokens[action.payload]) {
+            return;
+        }
+        const state = store.getState();
+        loadingTokens[action.payload] = true;
+        const { user } = state;
+        apiNodeAsset(action.payload, user.server).then(
+            (data) => {
+                const toStore = { [data.assetId]: data };
+                store.dispatch(OracleTokensActions.setTokenName(toStore));
+            },
+            () => {
+                loadingTokens[action.payload] = null;
+            }
+        );
+    });
 
 export const getOracleData: Middleware =
     mwF<MiddlewareAPI, AnyAction>(AppActions.Type.GET_ALL_DATA)((store) => {

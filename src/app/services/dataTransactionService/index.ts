@@ -11,14 +11,14 @@ import {
 import { userService } from '../KeeperService';
 import { data } from 'waves-transactions';
 import * as request from 'superagent';
-import { IProviderData } from '@waves/oracle-data';
 
 export * from './constants';
 
 
+
 export function getAssetInfo(id: string, server?: string): Promise<INodeAssetInfo> {
     return new Promise((resolve, reject) =>
-        request.get(getUrl(`/assets/details/${id}`, server))
+        request.get(getUrl(`/transactions/info/${id}`, server))
             .then(response => resolve(response.body))
             .catch(reject));
 }
@@ -31,8 +31,7 @@ export async function getOracleData(address: string, server?: string): Promise<I
 }
 
 
-export function setOracleInfo(oracleData: IProviderData, timestamp?: number) {
-    const fields = OracleData.getFields(oracleData);
+export function setOracleInfo(fields: Array<OracleData.TDataTxField>, timestamp?: number) {
     const fee = currentFee(fields);
 
     return userService.signAndPublishData({
@@ -48,9 +47,8 @@ export function setOracleInfo(oracleData: IProviderData, timestamp?: number) {
     });
 }
 
-export function setAssetInfo(asset: OracleData.TProviderAsset, timestamp?: number) {
-
-    const fields = OracleData.getFields(asset);
+export function setAssetInfo(fields: Array<OracleData.TDataTxField>, timestamp?: number) {
+    
     const fee = currentFee(fields);
 
     return userService.signAndPublishData({

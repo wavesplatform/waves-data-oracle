@@ -34,9 +34,9 @@ export function getTokenFormFields(server?: string) {
             title: 'Status',
             mode: Input.INPUT_MODE.INPUT,
             field: 'status',
+            convertValue: (value: string) => Number(value),
             validator: Form.wrap(
-                Form.validators.required,
-                Form.validators.protocol
+                Form.validators.required as any,
             )
         },
         {
@@ -56,7 +56,7 @@ export function getTokenFormFields(server?: string) {
         {
             title: 'Link',
             mode: Input.INPUT_MODE.INPUT,
-            field: 'site',
+            field: 'link',
             counter: counters.site,
             validator: Form.wrap(
                 Form.validators.required,
