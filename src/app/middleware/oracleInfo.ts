@@ -78,7 +78,10 @@ export const setOracleInfo: Middleware =
 export const setOracleToken: Middleware =
     mwF<MiddlewareAPI, AnyAction>(OracleTokensActions.Type.SAVE_TOKEN)((store, next, action) => {
         store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.LOADING));
-        apiToken(action.payload).then(
+        const payload: Array<OracleData.TDataTxField> = action.payload;
+        const data = payload.filter(item => item.value != null);
+        
+        apiToken(data).then(
             () => {
                 store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.READY));
                 store.dispatch(OracleTokensActions.setTokenDiff(action.payload));

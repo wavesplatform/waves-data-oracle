@@ -27,7 +27,8 @@ export class OracleMenu extends React.PureComponent<IMenu, IMenuState> {
     render(): React.ReactNode {
 
         const {mode, menu, theme, selectedMenuBypath = {}}: IMenuConfig = menuConfig as any;
-        const {oracle, logout, dataTransaction, templates, tokens} = menu;
+        //const {oracle, logout, dataTransaction, templates, tokens} = menu;
+        const {oracle, logout, templates, tokens} = menu;
         const currentPath = this.props.path;
         const realPath = Object.keys(selectedMenuBypath).reduce((acc, path) => {
             if (currentPath.includes(path) && acc.length < path.length) {
@@ -63,9 +64,11 @@ export class OracleMenu extends React.PureComponent<IMenu, IMenuState> {
                             <MenuTitle title={tokens.title} icon={tokens.icon}/>
                         </Item>
                     </SubMenu>
-                    <Item key={dataTransaction.key}>
-                        <MenuTitle title={dataTransaction.title} icon={dataTransaction.icon}/>
-                    </Item>
+                        {
+                            //<Item key={dataTransaction.key}>
+                            //<MenuTitle title={dataTransaction.title} icon={dataTransaction.icon}/>
+                            //</Item>
+                        }
                     <Item key={logout.key}>
                         <MenuTitle title={logout.title} icon={logout.icon}/>
                     </Item>

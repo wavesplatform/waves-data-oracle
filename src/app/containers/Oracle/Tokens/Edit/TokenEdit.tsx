@@ -98,9 +98,20 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
             diff = OracleData.getFields(data.values as any);
         }
         
-        this.setState({ token: { ...data.values, name }, diff, isValid: data.isValid });
+        const isValid = this.isValid(data);
+        
+        this.setState({ token: { ...data.values, name }, diff, isValid });
     };
 
+    private isValid(data:  Form.IChange<Partial<OracleData.TProviderAsset>>): boolean {
+        
+        if (data.values.status != null && data.values.status <= 0 && data.values.id) {
+            return true
+        }
+        
+        return data.isValid;
+    }
+    
     private _saveTokenHandler = () => {
         this.props.actions.saveToken(this.state.diff);
     };
