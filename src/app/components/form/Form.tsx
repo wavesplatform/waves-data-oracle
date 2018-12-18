@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { If, ImageUpload, Input } from 'app/components';
+import { If, ImageUpload, Input, Select } from 'app/components';
 import { assocPath, path, mergeAll } from 'ramda';
 import { ChangeEvent } from 'react';
 import classnames from 'classnames';
@@ -7,24 +7,24 @@ import { getAssetInfo } from 'app/services/dataTransactionService';
 import './form.less';
 
 export class Form<T extends Record<string, unknown>> extends React.PureComponent<Form.IProps<T>, Form.IState<T>> {
-
+    
     state: Form.IState<T>;
-
+    
     constructor(props: Form.IProps<T>) {
         super(props);
-
+        
         this.state = {
             focusField: null,
             validationPending: false,
             values: Form.getValuesFromProps(props) as T,
             errors: Object.create(null)
         };
-
+        
         Form.getErrorsFromProps(props).then(errors => {
             this.setState({ errors });
         });
     }
-
+    
     public render() {
         return (
             <form>
@@ -34,24 +34,24 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             </form>
         );
     }
-
+    
     private _getLimit(field: Form.IFormItem<unknown>, value: string | null) {
         if (!field.counter) {
             return null;
         }
-
+        
         const targetCount = field.counter.count;
         const activeCount = field.counter.processor(value);
-
+        
         return (
             <If condition={this.state.focusField === field.field}>
                 <Counter targetCount={targetCount} activeCount={activeCount}/>
             </If>
         );
     }
-
+    
     private _prepareField(field: Form.IFormItem<any>, index: number) {
-
+        
         const errors = this.state.errors[field.field] || [];
         const value = path(field.field.split('.'), this.state.values) as string;
         const isValid = !errors.length;
@@ -59,25 +59,25 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         const limit = this._getLimit(field, value);
         const className = classnames('basic400', 'margin2', 'block', 'flex', 'flex-col', 'row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
         const validator = field.validator || (() => Promise.resolve([]));
-
+        
         const onChangeValue = (inputValue: string | null) => {
             const value = field.convertValue ? field.convertValue(inputValue) : inputValue;
             const values = assocPath(field.field.split('.'), value, this.state.values);
-
+            
             this.setState({ validationPending: true, values });
-
+            
             validator(value)
                 .catch(e => [e.message])
                 .then(errors => {
-
+                    
                     this.setState({
                         errors: { ...this.state.errors, [field.field]: errors },
                         validationPending: false
                     });
-
+                    
                     const isValid = !Object.keys(this.state.errors)
                         .some(key => !!this.state.errors[key].length);
-
+                    
                     this.props.onChange({
                         isValid,
                         values,
@@ -85,31 +85,39 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
                     });
                 });
         };
-
+        
         let element: JSX.Element;
         if (field.mode === Form.ELEMENT.IMAGE) {
             element = <ImageUpload onChange={onChangeValue}
                                    errors={errors}
                                    value={value}/>;
+        } else if (field.mode === Form.ELEMENT.SELECT) {
+            
+            const { values, defaultValue, convertValue } = field as any;
+            element = <Select onChange={onChangeValue}
+                              convertValue={convertValue}
+                              value={value}
+                              defaultValue={defaultValue}
+                              values={values}/>;
         } else {
-
+            
             const onChange = (event: ChangeEvent<HTMLInputElement>) => {
                 const { value } = event.target;
                 onChangeValue(value);
             };
-
+            
             const onFocus = () => {
                 this.setState({ focusField: field.field });
             };
-
+            
             const onBlur = () => {
                 if (this.state.focusField === field.field) {
                     this.setState({ focusField: null });
                 }
             };
-
+            
             const readonly = this.props.readonly[field.field] || false;
-
+            
             element = <Input mode={field.mode}
                              readOnly={readonly}
                              onFocus={onFocus}
@@ -119,7 +127,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
                              onChange={onChange}
                              value={value}/>;
         }
-
+        
         return (
             <div key={`form-item-${index}`} className={className}>
                 <label>{field.title}</label>
@@ -128,7 +136,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             </div>
         );
     };
-
+    
     public static counters: Form.ILimits = {
         length: count => ({
             count,
@@ -141,7 +149,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             messageError: `Max length of this field is ${count} bytes!`
         })
     };
-
+    
     public static validators: Form.IValidators = {
         required: value => (value == null || value === '') ? 'Field is required!' : null,
         imageSizeKb: size => value => (value && value.length / 1.33 / 1024 > size) ? `Picture exceeds maximum size ${size} kb!` : null,
@@ -150,7 +158,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
                 return null;
             }
             const pattern = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-
+            
             if (!pattern.test(value)) {
                 return 'Link is not valid!';
             }
@@ -160,9 +168,9 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             if (!url) {
                 return null;
             }
-
+            
             const protocols = Array.isArray(availableProtocol) ? availableProtocol : [availableProtocol];
-
+            
             try {
                 const data = new URL(url);
                 if (!availableProtocol.includes(data.protocol)) {
@@ -194,18 +202,18 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             .then(() => null)
             .catch(() => 'Invalid asset Id!') || null
     };
-
+    
     public static getDerivedStateFromProps(props: Form.IProps<any>, state: Form.IState<any>): Form.IState<any> {
         return { ...state, values: { ...state.values, ...props.values } };
     }
-
+    
     public static wrap<T>(...list: Array<ICallback<T | null, Form.TValidatorError>>): ICallback<T | null, Promise<Array<string>>> {
         const isString = (x: unknown): x is string => Boolean(x);
         return input => Promise.all(list.map(validate => validate(input)))
             .then(list => list.filter(isString))
             .catch(e => [e.message]);
     }
-
+    
     private static getErrorsFromProps(props: Form.IProps<any>): Promise<Record<string, Array<string>>> {
         const promiseList = props.fields.map(async field => {
             if (field.validator) {
@@ -217,7 +225,7 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         });
         return Promise.all(promiseList).then(mergeAll) as Promise<Record<string, Array<string>>>;
     }
-
+    
     private static getValuesFromProps(props: Form.IProps<any>): Record<string, Array<string>> {
         return props.fields.reduce((acc, field) => {
             const _path = field.field.split('.');
@@ -233,34 +241,35 @@ const Counter: React.StatelessComponent<{ targetCount: number; activeCount: numb
 };
 
 export namespace Form {
-
+    
     export type TValidatorSyncError = string | null;
     export type TValidatorError = TValidatorSyncError | Promise<TValidatorSyncError>;
-
+    
     export const enum ELEMENT {
-        IMAGE = 'image'
+        IMAGE = 'image',
+        SELECT = 'select',
     }
-
+    
     export interface IProps<T extends Record<string, unknown>> {
         fields: Array<IFormItem<any>>;
         values: T;
         onChange: ICallback<IChange<T>, void>;
         readonly: Record<string, boolean>;
     }
-
+    
     export interface IChange<T extends Record<string, unknown>> {
         isValid: boolean;
         values: T;
         errors: Record<string, Array<string>>;
     }
-
+    
     export interface IState<T extends Record<string, unknown>> {
         errors: Record<string, Array<string>>;
         values: T;
         focusField: string | null;
         validationPending: boolean;
     }
-
+    
     export interface IFormItem<T> {
         title: string;
         mode: ELEMENT | Input.INPUT_MODE;
@@ -268,33 +277,35 @@ export namespace Form {
         validator?: ICallback<T, Promise<Array<string>>>;
         counter?: IFormItemLimit;
         convertValue?: ICallback<string | null, T>;
+        values?: Array<{value: T, text: string}>;
+        defaultValue?: T;
     }
-
+    
     export interface IFormItemLimit {
         count: number;
         processor: ICallback<string | null, number>;
         messageError: ICallback<number, string> | string;
     }
-
+    
     export interface ILimits {
         length(count: number): IFormItemLimit;
-
+        
         bytes(count: number): IFormItemLimit;
     }
-
+    
     export interface IValidators {
         required(value: unknown | null): string | null;
-
+        
         imageSizeKb(maxSize: number): ICallback<string | null, string | null>;
-
+        
         link(url: string | null): string | null;
-
+        
         protocol(available: string | Array<string>): ICallback<string | null, string | null>;
-
+        
         email(email: string | null): string | null;
-
+        
         limit(info: IFormItemLimit): ICallback<string | null, string | null>;
-
+        
         assetId(server?: string): ICallback<string | null, string | null | Promise<string | null>>;
     }
 }

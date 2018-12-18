@@ -4,22 +4,13 @@ import { Form } from 'app/components/form/Form';
 
 const counters = {
     name: Form.counters.length(50),
-    site: Form.counters.length(50),
+    link: Form.counters.length(50),
     email: Form.counters.length(50),
     description: Form.counters.length(1000)
 };
 
 
 export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
-    {
-        title: 'Logo',
-        mode: Form.ELEMENT.IMAGE,
-        field: 'logo',
-        validator: Form.wrap(
-            Form.validators.required,
-            Form.validators.imageSizeKb(20)
-        )
-    },
     {
         title: 'Address',
         mode: Input.INPUT_MODE.INPUT,
@@ -39,12 +30,12 @@ export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
         title: 'Link',
         mode: Input.INPUT_MODE.INPUT,
         field: 'link',
-        counter: counters.site,
+        counter: counters.link,
         validator: Form.wrap(
             Form.validators.required,
             Form.validators.link,
             Form.validators.protocol('https://'),
-            Form.validators.limit(counters.site)
+            Form.validators.limit(counters.link)
         )
     },
     {

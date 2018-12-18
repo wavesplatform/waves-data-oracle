@@ -6,7 +6,6 @@ import { OracleInfoModel, ORACLE_STATUS } from 'app/models';
 export const oracleInfoInitialState: RootState.OracleInfoState = {
     content: {
         description: {},
-        logo: '',
         name: '',
         link: '',
         email: ''

@@ -83,7 +83,7 @@
     "@types/ramda": "^0.25.42",
     "@types/react-router-dom": "^4.3.1",
     "@types/superagent": "^3.8.4",
-    "@waves/oracle-data": "0.0.3",
+    "@waves/oracle-data": "^0.0.6",
     "antd": "^3.10.9",
     "classnames": "^2.2.6",
     "identity-img": "^1.0.0",

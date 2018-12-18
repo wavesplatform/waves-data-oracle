@@ -29,7 +29,8 @@ const { Content } = Layout;
 export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IState> {
 
     private readonly asset: Partial<OracleData.TProviderAsset & { name: string }>;
-
+    private goBackHandler = () => this.props.history.goBack();
+    
     constructor(props: TokenEdit.IProps) {
         super(props);
 
@@ -72,7 +73,8 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                             </div>
 
                         <div className="buttons-wrapper margin-top3">
-                            <Button type="primary">Cancel</Button>
+                            <Button type="ghost"
+                                    onClick={this.goBackHandler}>Cancel</Button>
                             <Button type="primary"
                                     onClick={this._saveTokenHandler}
                                     disabled={!isValid}>Save</Button>

@@ -1,5 +1,5 @@
 import { DEFAULT_LANG } from 'app/services/dataTransactionService';
-import { Input } from 'app/components';
+import {Input } from 'app/components';
 import { Form } from 'app/components/form/Form';
 
 
@@ -32,8 +32,16 @@ export function getTokenFormFields(server?: string) {
         },
         {
             title: 'Status',
-            mode: Input.INPUT_MODE.INPUT,
+            mode: Form.ELEMENT.SELECT,
             field: 'status',
+            defaultValue: 1,
+            values: [
+                { value: -2, text: 'Scam'},
+                { value: -1, text: 'Suspicions'},
+                { value: 0, text: 'Unknown'},
+                { value: 1, text: 'Detailed'},
+                { value: 2, text: 'Verified'},
+            ],
             convertValue: (value: string) => Number(value),
             validator: Form.wrap(
                 Form.validators.required as any,
