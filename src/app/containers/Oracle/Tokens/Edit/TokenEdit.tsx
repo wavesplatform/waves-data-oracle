@@ -61,9 +61,9 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                 <Content className="padding-layout">
                     <Spin spinning={spinning}
                           indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}>
-                        <h2 className="margin2">Create an oracle</h2>
+                        <h2 className="margin2">{ isNew ? 'Create token info' : 'Edit token info' }</h2>
 
-                        <Form fields={getTokenFormFields(this.props.user.server) as any}
+                        <Form fields={getTokenFormFields(this.props.user.server, this.state.token.status, this.props.tokens) as any}
                               values={this.state.token}
                               readonly={{ name: true, id: !isNew }}
                               onChange={this._onChangeForm}/>
@@ -104,16 +104,11 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     };
 
     private isValid(data:  Form.IChange<Partial<OracleData.TProviderAsset>>): boolean {
-        
-        if (data.values.status != null && data.values.status <= 0 && data.values.id) {
-            return true
-        }
-        
         return data.isValid;
     }
     
     private _saveTokenHandler = () => {
-        this.props.actions.saveToken(this.state.diff);
+        this.props.actions.saveToken({ diff: this.state.diff, token: this.state.token });
     };
     
     static sendMessages(nextProps: TokenEdit.IProps) {

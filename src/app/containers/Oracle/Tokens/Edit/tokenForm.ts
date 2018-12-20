@@ -1,6 +1,7 @@
 import { DEFAULT_LANG } from 'app/services/dataTransactionService';
 import {Input } from 'app/components';
 import { Form } from 'app/components/form/Form';
+import { RootState } from 'app/reducers';
 
 
 const counters = {
@@ -10,14 +11,16 @@ const counters = {
     description: Form.counters.length(1000)
 };
 
-export function getTokenFormFields(server?: string) {
+export function getTokenFormFields(server: string, status: any, tokens: RootState.TokensState) {
+    const isRequired = status && status >= 0 ? Form.validators.required : () => null;
+    
     return [
         {
             title: 'Logo',
             mode: Form.ELEMENT.IMAGE,
             field: 'logo',
             validator: Form.wrap(
-                Form.validators.required,
+                isRequired,
                 Form.validators.imageSizeKb(20)
             )
         },
@@ -26,8 +29,9 @@ export function getTokenFormFields(server?: string) {
             mode: Input.INPUT_MODE.INPUT,
             field: 'id',
             validator: Form.wrap(
-                Form.validators.required,
-                Form.validators.assetId(server)
+                isRequired,
+                Form.validators.assetId(server),
+                (id) => tokens.content.find(item => item.content.id === id) ? 'Token is exist' : null
             )
         },
         {
@@ -67,7 +71,7 @@ export function getTokenFormFields(server?: string) {
             field: 'link',
             counter: counters.site,
             validator: Form.wrap(
-                Form.validators.required,
+                isRequired,
                 Form.validators.link,
                 Form.validators.protocol('https://'),
                 Form.validators.limit(counters.site)

@@ -86,7 +86,7 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
     }
 
     private _saveOracleHandler = () => {
-        this.props.actions.saveOracleInfo(this.state.diff);
+        this.props.actions.saveOracleInfo({ diff: this.state.diff, oracleInfo: this.state.oracleInfo });
     };
 
     private _onChangeForm = (data: Form.IChange<OracleData.IProviderData>) => {

@@ -65,10 +65,12 @@ export const getOracleData: Middleware =
 export const setOracleInfo: Middleware =
     mwF<MiddlewareAPI, AnyAction>(OracleInfoActions.Type.SAVE_INFO)((store, next, action) => {
         store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.LOADING));
-        apiSetOracleInfo(action.payload).then(
+        apiSetOracleInfo(action.payload.diff).then(
             () => {
                 store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.READY));
-                store.dispatch(OracleInfoActions.setOracleInfoDiff(action.payload));
+                store.dispatch(OracleInfoActions.setOracleInfoDiff(
+                    OracleData.getProviderData(action.payload.oracleInfo)
+                ));
             }
         ).catch(() => {
             store.dispatch(OracleInfoActions.setOracleSaveStatus(ORACLE_SAVE_STATUS.SERVER_ERROR));
@@ -78,13 +80,13 @@ export const setOracleInfo: Middleware =
 export const setOracleToken: Middleware =
     mwF<MiddlewareAPI, AnyAction>(OracleTokensActions.Type.SAVE_TOKEN)((store, next, action) => {
         store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.LOADING));
-        const payload: Array<OracleData.TDataTxField> = action.payload;
-        const data = payload.filter(item => item.value != null);
+        const { diff, token } = action.payload;
+        const data = diff.filter((item: OracleData.TDataTxField) => item.value != null);
         
         apiToken(data).then(
             () => {
                 store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.READY));
-                store.dispatch(OracleTokensActions.setTokenDiff(action.payload));
+                store.dispatch(OracleTokensActions.setTokenDiff(token));
             }
         ).catch(() => {
             store.dispatch(OracleTokensActions.setSaveTokenStatus(TOKEN_SAVE_STATUS.SERVER_ERROR));

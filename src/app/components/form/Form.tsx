@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { If, ImageUpload, Input, Select } from 'app/components';
-import { assocPath, path, mergeAll } from 'ramda';
+import { assocPath, path, mergeAll, equals } from 'ramda';
 import { ChangeEvent } from 'react';
 import classnames from 'classnames';
 import { getAssetInfo } from 'app/services/dataTransactionService';
 import './form.less';
 
-export class Form<T extends Record<string, unknown>> extends React.PureComponent<Form.IProps<T>, Form.IState<T>> {
+export class Form<T extends Record<string, unknown>> extends React.Component<Form.IProps<T>, Form.IState<T>> {
     
     state: Form.IState<T>;
     
@@ -33,6 +33,10 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
                 }
             </form>
         );
+    }
+    
+    public shouldComponentUpdate(nextProps: Form.IProps<T>, nextState: Form.IState<T>): boolean {
+        return !equals(nextProps.values, this.state.values);
     }
     
     private _getLimit(field: Form.IFormItem<unknown>, value: string | null) {
@@ -88,13 +92,15 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
         
         let element: JSX.Element;
         if (field.mode === Form.ELEMENT.IMAGE) {
-            element = <ImageUpload onChange={onChangeValue}
+            element = <ImageUpload key={field.field}
+                             onChange={onChangeValue}
                                    errors={errors}
                                    value={value}/>;
         } else if (field.mode === Form.ELEMENT.SELECT) {
             
             const { values, defaultValue, convertValue } = field as any;
-            element = <Select onChange={onChangeValue}
+            element = <Select key={field.field}
+                             onChange={onChangeValue}
                               convertValue={convertValue}
                               value={value}
                               defaultValue={defaultValue}
@@ -118,7 +124,8 @@ export class Form<T extends Record<string, unknown>> extends React.PureComponent
             
             const readonly = this.props.readonly[field.field] || false;
             
-            element = <Input mode={field.mode}
+            element = <Input key={field.field}
+                             mode={field.mode}
                              readOnly={readonly}
                              onFocus={onFocus}
                              onBlur={onBlur}
