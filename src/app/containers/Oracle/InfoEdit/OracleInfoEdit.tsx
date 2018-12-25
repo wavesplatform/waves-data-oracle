@@ -9,7 +9,7 @@ import { currentFee } from 'app/services/dataTransactionService';
 import * as OracleData from '@waves/oracle-data';
 import { FORM_FIELDS } from 'app/containers/Oracle/InfoEdit/oracleEditForm';
 import { ORACLE_SAVE_STATUS, ORACLE_STATUS } from 'app/models';
-import { Form } from 'app/components/form/Form';
+import { Form } from 'app/components/form/Form2';
 import { OracleInfoActions } from 'app/actions';
 import { If } from 'app/components';
 import { omit } from 'app/utils';
@@ -68,7 +68,6 @@ export class OracleInfo extends React.Component<OracleInfo.IProps, OracleInfo.IS
                         </div>
 
                         <div className="buttons-wrapper margin-top3">
-                            <Button type="default" htmlType="button">Cancel</Button>
                             <Button type="primary"
                                     htmlType="button"
                                     onClick={this._saveOracleHandler}

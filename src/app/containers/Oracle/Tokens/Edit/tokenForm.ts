@@ -1,6 +1,5 @@
 import { DEFAULT_LANG } from 'app/services/dataTransactionService';
-import {Input } from 'app/components';
-import { Form } from 'app/components/form/Form';
+import { Form } from 'app/components/form/Form2';
 import { RootState } from 'app/reducers';
 
 
@@ -11,13 +10,20 @@ const counters = {
     description: Form.counters.length(1000)
 };
 
-export function getTokenFormFields(server: string, status: any, tokens: RootState.TokensState) {
+interface IFormConfig {
+    server: string;
+    status: any;
+    tokens: RootState.TokensState,
+    isNew: boolean
+}
+
+export function getTokenFormFields({ server, status, tokens, isNew }: IFormConfig) {
     const isRequired = status && status >= 0 ? Form.validators.required : () => null;
     
     return [
         {
             title: 'Logo',
-            mode: Form.ELEMENT.IMAGE,
+            mode: 'image',
             field: 'logo',
             validator: Form.wrap(
                 isRequired,
@@ -26,17 +32,20 @@ export function getTokenFormFields(server: string, status: any, tokens: RootStat
         },
         {
             title: 'Token ID',
-            mode: Input.INPUT_MODE.INPUT,
+            mode: 'input',
             field: 'id',
+            readOnly: !isNew,
             validator: Form.wrap(
                 isRequired,
                 Form.validators.assetId(server),
-                (id) => tokens.content.find(item => item.content.id === id) ? 'Token is exist' : null
+                (id) => {
+                    return (isNew && tokens.content.find(item => item.content.id === id)) ? 'Token is exist' : null
+                }
             )
         },
         {
             title: 'Status',
-            mode: Form.ELEMENT.SELECT,
+            mode: 'select',
             field: 'status',
             defaultValue: 1,
             values: [
@@ -53,12 +62,13 @@ export function getTokenFormFields(server: string, status: any, tokens: RootStat
         },
         {
             title: 'Token Name',
-            mode: Input.INPUT_MODE.INPUT,
-            field: 'name'
+            mode: 'input',
+            field: 'name',
+            readOnly: true,
         },
         {
             title: 'Token ticker',
-            mode: Input.INPUT_MODE.INPUT,
+            mode: 'input',
             counter: counters.ticker,
             field: 'ticker',
             validator: Form.wrap(
@@ -67,7 +77,7 @@ export function getTokenFormFields(server: string, status: any, tokens: RootStat
         },
         {
             title: 'Link',
-            mode: Input.INPUT_MODE.INPUT,
+            mode: 'input',
             field: 'link',
             counter: counters.site,
             validator: Form.wrap(
@@ -79,7 +89,7 @@ export function getTokenFormFields(server: string, status: any, tokens: RootStat
         },
         {
             title: 'Email',
-            mode: Input.INPUT_MODE.INPUT,
+            mode: 'input',
             field: 'email',
             counter: counters.email,
             validator: Form.wrap(
@@ -89,7 +99,7 @@ export function getTokenFormFields(server: string, status: any, tokens: RootStat
         },
         {
             title: 'About',
-            mode: Input.INPUT_MODE.TEXT_AREA,
+            mode: 'textarea',
             counter: counters.description,
             field: `description.${DEFAULT_LANG}`,
             validator: Form.wrap(

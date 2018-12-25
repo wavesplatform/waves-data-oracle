@@ -28,7 +28,10 @@ export const getNodeAssetInfo: Middleware =
         loadingTokens[action.payload] = true;
         const { user } = state;
         apiNodeAsset(action.payload, user.server).then(
-            (data) => {
+            (data: any) => {
+                if (data.type !== 3) {
+                    throw new Error('Wrong asset');
+                }
                 const toStore = { [data.assetId]: data };
                 store.dispatch(OracleTokensActions.setTokenName(toStore));
             },

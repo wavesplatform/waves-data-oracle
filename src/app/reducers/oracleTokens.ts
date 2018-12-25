@@ -27,7 +27,6 @@ export const TokensReducer = handleActions<RootState.TokensState, Partial<Tokens
         [OracleTokensActions.Type.SET_TOKEN_DIFF]: (state, action) => {
             const { id } = action.payload as any;
             let content = [];
-            debugger;
             if(find(pathEq(['content', 'id'], id),  state.content)) {
                 content = state.content.map(item => {
                     if (item.content.id !== id) {

@@ -1,5 +1,5 @@
 import { Button, Icon, Layout, notification, Spin } from 'antd';
-import { Form } from 'app/components/form/Form';
+import { Form } from 'app/components/form/Form2';
 import { If } from 'app/components';
 import * as React from 'react';
 import { getTokenFormFields } from 'app/containers/Oracle/Tokens/Edit/tokenForm';
@@ -50,12 +50,14 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
     }
 
     public render() {
-
-        const spinning = this.props.tokens.saveStatus === TOKEN_SAVE_STATUS.LOADING;
+        const { tokens } = this.props;
+        const spinning = tokens.saveStatus === TOKEN_SAVE_STATUS.LOADING;
         const hasError = false;
-
+        const { server } = this.props.user;
         const { isValid, isNew } = this.state;
 
+        const configData = { isNew, server, tokens, status: this.state.token.status  };
+        
         return (
             <Layout>
                 <Content className="padding-layout">
@@ -63,7 +65,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                           indicator={<Icon type="loading" style={{ fontSize: 24 }} spin/>}>
                         <h2 className="margin2">{ isNew ? 'Create token info' : 'Edit token info' }</h2>
 
-                        <Form fields={getTokenFormFields(this.props.user.server, this.state.token.status, this.props.tokens) as any}
+                        <Form fields={getTokenFormFields(configData) as any}
                               values={this.state.token}
                               readonly={{ name: true, id: !isNew }}
                               onChange={this._onChangeForm}/>
@@ -77,7 +79,7 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
                                     onClick={this.goBackHandler}>Cancel</Button>
                             <Button type="primary"
                                     onClick={this._saveTokenHandler}
-                                    disabled={!isValid}>Save</Button>
+                                    disabled={!isValid || this.state.diff.length === 0}>Save</Button>
                         </div>
                         <If condition={hasError}>
                             <span>Error!</span>
@@ -91,21 +93,16 @@ export class TokenEdit extends React.Component<TokenEdit.IProps, TokenEdit.IStat
 
     private _onChangeForm = (data: Form.IChange<Partial<OracleData.TProviderAsset & { name?: string }>>) => {
         let diff = [] as any;
-    
         if (!this.state.isNew) {
             diff = OracleData.getDifferenceByData(this.asset as any, data.values);
         } else {
             diff = OracleData.getFields(data.values as any);
         }
         
-        const isValid = this.isValid(data);
+        const { isValid } = data;
         
-        this.setState({ token: { ...data.values, name }, diff, isValid });
+        this.setState({ token: data.values, diff, isValid });
     };
-
-    private isValid(data:  Form.IChange<Partial<OracleData.TProviderAsset>>): boolean {
-        return data.isValid;
-    }
     
     private _saveTokenHandler = () => {
         this.props.actions.saveToken({ diff: this.state.diff, token: this.state.token });

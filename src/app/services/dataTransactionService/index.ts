@@ -15,11 +15,15 @@ import * as request from 'superagent';
 export * from './constants';
 
 
-
 export function getAssetInfo(id: string, server?: string): Promise<INodeAssetInfo> {
     return new Promise((resolve, reject) =>
         request.get(getUrl(`/transactions/info/${id}`, server))
             .then(response => resolve(response.body))
+            .then((data: any) => {
+                if (data.type !== 3) {
+                    throw new Error('Wrong asset transaction');
+                }
+            })
             .catch(reject));
 }
 

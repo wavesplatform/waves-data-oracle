@@ -1,6 +1,5 @@
 import { DEFAULT_LANG } from 'app/services/dataTransactionService';
-import { Input } from 'app/components';
-import { Form } from 'app/components/form/Form';
+import { Form } from 'app/components/form/Form2';
 
 const counters = {
     name: Form.counters.length(50),
@@ -13,12 +12,13 @@ const counters = {
 export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     {
         title: 'Address',
-        mode: Input.INPUT_MODE.INPUT,
-        field: 'address'
+        mode: 'input',
+        field: 'address',
+        readOnly: true,
     },
     {
         title: 'Provider name',
-        mode: Input.INPUT_MODE.INPUT,
+        mode: 'input',
         field: 'name',
         counter: counters.name,
         validator: Form.wrap(
@@ -28,7 +28,7 @@ export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     },
     {
         title: 'Link',
-        mode: Input.INPUT_MODE.INPUT,
+        mode: 'input',
         field: 'link',
         counter: counters.link,
         validator: Form.wrap(
@@ -40,7 +40,7 @@ export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     },
     {
         title: 'Email',
-        mode: Input.INPUT_MODE.INPUT,
+        mode: 'input',
         field: 'email',
         counter: counters.email,
         validator: Form.wrap(
@@ -50,7 +50,7 @@ export const FORM_FIELDS: Array<Form.IFormItem<string | null>> = [
     },
     {
         title: 'About',
-        mode: Input.INPUT_MODE.TEXT_AREA,
+        mode: 'textarea',
         counter: counters.description,
         field: `description.${DEFAULT_LANG}`,
         validator: Form.wrap(

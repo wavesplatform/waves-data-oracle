@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { If, ImageUpload, Input, Select } from 'app/components';
-import { assocPath, path, mergeAll, equals } from 'ramda';
-import { ChangeEvent } from 'react';
+import { Element } from '../formComponents';
+import { assocPath, path, mergeAll } from 'ramda';
 import classnames from 'classnames';
 import { getAssetInfo } from 'app/services/dataTransactionService';
 import './form.less';
@@ -10,15 +9,28 @@ export class Form<T extends Record<string, unknown>> extends React.Component<For
     
     state: Form.IState<T>;
     
+    focusHandler = (field: string) => {
+        this.setState({ focusField: field });
+    };
+    
+    blurHandler = () => {
+        this.setState({ focusField: null });
+    };
+    
+    onChangeValue = ({ value, isValid, field }: { value: T, isValid: boolean, field: string }) => {
+        const values = assocPath(field.split('.'), value, this.state.values);
+        this.setState({ validationPending: true, values });
+        this.props.onChange && this.props.onChange({ values, isValid });
+    };
+    
+    
     constructor(props: Form.IProps<T>) {
         super(props);
         
         this.state = {
-            focusField: null,
-            validationPending: false,
-            values: Form.getValuesFromProps(props) as T,
+            values: Form.getValuesFromProps(props) as any,
             errors: Object.create(null)
-        };
+        } as any;
         
         Form.getErrorsFromProps(props).then(errors => {
             this.setState({ errors });
@@ -28,19 +40,17 @@ export class Form<T extends Record<string, unknown>> extends React.Component<For
     public render() {
         return (
             <form>
-                {
-                    this.props.fields.map(this._prepareField, this)
-                }
+                {this.props.fields.map((item) => {
+                    const props = this._getFieldProps(item);
+                    const limit = this._getLimit(item, props.value);
+                    return <ElementWrap limit={limit} {...props} key={props.field}/>;
+                })}
             </form>
         );
     }
     
-    public shouldComponentUpdate(nextProps: Form.IProps<T>, nextState: Form.IState<T>): boolean {
-        return !equals(nextProps.values, this.state.values);
-    }
-    
     private _getLimit(field: Form.IFormItem<unknown>, value: string | null) {
-        if (!field.counter) {
+        if (!field.counter || this.state.focusField !== field.field) {
             return null;
         }
         
@@ -48,101 +58,31 @@ export class Form<T extends Record<string, unknown>> extends React.Component<For
         const activeCount = field.counter.processor(value);
         
         return (
-            <If condition={this.state.focusField === field.field}>
-                <Counter targetCount={targetCount} activeCount={activeCount}/>
-            </If>
+            <Counter targetCount={targetCount} activeCount={activeCount}/>
         );
     }
     
-    private _prepareField(field: Form.IFormItem<any>, index: number) {
-        
-        const errors = this.state.errors[field.field] || [];
+    private _getFieldProps(field: Form.IFormItem<any>) {
         const value = path(field.field.split('.'), this.state.values) as string;
-        const isValid = !errors.length;
-        const inputClassName = classnames({ isValid });
-        const limit = this._getLimit(field, value);
         const className = classnames('basic400', 'margin2', 'block', 'flex', 'flex-col', 'row', `row__${field.field.replace('.', '_')}`, `row__${field.mode}`);
         const validator = field.validator || (() => Promise.resolve([]));
         
-        const onChangeValue = (inputValue: string | null) => {
-            const value = field.convertValue ? field.convertValue(inputValue) : inputValue;
-            const values = assocPath(field.field.split('.'), value, this.state.values);
-            
-            this.setState({ validationPending: true, values });
-            
-            validator(value)
-                .catch(e => [e.message])
-                .then(errors => {
-                    
-                    this.setState({
-                        errors: { ...this.state.errors, [field.field]: errors },
-                        validationPending: false
-                    });
-                    
-                    const isValid = !Object.keys(this.state.errors)
-                        .some(key => !!this.state.errors[key].length);
-                    
-                    this.props.onChange({
-                        isValid,
-                        values,
-                        errors: this.state.errors
-                    });
-                });
+        return {
+            field: field.field,
+            title: field.title,
+            mode: field.mode,
+            readOnly: field.readOnly,
+            value,
+            className,
+            validator,
+            values: field.values,
+            defaultValue: field.defaultValue,
+            convertValue: field.convertValue,
+            onChange: this.onChangeValue,
+            onFocus: this.focusHandler,
+            onBlur: this.blurHandler
         };
-        
-        let element: JSX.Element;
-        if (field.mode === Form.ELEMENT.IMAGE) {
-            element = <ImageUpload key={field.field}
-                             onChange={onChangeValue}
-                                   errors={errors}
-                                   value={value}/>;
-        } else if (field.mode === Form.ELEMENT.SELECT) {
-            
-            const { values, defaultValue, convertValue } = field as any;
-            element = <Select key={field.field}
-                             onChange={onChangeValue}
-                              convertValue={convertValue}
-                              value={value}
-                              defaultValue={defaultValue}
-                              values={values}/>;
-        } else {
-            
-            const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-                const { value } = event.target;
-                onChangeValue(value);
-            };
-            
-            const onFocus = () => {
-                this.setState({ focusField: field.field });
-            };
-            
-            const onBlur = () => {
-                if (this.state.focusField === field.field) {
-                    this.setState({ focusField: null });
-                }
-            };
-            
-            const readonly = this.props.readonly[field.field] || false;
-            
-            element = <Input key={field.field}
-                             mode={field.mode}
-                             readOnly={readonly}
-                             onFocus={onFocus}
-                             onBlur={onBlur}
-                             className={`${inputClassName} input-text`}
-                             errors={errors}
-                             onChange={onChange}
-                             value={value}/>;
-        }
-        
-        return (
-            <div key={`form-item-${index}`} className={className}>
-                <label>{field.title}</label>
-                {limit}
-                {element}
-            </div>
-        );
-    };
+    }
     
     public static counters: Form.ILimits = {
         length: count => ({
@@ -210,10 +150,6 @@ export class Form<T extends Record<string, unknown>> extends React.Component<For
             .catch(() => 'Invalid asset Id!') || null
     };
     
-    public static getDerivedStateFromProps(props: Form.IProps<any>, state: Form.IState<any>): Form.IState<any> {
-        return { ...state, values: { ...state.values, ...props.values } };
-    }
-    
     public static wrap<T>(...list: Array<ICallback<T | null, Form.TValidatorError>>): ICallback<T | null, Promise<Array<string>>> {
         const isString = (x: unknown): x is string => Boolean(x);
         return input => Promise.all(list.map(validate => validate(input)))
@@ -247,15 +183,18 @@ const Counter: React.StatelessComponent<{ targetCount: number; activeCount: numb
     return <div className={className}>{count}</div>;
 };
 
+const ElementWrap = ({ className, index, title, limit, ...props }: any) => (
+    <div key={`form-item-${index}`} className={className}>
+        <label>{title}</label>
+        {limit}
+        <Element key={props.field} {...props}/>
+    </div>
+);
+
 export namespace Form {
     
     export type TValidatorSyncError = string | null;
     export type TValidatorError = TValidatorSyncError | Promise<TValidatorSyncError>;
-    
-    export const enum ELEMENT {
-        IMAGE = 'image',
-        SELECT = 'select',
-    }
     
     export interface IProps<T extends Record<string, unknown>> {
         fields: Array<IFormItem<any>>;
@@ -267,7 +206,6 @@ export namespace Form {
     export interface IChange<T extends Record<string, unknown>> {
         isValid: boolean;
         values: T;
-        errors: Record<string, Array<string>>;
     }
     
     export interface IState<T extends Record<string, unknown>> {
@@ -279,12 +217,13 @@ export namespace Form {
     
     export interface IFormItem<T> {
         title: string;
-        mode: ELEMENT | Input.INPUT_MODE;
+        mode: 'input' | 'select' | 'textarea' | 'image';
         field: string;
+        readOnly?: boolean;
         validator?: ICallback<T, Promise<Array<string>>>;
         counter?: IFormItemLimit;
         convertValue?: ICallback<string | null, T>;
-        values?: Array<{value: T, text: string}>;
+        values?: Array<{ value: T, text: string }>;
         defaultValue?: T;
     }
     
