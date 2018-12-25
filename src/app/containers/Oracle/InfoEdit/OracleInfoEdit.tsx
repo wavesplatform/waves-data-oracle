@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { RootState } from 'app/reducers';
 import { Button, Icon, Layout, notification, Spin } from 'antd';
-import '../../../components/imageUpload/edit-form.less';
 import { EmptyContent } from '../EmptyContent/EmptyContent';
 import { currentFee } from 'app/services/dataTransactionService';
 import * as OracleData from '@waves/oracle-data';
